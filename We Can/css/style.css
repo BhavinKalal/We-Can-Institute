@@ -1,0 +1,289 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: gray;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    color: aquamarine;
+}
+
+/* Navbar ----------------------------------------------------------------------*/
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: FCFCFC;
+    color: black;
+}
+
+/* Navbar - Profile */
+
+.profile{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+/* Navbar - Navitems */
+
+.navitems{
+    display: flex;
+    gap: 20px;
+}
+
+.navitems a{
+    color: black;
+    text-decoration: none;
+    padding: 5px 10px;
+    transition: 0.1s;
+}
+
+.navitems a:hover{
+    background-color: black;
+    color: white;
+    border-radius: 10px;
+}
+
+/* Navbar - login/logut */
+
+.config{
+    font-weight: bold;
+}
+
+/* Hero ----------------------------------------------------------------------*/
+
+.hero{
+    background: url('../images/banner.jpeg');
+    height: 100vh;
+    color: aqua;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+
+.hero h1{
+    font-size: 3rem;
+    color: black;
+    margin: 20px 0;
+}
+
+.hero p{
+    font-size: 1rem;
+    color: red;
+    margin: 20px 0;
+
+}
+
+.hero .cta-btn{
+    background: #f6f4f4;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 130px 0 0 0;
+}
+
+.hero .cta-btn:hover{
+    background: rgb(0, 0, 0);
+    color: rgb(254, 254, 254);
+}
+
+/* About ----------------------------------------------------------------------*/
+
+.about{
+    padding: 80px 50px;
+    text-align: center;
+}
+
+.about h2{
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #0081B8;
+}
+
+.about p{
+    font-size: 1.2rem;
+    color: black;
+}
+
+.benefits{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.benefit{
+    background: #f6e4e4;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 45vh;
+    border-radius: 5px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.ben-img{
+    width: 50vh;
+    height: 40vh;
+    /* padding: 10px 20px; */
+}
+
+.ben-img img{
+    width: 50vh;
+    height: 40vh;
+    padding: 10px 30px;
+    /* border-radius: 10px; */
+
+}
+
+.ben-con{
+    justify-content: center;
+    /* font-family: ; */
+}
+
+/* Courses ----------------------------------------------------------------------*/
+
+.courses{
+    padding: 30px 50px;
+    text-align: center;
+}
+
+.courses h2{
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #0081B8;
+}
+
+.courses p{
+    font-size: 1.2rem;
+    color: black;
+}
+
+.course-grid{
+    display: flex;
+    box-sizing: border-box;
+    justify-content: space-between;
+    height: auto;
+    width: 100%;
+    padding: 10px;
+    /* background: #0073e6; */
+}
+
+.course{
+    position: relative;
+    /* display: inline-block; */
+    display: flex;
+    flex-direction: row;
+    border-radius: 5px;
+    box-shadow: 0px 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.course img{
+    width: 35vh;
+    height: 35vh;
+    opacity: 75%;
+    display: block;
+    border-radius: 5px;
+    
+}
+
+.course-con{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.5); /* Optional: Adds a background for readability */
+    padding: 10px;
+    border-radius: 5px;
+    height: 130px;
+    width: 100%;
+}
+
+.course h3{
+    color: #c54a4a;
+}
+
+.course p{
+    color: #e8e5e5;
+}
+
+.course button{
+    color: #84b800;
+    background-color: #6138b9;
+}
+/* .courses {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 50px;
+}
+.course-card {
+    background: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+.course-card:hover {
+    transform: scale(1.05);
+} */
+
+/* Testimonals */
+
+.testimonials {
+    padding: 80px 50px;
+    text-align: center;
+}
+
+.testimonials h2{
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #0081B8;
+}
+
+.testimonial{
+    display: flex;
+}
+.testimonial-card {
+    text-align: center;
+    margin: auto;
+    max-width: 600px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.testimonial-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+}
+.testimonial-text {
+    font-style: italic;
+    color: #333;
+}
+.testimonial-author {
+    font-weight: bold;
+    margin-top: 10px;
+    color: #0073e6;
+}
+
+
