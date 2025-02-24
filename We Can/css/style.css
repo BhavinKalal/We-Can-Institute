@@ -2,63 +2,60 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    color: gray;
 }
 
 body{
-    font-family: Arial, Helvetica, sans-serif;
-    color: aquamarine;
+    background: rgb(224, 222, 222);
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
 }
 
-/* Navbar ----------------------------------------------------------------------*/
 .navbar{
+    position: fixed;
+    inset: 10px;
     display: flex;
+    width: calc(100% - 20px);
+    height: 65px;
+    background: rgba(247, 246, 246, 0.5);
+    color: rgb(10, 10, 10);
     justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: FCFCFC;
-    color: black;
+    padding: 20px 20px;
+    font-size: 20px;
+    border-radius: 50px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.1s ease-in-out;
 }
-
-/* Navbar - Profile */
 
 .profile{
     display: flex;
     align-items: center;
     gap: 10px;
+    /* border-radius: 50%; */
+    /* flex-direction: row; */
 }
 
 .profile img{
-    width: 40px;
-    height: 40px;
+    width: 37.5px;
+    height: 37.5px;
     border-radius: 50%;
 }
 
-/* Navbar - Navitems */
-
 .navitems{
     display: flex;
-    gap: 20px;
+    gap: 30px;
 }
 
 .navitems a{
-    color: black;
+    text-decoration: none;
+    color: rgb(10, 10, 10);
+    
+}
+
+.config a{
     text-decoration: none;
     padding: 5px 10px;
-    transition: 0.1s;
+    color: rgb(4, 4, 4);
 }
 
-.navitems a:hover{
-    background-color: black;
-    color: white;
-    border-radius: 10px;
-}
-
-/* Navbar - login/logut */
-
-.config{
-    font-weight: bold;
-}
 
 /* Hero ----------------------------------------------------------------------*/
 
