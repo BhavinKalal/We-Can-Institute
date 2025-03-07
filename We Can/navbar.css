@@ -15,7 +15,7 @@ body{
     display: flex;
     width: calc(100% - 20px);
     height: 65px;
-    background: rgba(246, 248, 248);
+    background: rgba(246, 248, 248,0.5);
     color: rgb(10, 10, 10);
     justify-content: space-between;
     padding: 20px 20px;
@@ -23,6 +23,7 @@ body{
     border-radius: 50px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     transition: transform 0.1s ease-in-out;
+    z-index: 1000;
 }
 
 .profile{
@@ -75,7 +76,7 @@ body{
     align-items: center;
     /* justify-content: center; */
     height: 100vh;
-    background-color: #003366; /* Dark Blue */
+    background-color: rgb(0, 51, 102); /* Dark Blue */
     color: white;
     /* margin: 0; */
     /* padding: 0; */
@@ -87,29 +88,35 @@ body{
     justify-content: space-between;
 }
 
-.hero-image img {
+.hero-image{
     position: relative;
-    top: 90px;
-    width: 100vw;
-    /* max-width: 500px; */
-    height: 100vh;
-    /* animation: fadeIn 2s ease-in-out; */
-    /* transition: ; */
-    /* opacity: 50%; */
+    display: inline-block;
+}
+.hero-image::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0, 129, 184, 0.1)10%,rgba(0, 129, 184, 0.3)25%,rgba(0, 129, 184, 0.6)55%, rgba(0, 129, 184, 0.9)80%); /* Red Color Overlay */
+    pointer-events: none;
+    /* z-index: -1; */
 }
 
-/* @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-} */
+.hero-image img{
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
 
 .hero-text {
     position: absolute;
     text-align: center;
     top: 200px;
-    left: 700px;
+    left: 800px;
     justify-content: center;
-    width: 45%;
+    width: 43%;
     text-align: left;
 }
 
@@ -131,6 +138,7 @@ body{
     border: none;
     cursor: pointer;
     font-size: 18px;
+    border-radius: 50px;
 }
 
 .hero-text button:hover {
