@@ -1,0 +1,27 @@
+/* =========================
+   SECTION STYLES
+========================= */
+
+/* Hero */
+.hero {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  color: white;
+  background:
+    linear-gradient(
+      rgba(10, 37, 64, 0.75),
+      rgba(10, 37, 64, 0.75)
+    ),
+    url("../images/hero/hero-bg.jpg") center/cover no-repeat;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+}
+
+.hero p {
+  max-width: 600px;
+  margin: var(--space-md) 0;
+  color: #e5e7eb;
+}

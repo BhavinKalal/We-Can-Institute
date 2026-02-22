@@ -1,0 +1,72 @@
+/* =========================
+   BASE DESIGN SYSTEM
+========================= */
+
+:root {
+  /* Brand Colors */
+  --color-primary: #0a2540;
+  --color-secondary: #f4b400;
+  --color-accent: #ffffff;
+
+  /* Text */
+  --text-dark: #1f2933;
+  --text-muted: #6b7280;
+
+  /* Backgrounds */
+  --bg-light: #f9fafb;
+  --bg-dark: #0a2540;
+
+  /* Typography */
+  --font-main: "Poppins", system-ui, sans-serif;
+
+  /* Spacing scale */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 6rem;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Shadow */
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.06);
+
+  /* Animation */
+  --transition-fast: 0.2s ease;
+  --transition-main: 0.35s ease;
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Base body */
+body {
+  font-family: var(--font-main);
+  background: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+/* Typography helpers */
+h1, h2, h3, h4 {
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+p {
+  color: var(--text-muted);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
