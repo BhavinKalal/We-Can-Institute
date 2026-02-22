@@ -1,20 +1,54 @@
-async function loadComponent(selector, file) {
-  const el = document.querySelector(selector);
-  if (!el) return;
+/* =========================
+   GLOBAL COMPONENT LOADER
+========================= */
 
-  const res = await fetch(file);
-  el.innerHTML = await res.text();
+/**
+ * Detect base path depending on page location
+ * - pages/*.html  -> ".."
+ * - index.html    -> "."
+ */
+function getBasePath() {
+  const path = window.location.pathname;
+  return path.includes("/pages/") ? ".." : ".";
 }
 
-/* Load global components */
+/**
+ * Load HTML component into selector
+ */
+async function loadComponent(selector, componentFile) {
+  const container = document.querySelector(selector);
+  if (!container) return;
+
+  try {
+    const basePath = getBasePath();
+    const response = await fetch(
+      `${basePath}/components/${componentFile}`
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to load ${componentFile}`);
+    }
+
+    container.innerHTML = await response.text();
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+/**
+ * Load global components on every page
+ */
 document.addEventListener("DOMContentLoaded", () => {
-  loadComponent("#navbar", "../components/navbar.html");
-  loadComponent("#footer", "../components/footer.html");
+  loadComponent("#navbar", "navbar.html");
+  loadComponent("#footer", "footer.html");
 });
 
-/* Mobile menu toggle */
+/**
+ * Mobile menu toggle (delegated)
+ */
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("menu-toggle")) {
-    document.querySelector(".nav-links").classList.toggle("active");
+    const nav = document.querySelector(".nav-links");
+    if (nav) nav.classList.toggle("active");
   }
 });

@@ -3,38 +3,39 @@
 ========================= */
 
 :root {
-  /* Brand Colors */
-  --color-primary: #0a2540;
-  --color-secondary: #f4b400;
-  --color-accent: #ffffff;
+  /* ===== BRAND COLORS (FROM LOGO) ===== */
+  --color-primary: #e31e24;      /* Red - WE CAN */
+  --color-secondary: #1b9bd7;    /* Blue - TRUST */
+  --color-accent: #ffffff;      /* White */
 
-  /* Text */
-  --text-dark: #1f2933;
-  --text-muted: #6b7280;
+  /* ===== TEXT COLORS ===== */
+  --text-dark: #2b2b2b;
+  --text-muted: #5f6368;
+  --text-light: #ffffff;
 
-  /* Backgrounds */
-  --bg-light: #f9fafb;
-  --bg-dark: #0a2540;
+  /* ===== BACKGROUNDS ===== */
+  --bg-light: #f9f9f9;
+  --bg-dark: #0f2a44;            /* deep blue tone */
 
-  /* Typography */
+  /* ===== TYPOGRAPHY ===== */
   --font-main: "Poppins", system-ui, sans-serif;
 
-  /* Spacing scale */
+  /* ===== SPACING ===== */
   --space-xs: 0.5rem;
   --space-sm: 1rem;
   --space-md: 2rem;
   --space-lg: 4rem;
   --space-xl: 6rem;
 
-  /* Radius */
+  /* ===== RADIUS ===== */
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 20px;
 
-  /* Shadow */
-  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.06);
+  /* ===== SHADOW ===== */
+  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.08);
 
-  /* Animation */
+  /* ===== TRANSITIONS ===== */
   --transition-fast: 0.2s ease;
   --transition-main: 0.35s ease;
 }

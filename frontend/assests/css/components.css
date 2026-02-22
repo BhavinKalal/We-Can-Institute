@@ -18,17 +18,23 @@
 
 .btn-primary {
   background: var(--color-primary);
-  color: white;
+  color: var(--text-light);
 }
 
 .btn-primary:hover {
+  background: #c9181d;
   transform: translateY(-2px);
 }
 
 .btn-outline {
+  border: 2px solid var(--color-secondary);
+  color: var(--color-secondary);
   background: transparent;
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
+}
+
+.btn-outline:hover {
+  background: var(--color-secondary);
+  color: white;
 }
 
 /* Card */
@@ -37,11 +43,13 @@
   border-radius: var(--radius-lg);
   padding: var(--space-md);
   box-shadow: var(--shadow-soft);
+  border-top: 4px solid var(--color-secondary);
   transition: var(--transition-main);
 }
 
 .card:hover {
   transform: translateY(-6px);
+  border-top-color: var(--color-primary);
 }
 
 /* Section heading */
@@ -77,10 +85,16 @@
   padding: 1rem 0;
 }
 
-.logo {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: var(--color-primary);
+.logo img {
+  height: 48px;        /* perfect navbar size */
+  width: auto;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .logo img {
+    height: 40px;
+  }
 }
 
 .nav-links {
@@ -95,7 +109,7 @@
 }
 
 .nav-links a:hover {
-  color: var(--color-primary);
+  color: var(--color-secondary);
 }
 
 .menu-toggle {
@@ -136,6 +150,10 @@
   background: var(--bg-dark);
   color: white;
   padding: var(--space-lg) 0 var(--space-md);
+}
+
+.footer a:hover {
+  color: var(--color-secondary);
 }
 
 .footer h3,
