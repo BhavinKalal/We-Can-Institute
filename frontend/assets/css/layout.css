@@ -1,0 +1,102 @@
+/* =========================
+   LAYOUT SYSTEM (v2)
+   Section Rhythm + Structure
+========================= */
+
+/* =========================
+   CONTAINER
+========================= */
+.container {
+  width: min(1200px, 90%);
+  margin-inline: auto;
+}
+
+/* =========================
+   SECTION SYSTEM
+========================= */
+
+/* Default section spacing */
+.section {
+  padding: var(--space-lg) 0;
+}
+
+/* Smaller vertical section */
+.section-sm {
+  padding: var(--space-md) 0;
+}
+
+/* Section background roles */
+.section-white {
+  background-color: var(--section-white);
+}
+
+.section-soft {
+  background-color: var(--section-soft);
+}
+
+.section-accent {
+  background-color: var(--section-accent);
+}
+
+/* =========================
+   SECTION HEADER
+========================= */
+.section-header {
+  max-width: 720px;
+  margin-bottom: var(--space-lg);
+}
+
+.section-header h2 {
+  margin-bottom: var(--space-xs);
+}
+
+.section-header p {
+  color: var(--text-muted);
+}
+
+/* =========================
+   GRID SYSTEM
+========================= */
+.grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 1024px) {
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .section {
+    padding: var(--space-md) 0;
+  }
+
+  .section-header {
+    margin-bottom: var(--space-md);
+  }
+}
+
