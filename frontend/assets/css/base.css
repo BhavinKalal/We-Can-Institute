@@ -1,171 +1,130 @@
-/* =========================
-   BASE DESIGN SYSTEM (v2)
-   Calm Academic + Energetic + Premium
-========================= */
+/* ============================================================
+   BASE.CSS — Variables · Reset · Typography · Utilities
+   WE CAN Institute of English
+   ============================================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ── CSS VARIABLES ── */
 :root {
-  /* ===== BRAND COLORS (FROM LOGO) ===== */
-  --color-primary: #e31e24;      /* WE CAN Red */
-  --color-secondary: #1b9bd7;    /* Trust Blue */
-  --color-accent: #0f2a44;      /* Deep Academic Blue */
-
-  /* ===== PAGE & SECTION BACKGROUNDS ===== */
-  --page-bg: #f4f6fb;            /* Main canvas (NOT white) */
-  --section-white: #ffffff;      /* Content sections */
-  --section-soft: #f8fafc;       /* Card / process sections */
-  --section-accent: #eef4fa;     /* Visual breaks / CTA light */
-
-  /* ===== TEXT COLORS ===== */
-  --text-dark: #0f172a;
-  --text-muted: #475569;
-  --text-light: #ffffff;
-
-  /* ===== TYPOGRAPHY ===== */
-  --font-main: "Poppins", system-ui, sans-serif;
-
-  /* ===== SPACING SCALE ===== */
-  --space-xs: 0.5rem;
-  --space-sm: 1rem;
-  --space-md: 2rem;
-  --space-lg: 4rem;
-  --space-xl: 6rem;
-
-  /* ===== RADIUS ===== */
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-
-  /* ===== ELEVATION / SHADOW ===== */
-  --shadow-soft: 0 8px 20px rgba(15, 23, 42, 0.08);
-  --shadow-strong: 0 20px 45px rgba(15, 23, 42, 0.12);
-
-  /* ===== TRANSITIONS ===== */
-  --transition-fast: 0.2s ease;
-  --transition-main: 0.35s ease;
+  --red:        #e31e24;
+  --red-dark:   #b91c1c;
+  --red-light:  #ef4444;
+  --blue:       #1b9bd7;
+  --navy:       #020617;
+  --navy-mid:   #0f172a;
+  --navy-soft:  #1e293b;
+  --white:      #ffffff;
+  --text-soft:  #9ca3af;
+  --text-muted: #6b7280;
+  --text-dark:  #111827;
+  --border:     rgba(255,255,255,0.08);
+  --border-light: rgba(0,0,0,0.08);
+  --glass-bg:   rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.12);
+  --sp-xs:  0.5rem;
+  --sp-sm:  1rem;
+  --sp-md:  1.5rem;
+  --sp-lg:  2.5rem;
+  --sp-xl:  4rem;
+  --sp-2xl: 6rem;
+  --sp-3xl: 8rem;
+  --r-sm:   8px;
+  --r-md:   16px;
+  --r-lg:   24px;
+  --r-xl:   32px;
+  --r-full: 9999px;
+  --shadow-sm:  0 2px 8px rgba(0,0,0,0.08);
+  --shadow-md:  0 8px 32px rgba(0,0,0,0.12);
+  --shadow-lg:  0 20px 60px rgba(0,0,0,0.2);
+  --shadow-xl:  0 32px 80px rgba(0,0,0,0.35);
+  --shadow-red: 0 16px 48px rgba(227,30,36,0.4);
+  --shadow-blue:0 16px 48px rgba(27,155,215,0.3);
+  --t-fast:   0.15s ease;
+  --t-base:   0.25s ease;
+  --t-slow:   0.4s ease;
 }
 
-/* =========================
-   RESET & BASE
-========================= */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* =========================
-   BODY (GLOBAL CANVAS)
-========================= */
-body {
-  font-family: var(--font-main);
-  background-color: var(--page-bg);
-  color: var(--text-dark);
-  line-height: 1.6;
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* =========================
-   TYPOGRAPHY
-========================= */
-h1, h2, h3, h4 {
+body {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-dark);
+  background: var(--navy);
+  overflow-x: hidden;
+}
+
+img, svg, video { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* ── TYPOGRAPHY ── */
+.t-hero {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 6vw, 64px);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.t-section {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 4vw, 36px);
   font-weight: 700;
   line-height: 1.2;
-  color: var(--text-dark);
+  letter-spacing: -0.01em;
 }
 
-p {
-  color: var(--text-muted);
-  font-size: 1rem;
+.t-subtitle { font-size: clamp(16px, 2vw, 18px); font-weight: 400; line-height: 1.7; }
+.t-body     { font-size: 16px; line-height: 1.7; }
+.t-small    { font-size: 14px; line-height: 1.5; }
+.t-label    { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+
+/* ── COLOR UTILITIES ── */
+.text-white  { color: var(--white); }
+.text-soft   { color: var(--text-soft); }
+.text-red    { color: var(--red); }
+.text-blue   { color: var(--blue); }
+.text-dark   { color: var(--text-dark); }
+
+/* ── SECTION BADGE ── */
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-xs);
+  padding: 6px 14px;
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
-  transition: color var(--transition-fast);
+.section-badge--red   { background: rgba(227,30,36,0.12); color: var(--red-light); border: 1px solid rgba(227,30,36,0.25); }
+.section-badge--blue  { background: rgba(27,155,215,0.12); color: #60c9f8; border: 1px solid rgba(27,155,215,0.25); }
+.section-badge--white { background: rgba(0,0,0,0.06); color: var(--text-muted); border: 1px solid var(--border-light); }
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
 }
-
-/* =========================
-   IMAGES & MEDIA
-========================= */
-img {
-  max-width: 100%;
-  display: block;
-}
-
-/* =========================
-   GLOBAL UTILITIES
-========================= */
-.text-center {
-  text-align: center;
-}
-
-/* =========================
-   MORPHING LOADER
-========================= */
-
-#loader-hero{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100vh;
-background:#0f2a44;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-z-index:9999;
-transition:opacity .8s ease;
-}
-
-/* logo */
-
-.loader-logo{
-width:120px;
-animation:logoPulse 1.8s infinite ease-in-out;
-}
-
-@keyframes logoPulse{
-
-0%{transform:scale(1)}
-50%{transform:scale(1.1)}
-100%{transform:scale(1)}
-
-}
-
-/* morph animation */
-
-.loader-expand{
-animation:logoExpand 1s forwards;
-}
-
-@keyframes logoExpand{
-
-0%{
-transform:scale(1);
-}
-
-100%{
-transform:scale(3);
-opacity:0;
-}
-
-}
-
-/* hero hidden */
-
-.hero-hidden{
-opacity:0;
-transform:translateY(40px);
-}
-
-/* hero reveal */
-
-.hero-visible{
-opacity:1;
-transform:translateY(0);
-transition:all 1s ease;
-}
+.reveal.visible          { opacity: 1; transform: translateY(0); }
+.reveal-delay-1          { transition-delay: 0.1s; }
+.reveal-delay-2          { transition-delay: 0.2s; }
+.reveal-delay-3          { transition-delay: 0.3s; }
+.reveal-delay-4          { transition-delay: 0.4s; }
+.reveal-delay-5          { transition-delay: 0.5s; }

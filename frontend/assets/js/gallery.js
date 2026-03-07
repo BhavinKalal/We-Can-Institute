@@ -1,69 +1,80 @@
-/* =========================
-   GALLERY PAGE SCRIPT
-========================= */
+/* ============================================================
+   GALLERY.JS — Filter Tabs · Lightbox
+   WE CAN Institute of English
+   ============================================================ */
 
-async function loadGallery() {
-  const data = await API.get("/gallery");
+document.addEventListener('DOMContentLoaded', () => {
 
-  renderFilters(data.categories);
-  renderImages(data.images);
-}
+  /* ── GALLERY FILTER TABS ── */
+  document.querySelectorAll('.gallery__tab').forEach(tab => {
+    tab.addEventListener('click', () => {
 
-/* FILTERS */
-function renderFilters(categories) {
-  const container = document.getElementById("gallery-filters");
-  container.innerHTML = "";
+      // Update active tab
+      document.querySelectorAll('.gallery__tab').forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
 
-  const allBtn = createFilterButton("All", "all");
-  container.appendChild(allBtn);
+      const filter = tab.dataset.filter;
 
-  categories.forEach(cat => {
-    const btn = createFilterButton(cat.name, cat.id);
-    container.appendChild(btn);
+      document.querySelectorAll('.gallery__item').forEach(item => {
+        if (filter === 'all' || item.dataset.category === filter) {
+          item.style.display = '';
+          item.style.opacity = '0';
+          item.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            item.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+            item.style.opacity = '1';
+            item.style.transform = 'scale(1)';
+          }, 20);
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
   });
-}
 
-function createFilterButton(label, categoryId) {
-  const btn = document.createElement("button");
-  btn.className = "filter-btn";
-  btn.innerText = label;
+  /* ── LIGHTBOX ── */
+  window.openLightbox = (el) => {
+    const caption = el.querySelector('.gallery__item-caption')?.textContent || '';
+    const cat     = el.querySelector('.gallery__item-cat')?.textContent || '';
+    const lb      = document.getElementById('galleryLightbox');
+    const content = document.getElementById('lightboxContent');
 
-  btn.onclick = () => filterImages(categoryId);
-  return btn;
-}
+    content.innerHTML = `
+      <div style="text-align:center;padding:2rem 3rem;">
+        <div style="font-size:4rem;margin-bottom:1rem;">🖼️</div>
+        <p style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+                  color:var(--red-light);font-weight:700;margin-bottom:.5rem;">${cat}</p>
+        <p style="color:var(--white);font-size:1.1rem;font-weight:600;
+                  margin-bottom:1rem;font-family:'Playfair Display',serif;">${caption}</p>
+        <p style="color:var(--text-soft);font-size:13px;">
+          Replace the placeholder with your actual image<br>
+          <code style="background:rgba(255,255,255,.06);padding:2px 8px;border-radius:4px;
+                       font-size:12px;color:#60c9f8;">&lt;img src="your-photo.jpg" /&gt;</code>
+        </p>
+      </div>`;
 
-/* IMAGES */
-let allImages = [];
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
 
-function renderImages(images) {
-  allImages = images;
-  displayImages(images);
-}
+  window.closeLightbox = (e) => {
+    const lb = document.getElementById('galleryLightbox');
+    if (!e || e.target === lb || e.currentTarget?.classList?.contains('gallery-lightbox__close')) {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  };
 
-function displayImages(images) {
-  const container = document.getElementById("gallery-grid");
-  container.innerHTML = "";
-
-  images.forEach(img => {
-    const card = document.createElement("div");
-    card.className = "card gallery-card";
-
-    card.innerHTML = `
-      <img src="${img.url}" alt="${img.caption || ''}" />
-    `;
-
-    container.appendChild(card);
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.getElementById('galleryLightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
   });
-}
 
-function filterImages(categoryId) {
-  if (categoryId === "all") {
-    displayImages(allImages);
-  } else {
-    const filtered = allImages.filter(img => img.category_id === categoryId);
-    displayImages(filtered);
-  }
-}
-
-/* INIT */
-loadGallery();
+});
