@@ -17,6 +17,9 @@
   <link rel="stylesheet" href="assets/css/components.css" />
   <link rel="stylesheet" href="assets/css/sections.css" />
   <link rel="stylesheet" href="assets/css/new-sections.css" />
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">   
 </head>
 <body>
 
@@ -44,7 +47,7 @@
 
       <!-- CTA + Hamburger — right -->
       <div class="navbar__actions">
-        <a href="#cta" class="navbar__cta">🎓&nbsp; Book Free Demo</a>
+        <a href="#cta" class="navbar__cta"><i data-lucide="graduation-cap" class="icon-inline"></i>&nbsp; Book Free Demo</a>
         <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu">
           <span></span><span></span><span></span>
         </button>
@@ -81,7 +84,7 @@
     <!-- Eyebrow badge -->
     <div class="hero__eyebrow">
       <span class="section-badge section-badge--blue">
-        🎯 &nbsp;Speak · Impress · Lead
+        <i data-lucide="target" class="icon-inline"></i> &nbsp;Speak · Impress · Lead
       </span>
     </div>
 
@@ -110,9 +113,9 @@
             </h2>
             <p class="hero__card-sub">Spoken English · Public Speaking · Personality Development</p>
             <div class="hero__card-icons">
-              <span class="hero__card-icon-chip">🎤 Public Speaking</span>
-              <span class="hero__card-icon-chip">📚 Phonics</span>
-              <span class="hero__card-icon-chip">🌟 Personality</span>
+              <span class="hero__card-icon-chip"><i data-lucide="mic" class="icon-inline"></i> Public Speaking</span>
+              <span class="hero__card-icon-chip"><i data-lucide="book-text" class="icon-inline"></i> Phonics</span>
+              <span class="hero__card-icon-chip"><i data-lucide="star" class="icon-inline"></i> Personality</span>
             </div>
           </div>
         </div>
@@ -130,7 +133,7 @@
     <!-- CTA button below image -->
     <div class="hero__cta-wrap">
       <button class="btn btn--primary btn--hero" id="bookDemoBtn" aria-label="Book a free demo class">
-        <span class="btn__icon" aria-hidden="true">🎓</span>
+        <span class="btn__icon" aria-hidden="true"><i data-lucide="graduation-cap"></i></span>
         Book Free Demo
       </button>
       <p class="t-small" style="color:var(--text-soft)">No payment required · 100% free session</p>
@@ -200,7 +203,7 @@
       <!-- Card 1 -->
       <article class="why__card reveal" role="listitem">
         <div class="why__icon" style="background:rgba(227,30,36,0.08);border:1px solid rgba(227,30,36,0.15)">
-          <span aria-hidden="true">🏆</span>
+          <i data-lucide="trophy" aria-hidden="true" style="color: rgba(227, 30, 37, 0.838);"></i>
         </div>
         <h3 class="why__title">Expert Trainers</h3>
         <p class="why__desc">Our faculty are certified communication coaches with years of real-world training experience. Each trainer is handpicked for passion and expertise.</p>
@@ -209,7 +212,7 @@
       <!-- Card 2 -->
       <article class="why__card reveal reveal-delay-1" role="listitem">
         <div class="why__icon" style="background:rgba(27,155,215,0.08);border:1px solid rgba(27,155,215,0.15)">
-          <span aria-hidden="true">🗣️</span>
+          <i data-lucide="speech" aria-hidden="true" style="color: rgba(27,155,215, 0.838);"></i>
         </div>
         <h3 class="why__title">Spoken English Focus</h3>
         <p class="why__desc">Unlike textbook-only institutes, we prioritize practical spoken English. Every session involves live conversation, drills, and real-life scenarios.</p>
@@ -218,7 +221,7 @@
       <!-- Card 3 -->
       <article class="why__card reveal reveal-delay-2" role="listitem">
         <div class="why__icon" style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.15)">
-          <span aria-hidden="true">✨</span>
+          <i data-lucide="sparkles" aria-hidden="true" style="color: rgba(234,179,8, 0.838);"></i>
         </div>
         <h3 class="why__title">Personality Development</h3>
         <p class="why__desc">We go beyond language. Body language, confidence, etiquette, and professional communication are integral parts of our holistic program.</p>
@@ -227,7 +230,7 @@
       <!-- Card 4 -->
       <article class="why__card reveal" role="listitem">
         <div class="why__icon" style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.15)">
-          <span aria-hidden="true">⚡</span>
+          <i data-lucide="zap" aria-hidden="true" style="color: rgba(34,197,94, 0.838);"></i>
         </div>
         <h3 class="why__title">Practical Learning</h3>
         <p class="why__desc">Every concept is applied through group discussions, presentations, and debates. Our activity-based learning ensures you retain and apply what you learn.</p>
@@ -236,16 +239,16 @@
       <!-- Card 5 -->
       <article class="why__card reveal reveal-delay-1" role="listitem">
         <div class="why__icon" style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.15)">
-          <span aria-hidden="true">👶</span>
+          <i data-lucide="baby" aria-hidden="true" style="color: rgba(168,85,247, 0.838);"></i>
         </div>
         <h3 class="why__title">Phonics for Kids</h3>
-        <p class="why__desc">Our structured phonics program builds a strong English foundation in children aged 4–12, making reading and pronunciation natural and effortless.</p>
+        <p class="why__desc">Our structured phonics program builds a strong English foundation in children aged 4-12, making reading and pronunciation natural and effortless.</p>
       </article>
 
       <!-- Card 6 -->
       <article class="why__card reveal reveal-delay-2" role="listitem">
         <div class="why__icon" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15)">
-          <span aria-hidden="true">📅</span>
+          <i data-lucide="calendar" aria-hidden="true" style="color: rgba(239,68,68, 0.838);"></i>
         </div>
         <h3 class="why__title">Flexible Batches</h3>
         <p class="why__desc">Morning, evening, and weekend batches for students and working professionals. Choose a schedule that fits your life without compromising your learning.</p>
@@ -281,7 +284,7 @@
       <div class="programs__featured reveal">
         <div class="programs__featured-glow" aria-hidden="true"></div>
 
-        <span class="programs__featured-badge">⭐ Most Popular</span>
+        <span class="programs__featured-badge"><i data-lucide="star" class="icon-inline"></i> Most Popular</span>
 
         <h3 class="programs__featured-title">
           Intermediate<br>Spoken English
@@ -319,7 +322,7 @@
         </div>
 
         <button class="btn btn--primary" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">
-          <span class="btn__icon" aria-hidden="true">🎯</span>
+          <span class="btn__icon" aria-hidden="true"><i data-lucide="target"></i></span>
           Enroll in This Batch
         </button>
       </div>
@@ -328,16 +331,16 @@
       <div class="programs__list" role="list" aria-label="Available batches">
 
         <article class="program-card active" role="listitem">
-          <div class="program-card__emoji" aria-hidden="true">🔤</div>
+          <div class="program-card__emoji" aria-hidden="true"><i data-lucide="type" style="color: white;"></i></div>
           <div class="program-card__info">
             <h4 class="program-card__name">Phonics Batch</h4>
-            <p class="program-card__meta">For ages 4–12 · Build perfect pronunciation from scratch</p>
+            <p class="program-card__meta">For ages 4-12 · Build perfect pronunciation from scratch</p>
           </div>
           <span class="program-card__badge">Kids</span>
         </article>
 
         <article class="program-card" role="listitem">
-          <div class="program-card__emoji" aria-hidden="true">🌱</div>
+          <div class="program-card__emoji" aria-hidden="true"><i data-lucide="sprout" style="color: white;"></i></div>
           <div class="program-card__info">
             <h4 class="program-card__name">Pre Basic</h4>
             <p class="program-card__meta">Absolute beginners · Alphabet to sentences · 6 weeks</p>
@@ -346,7 +349,7 @@
         </article>
 
         <article class="program-card" role="listitem">
-          <div class="program-card__emoji" aria-hidden="true">📖</div>
+          <div class="program-card__emoji" aria-hidden="true"><i data-lucide="book-open" style="color: white;"></i></div>
           <div class="program-card__info">
             <h4 class="program-card__name">Basic</h4>
             <p class="program-card__meta">Core grammar & spoken English · 2 months</p>
@@ -355,7 +358,7 @@
         </article>
 
         <article class="program-card" role="listitem">
-          <div class="program-card__emoji" aria-hidden="true">🚀</div>
+          <div class="program-card__emoji" aria-hidden="true"><i data-lucide="rocket" style="color: white;"></i></div>
           <div class="program-card__info">
             <h4 class="program-card__name">Pre Intermediate</h4>
             <p class="program-card__meta">Fluency building · Conversations & vocabulary · 2.5 months</p>
@@ -364,7 +367,7 @@
         </article>
 
         <article class="program-card" role="listitem">
-          <div class="program-card__emoji" aria-hidden="true">🎯</div>
+          <div class="program-card__emoji" aria-hidden="true"><i data-lucide="target" style="color: white;"></i></div>
           <div class="program-card__info">
             <h4 class="program-card__name">Intermediate</h4>
             <p class="program-card__meta">Full fluency + personality · Flagship program · 3 months</p>
@@ -474,7 +477,7 @@
             <span class="faculty-card__placeholder-name">Replace with<br>your photo</span>
           </div>
           <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
-          <span class="faculty-card__replace-hint">📷 Add Photo</span>
+          <span class="faculty-card__replace-hint" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Camera" style="color: white;"></i> Add Photo</span>
         </div>
         <div class="faculty-card__info">
           <span class="faculty-card__role-badge">Founder &amp; Director</span>
@@ -500,7 +503,7 @@
             <span class="faculty-card__placeholder-name">Replace with<br>your photo</span>
           </div>
           <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
-          <span class="faculty-card__replace-hint">📷 Add Photo</span>
+          <span class="faculty-card__replace-hint" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Camera" style="color: white;"></i> Add Photo</span>
         </div>
         <div class="faculty-card__info">
           <span class="faculty-card__role-badge">Senior Trainer</span>
@@ -526,7 +529,7 @@
             <span class="faculty-card__placeholder-name">Replace with<br>your photo</span>
           </div>
           <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
-          <span class="faculty-card__replace-hint">📷 Add Photo</span>
+          <span class="faculty-card__replace-hint" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Camera" style="color: white;"></i> Add Photo</span>
         </div>
         <div class="faculty-card__info">
           <span class="faculty-card__role-badge">Communication Coach</span>
@@ -552,7 +555,7 @@
             <span class="faculty-card__placeholder-name">Replace with<br>your photo</span>
           </div>
           <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
-          <span class="faculty-card__replace-hint">📷 Add Photo</span>
+          <span class="faculty-card__replace-hint" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Camera" style="color: white;"></i> Add Photo</span>
         </div>
         <div class="faculty-card__info">
           <span class="faculty-card__role-badge">Phonics Specialist</span>
@@ -560,7 +563,7 @@
           <p class="faculty-card__speciality">Dedicated kids language coach with certifications in early literacy and phonics methodology</p>
           <div class="faculty-card__tags">
             <span class="faculty-card__tag">Phonics</span>
-            <span class="faculty-card__tag">Kids 4–12</span>
+            <span class="faculty-card__tag">Kids 4-12</span>
             <span class="faculty-card__tag">Reading</span>
           </div>
           <div class="faculty-card__exp">
@@ -684,7 +687,7 @@
       <button class="gallery__tab" data-filter="grand-finale" role="tab">Grand Finale</button>
       <button class="gallery__tab" data-filter="awards" role="tab">Award Ceremonies</button>
       <button class="gallery__tab" data-filter="students" role="tab">Student Moments</button>
-      <button class="gallery__tab" data-filter="video" role="tab">🎬 Videos</button>
+      <button class="gallery__tab" data-filter="video" role="tab"><i data-lucide="clapperboard" class="icon-inline"></i> Videos</button>
     </div>
 
     <!-- Masonry grid -->
@@ -693,10 +696,10 @@
       <!-- Item 1: Big featured -->
       <div class="gallery__item gallery__item--big" data-category="grand-finale" onclick="openLightbox(this)" aria-label="Grand Finale Competition">
         <div class="gallery__placeholder" style="background:linear-gradient(135deg,#1a0a0a,#3d1010);">
-          <span class="gallery__placeholder-icon">🏆</span>
+          <span class="gallery__placeholder-icon"><i data-lucide="trophy" style="color: white;"></i></span>
           <span class="gallery__placeholder-label">Grand Finale<br>Competition 2024</span>
         </div>
-        <span class="gallery__replace-label">📷 Replace</span>
+        <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Camera" style="color: white;"></i> Replace</span>
         <div class="gallery__item-overlay">
           <div>
             <span class="gallery__item-cat">Grand Finale</span>
@@ -708,10 +711,10 @@
       <!-- Item 2 -->
       <div class="gallery__item" data-category="activities" onclick="openLightbox(this)" aria-label="Activities">
         <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a1a2a,#0d3350);">
-          <span class="gallery__placeholder-icon">🗣️</span>
+          <span class="gallery__placeholder-icon"><i data-lucide="speech" style="color: white;"></i></span>
           <span class="gallery__placeholder-label">Speaking Activity</span>
         </div>
-        <span class="gallery__replace-label">📷 Replace</span>
+        <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Camera" style="color: white;"></i> Replace</span>
         <div class="gallery__item-overlay">
           <div>
             <span class="gallery__item-cat">Activities</span>
@@ -723,10 +726,10 @@
       <!-- Item 3 -->
       <div class="gallery__item" data-category="students" onclick="openLightbox(this)" aria-label="Student moments">
         <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a1f0a,#0d3b1a);">
-          <span class="gallery__placeholder-icon">🎓</span>
+          <span class="gallery__placeholder-icon"><i data-lucide="graduation-cap" style="color: white;"></i></span>
           <span class="gallery__placeholder-label">Student Moment</span>
         </div>
-        <span class="gallery__replace-label">📷 Replace</span>
+        <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Camera" style="color: white;"></i> Replace</span>
         <div class="gallery__item-overlay">
           <div>
             <span class="gallery__item-cat">Students</span>
@@ -738,10 +741,10 @@
       <!-- Item 4: Wide -->
       <div class="gallery__item gallery__item--wide" data-category="awards" onclick="openLightbox(this)" aria-label="Award ceremony">
         <div class="gallery__placeholder" style="background:linear-gradient(135deg,#1a140a,#3d2d08);">
-          <span class="gallery__placeholder-icon">🥇</span>
+          <span class="gallery__placeholder-icon"><i data-lucide="medal" style="color: white;"></i></span>
           <span class="gallery__placeholder-label">Award Ceremony 2024</span>
         </div>
-        <span class="gallery__replace-label">📷 Replace</span>
+        <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Camera" style="color: white;"></i> Replace</span>
         <div class="gallery__item-overlay">
           <div>
             <span class="gallery__item-cat">Awards</span>
@@ -753,10 +756,10 @@
       <!-- Item 5: Video -->
       <div class="gallery__item gallery__item--video" data-category="video" aria-label="Video highlight">
         <div class="gallery__placeholder" style="background:linear-gradient(135deg,#150a1a,#2d1040);">
-          <span class="gallery__placeholder-icon">🎬</span>
+          <span class="gallery__placeholder-icon"><i data-lucide="clapperboard" style="color: white;"></i></span>
           <span class="gallery__placeholder-label">Institute Highlight Reel</span>
         </div>
-        <span class="gallery__replace-label">🎬 Add Video</span>
+        <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Video" style="color: rgba(255, 255, 255, 0.585);"></i> Add Video</span>
         <div class="gallery__play-btn" aria-label="Play video">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </div>
@@ -771,10 +774,10 @@
       <!-- Item 6 -->
       <div class="gallery__item" data-category="activities" onclick="openLightbox(this)" aria-label="Group discussion">
         <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a1a1a,#0d3535);">
-          <span class="gallery__placeholder-icon">👥</span>
+          <span class="gallery__placeholder-icon"><i data-lucide="users" style="color: white;"></i></span>
           <span class="gallery__placeholder-label">Group Discussion</span>
         </div>
-        <span class="gallery__replace-label">📷 Replace</span>
+        <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Camera" style="color: white;"></i> Replace</span>
         <div class="gallery__item-overlay">
           <div>
             <span class="gallery__item-cat">Activities</span>
@@ -786,10 +789,10 @@
       <!-- Item 7: Tall -->
       <div class="gallery__item gallery__item--tall" data-category="grand-finale" onclick="openLightbox(this)" aria-label="Stage performance">
         <div class="gallery__placeholder" style="background:linear-gradient(135deg,#1a0a10,#3d0d20);">
-          <span class="gallery__placeholder-icon">🎤</span>
+          <span class="gallery__placeholder-icon"><i data-lucide="mic" style="color: white;"></i></span>
           <span class="gallery__placeholder-label">Stage<br>Performance</span>
         </div>
-        <span class="gallery__replace-label">📷 Replace</span>
+        <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Camera" style="color: white;"></i> Replace</span>
         <div class="gallery__item-overlay">
           <div>
             <span class="gallery__item-cat">Grand Finale</span>
@@ -801,10 +804,10 @@
       <!-- Item 8 -->
       <div class="gallery__item" data-category="students" onclick="openLightbox(this)" aria-label="Phonics kids">
         <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a0a1a,#101040);">
-          <span class="gallery__placeholder-icon">🧒</span>
+          <span class="gallery__placeholder-icon"><i data-lucide="smile" style="color: white;"></i></span>
           <span class="gallery__placeholder-label">Phonics Kids Batch</span>
         </div>
-        <span class="gallery__replace-label">📷 Replace</span>
+        <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Camera" style="color: white;"></i> Replace</span>
         <div class="gallery__item-overlay">
           <div>
             <span class="gallery__item-cat">Students</span>
@@ -816,10 +819,10 @@
       <!-- Item 9: Video -->
       <div class="gallery__item gallery__item--video" data-category="video" aria-label="Student testimonial video">
         <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a150a,#0d2b10);">
-          <span class="gallery__placeholder-icon">📹</span>
+          <span class="gallery__placeholder-icon"><i data-lucide="video" style="color: white;"></i></span>
           <span class="gallery__placeholder-label">Student Testimonial</span>
         </div>
-        <span class="gallery__replace-label">🎬 Add Video</span>
+        <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Video" style="color: white;"></i> Add Video</span>
         <div class="gallery__play-btn" aria-label="Play video">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </div>
@@ -834,10 +837,10 @@
       <!-- Item 10: Wide -->
       <div class="gallery__item gallery__item--wide" data-category="awards" onclick="openLightbox(this)" aria-label="Award distribution">
         <div class="gallery__placeholder" style="background:linear-gradient(135deg,#1a1200,#3d2d00);">
-          <span class="gallery__placeholder-icon">🎖️</span>
+          <span class="gallery__placeholder-icon"><i data-lucide="award" style="color: white;"></i></span>
           <span class="gallery__placeholder-label">Merit Award Distribution 2024</span>
         </div>
-        <span class="gallery__replace-label">📷 Replace</span>
+        <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i data-lucide="Camera" style="color: white;"></i> Replace</span>
         <div class="gallery__item-overlay">
           <div>
             <span class="gallery__item-cat">Awards</span>
@@ -849,8 +852,8 @@
     </div>
 
     <!-- Update CTA note -->
-    <div class="gallery__footer-cta reveal">
-      <p>📅 Gallery is updated every month with fresh photos and videos from our programs.</p>
+    <div class="gallery__footer-cta reveal" style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+      <p style="display: flex; gap: 8px; align-items: center;"><i data-lucide="calendar" style="color: var(--text-soft);"></i> Gallery is updated every month with fresh photos and videos from our programs.</p>
       <p><strong>To update:</strong> Simply replace the placeholder images/videos with your actual media files.</p>
     </div>
 
@@ -885,7 +888,7 @@
         <div class="blog-featured__cover">
           <div class="blog-featured__cover-placeholder">
             <div class="blog-featured__cover-gradient" style="background:linear-gradient(135deg,#0f1f35,#1a3a5c);"></div>
-            <span class="blog-featured__cover-emoji">🗣️</span>
+            <span class="blog-featured__cover-emoji" style="color: white"><i data-lucide="speech"></i></span>
           </div>
           <span class="blog-featured__badge">⭐ Featured</span>
         </div>
@@ -920,7 +923,7 @@
         <a href="#" class="blog-card-sm" aria-label="Blog post">
           <div class="blog-card-sm__cover">
             <div class="blog-card-sm__cover-placeholder" style="background:linear-gradient(135deg,#1a0f0a,#3d2010);">
-              <span>😨</span>
+              <span style="color: white"><i data-lucide="frown"></i></span>
             </div>
           </div>
           <div class="blog-card-sm__body">
@@ -933,7 +936,7 @@
         <a href="#" class="blog-card-sm" aria-label="Blog post">
           <div class="blog-card-sm__cover">
             <div class="blog-card-sm__cover-placeholder" style="background:linear-gradient(135deg,#0a1a0a,#103520);">
-              <span>📝</span>
+              <span style="color: white"><i data-lucide="file-text"></i></span>
             </div>
           </div>
           <div class="blog-card-sm__body">
@@ -946,7 +949,7 @@
         <a href="#" class="blog-card-sm" aria-label="Blog post">
           <div class="blog-card-sm__cover">
             <div class="blog-card-sm__cover-placeholder" style="background:linear-gradient(135deg,#0d0a1a,#1a1040);">
-              <span>🎤</span>
+              <span style="color: white"><i data-lucide="mic"></i></span>
             </div>
           </div>
           <div class="blog-card-sm__body">
@@ -965,7 +968,7 @@
       <a href="#" class="blog-card-grid" aria-label="Blog post">
         <div class="blog-card-grid__cover">
           <div class="blog-card-grid__cover-placeholder" style="background:linear-gradient(135deg,#0a1520,#102030);">
-            <span>👶</span>
+            <span style="color: white"><i data-lucide="baby"></i></span>
           </div>
         </div>
         <div class="blog-card-grid__body">
@@ -985,7 +988,7 @@
       <a href="#" class="blog-card-grid" aria-label="Blog post">
         <div class="blog-card-grid__cover">
           <div class="blog-card-grid__cover-placeholder" style="background:linear-gradient(135deg,#150a1a,#2d1240);">
-            <span>💼</span>
+            <span style="color: white"><i data-lucide="briefcase"></i></span>
           </div>
         </div>
         <div class="blog-card-grid__body">
@@ -1005,7 +1008,7 @@
       <a href="#" class="blog-card-grid" aria-label="Blog post">
         <div class="blog-card-grid__cover">
           <div class="blog-card-grid__cover-placeholder" style="background:linear-gradient(135deg,#0a1a10,#0d3520);">
-            <span>🏆</span>
+            <span style="color: white"><i data-lucide="trophy"></i></span>
           </div>
         </div>
         <div class="blog-card-grid__body">
@@ -1046,7 +1049,7 @@
 
     <div class="reveal">
       <span class="section-badge section-badge--red" style="margin-bottom:1.5rem;display:inline-flex">
-        🎓 &nbsp;Start Today — It's Free
+        <i data-lucide="graduation-cap" class="icon-inline"></i> &nbsp;Start Today — It's Free
       </span>
       <h2 class="t-section cta-section__title">
         Your Confidence Journey<br>
@@ -1086,7 +1089,7 @@
         </select>
         <div style="grid-column:1/-1">
           <button type="submit" class="btn btn--primary btn--hero" style="width:100%">
-            <span class="btn__icon" aria-hidden="true">🎯</span>
+            <span class="btn__icon" aria-hidden="true"><i data-lucide="target"></i></span>
             Book My Free Demo Class
           </button>
         </div>
@@ -1127,10 +1130,10 @@
           with confidence through expert-guided training.
         </p>
         <div class="footer__socials" style="margin-top:1.2rem;">
-          <a href="#" class="footer__social-btn" aria-label="Instagram">in</a>
-          <a href="#" class="footer__social-btn" aria-label="Facebook">fb</a>
-          <a href="#" class="footer__social-btn" aria-label="YouTube">yt</a>
-          <a href="#" class="footer__social-btn" aria-label="WhatsApp">wa</a>
+          <a href="#" class="footer__social-btn" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+          <a href="#" class="footer__social-btn" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+          <a href="#" class="footer__social-btn" aria-label="YouTube"><i data-lucide="youtube"></i></a>
+          <a href="#" class="footer__social-btn" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
         </div>
       </div>
 
@@ -1161,20 +1164,20 @@
       <address>
         <h3 class="footer__col-title">Contact Us</h3>
         <div class="footer__contact-item">
-          <span class="footer__contact-icon">📍</span>
+          <span class="footer__contact-icon"><i data-lucide="map-pin"></i></span>
           <span>12, Commerce House, CG Road<br>Ahmedabad, Gujarat 380009</span>
         </div>
         <div class="footer__contact-item">
-          <span class="footer__contact-icon">📞</span>
+          <span class="footer__contact-icon"><i data-lucide="phone"></i></span>
           <a href="tel:+919876543210" class="footer__link">+91 98765 43210</a>
         </div>
         <div class="footer__contact-item">
-          <span class="footer__contact-icon">✉️</span>
+          <span class="footer__contact-icon"><i data-lucide="mail"></i></span>
           <a href="mailto:hello@wecaninstitute.com" class="footer__link">hello@wecaninstitute.com</a>
         </div>
         <div class="footer__contact-item">
-          <span class="footer__contact-icon">🕐</span>
-          <span>Mon–Sat: 8:00 AM – 8:00 PM</span>
+          <span class="footer__contact-icon"><i data-lucide="clock"></i></span>
+          <span>Mon-Sat: 8:00 AM - 8:00 PM</span>
         </div>
       </address>
 
@@ -1193,6 +1196,10 @@
 <!-- JavaScript -->
 <script src="assets/js/main.js"></script>
 <script src="assets/js/gallery.js"></script>
+<script>
+  // Initialize Lucide Icons
+  lucide.createIcons();
+</script>
 
 </body>
 </html>
