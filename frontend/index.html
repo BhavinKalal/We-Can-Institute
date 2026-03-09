@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="WE CAN Institute of English — Premium Spoken English, Public Speaking & Personality Development in Ahmedabad." />
+  <meta name="description"
+    content="WE CAN Institute of English — Premium Spoken English, Public Speaking & Personality Development in Ahmedabad." />
   <title>WE CAN Institute of English</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
 
   <!-- CSS — load order matters -->
   <link rel="stylesheet" href="assets/css/base.css" />
@@ -17,1182 +21,1239 @@
   <link rel="stylesheet" href="assets/css/components.css" />
   <link rel="stylesheet" href="assets/css/sections.css" />
   <link rel="stylesheet" href="assets/css/new-sections.css" />
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
 
-<!-- ═══════════════════════════════════════════
+  <!-- ═══════════════════════════════════════════
      NAVBAR
 ═══════════════════════════════════════════ -->
-<nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
-  <div class="container">
-    <div class="navbar__inner">
-
-      <!-- Logo — left -->
-      <a href="#hero" class="navbar__logo-wrap" aria-label="WE CAN Institute of English">
-        <img src="assets/images/wecan-log.png" alt="WE CAN Institute of English" />
-      </a>
-
-      <!-- Nav links — center -->
-      <ul class="navbar__links" role="list">
-        <li><a href="#hero"         class="navbar__link" data-section="hero">Home</a></li>
-        <li><a href="#why"          class="navbar__link" data-section="why">About</a></li>
-        <li><a href="#programs"     class="navbar__link" data-section="programs">Batches</a></li>
-        <li><a href="#faculty"      class="navbar__link" data-section="faculty">Faculty</a></li>
-        <li><a href="#gallery"      class="navbar__link" data-section="gallery">Gallery</a></li>
-        <li><a href="#blog"         class="navbar__link" data-section="blog">Blog</a></li>
-      </ul>
-
-      <!-- CTA + Hamburger — right -->
-      <div class="navbar__actions">
-        <a href="#cta" class="navbar__cta">🎓&nbsp; Book Free Demo</a>
-        <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-
-    </div>
-  </div>
-</nav>
-
-<!-- Mobile drawer -->
-<div class="navbar__mobile" id="mobileMenu" aria-hidden="true">
-  <a href="#hero"         class="navbar__mobile-link">Home</a>
-  <a href="#why"          class="navbar__mobile-link">About</a>
-  <a href="#programs"     class="navbar__mobile-link">Batches</a>
-  <a href="#journey"      class="navbar__mobile-link">Journey</a>
-  <a href="#faculty"      class="navbar__mobile-link">Faculty</a>
-  <a href="#gallery"      class="navbar__mobile-link">Gallery</a>
-  <a href="#blog"         class="navbar__mobile-link">Blog</a>
-  <a href="#cta"          class="navbar__mobile-link" style="color:var(--red-light)">Book Demo →</a>
-</div>
-
-
-<!-- ═══════════════════════════════════════════
-     HERO
-═══════════════════════════════════════════ -->
-<section class="hero" id="hero" aria-label="Hero">
-
-  <!-- Background elements -->
-  <div class="hero__glow"  aria-hidden="true"></div>
-  <div class="hero__grid"  aria-hidden="true"></div>
-
-  <div class="hero__content">
-
-    <!-- Eyebrow badge -->
-    <div class="hero__eyebrow">
-      <span class="section-badge section-badge--blue">
-        🎯 &nbsp;Speak · Impress · Lead
-      </span>
-    </div>
-
-    <!-- Main title -->
-    <h1 class="t-hero hero__title">
-      Speak With<br>
-      <span class="red">Confidence.</span><br>
-      Lead With <span class="blue">Words.</span>
-    </h1>
-
-    <!-- Subtitle -->
-    <p class="t-subtitle hero__subtitle">
-      From phonics to public speaking — build confidence in English communication
-      and transform your personality with expert guidance.
-    </p>
-
-    <!-- Hero image card -->
-    <div class="hero__card-wrapper">
-      <div class="hero__image-card" role="img" aria-label="WE CAN Institute showcase">
-        <div class="hero__image-card-inner">
-          <div class="hero__card-decoration" aria-hidden="true"></div>
-          <div class="hero__card-text-content">
-            <h2 class="hero__card-headline">
-              Transforming Students into<br>
-              <em style="color:#60c9f8">Confident Communicators</em>
-            </h2>
-            <p class="hero__card-sub">Spoken English · Public Speaking · Personality Development</p>
-            <div class="hero__card-icons">
-              <span class="hero__card-icon-chip">🎤 Public Speaking</span>
-              <span class="hero__card-icon-chip">📚 Phonics</span>
-              <span class="hero__card-icon-chip">🌟 Personality</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Glass badge overlapping bottom of card -->
-      <div class="hero__badge">
-        <span class="glass-badge">
-          <span class="glass-badge__dot" aria-hidden="true"></span>
-          Become A Confident Speaker
-        </span>
-      </div>
-    </div>
-
-    <!-- CTA button below image -->
-    <div class="hero__cta-wrap">
-      <button class="btn btn--primary btn--hero" id="bookDemoBtn" aria-label="Book a free demo class">
-        <span class="btn__icon" aria-hidden="true">🎓</span>
-        Book Free Demo
-      </button>
-      <p class="t-small" style="color:var(--text-soft)">No payment required · 100% free session</p>
-    </div>
-
-    <!-- Stats row -->
-    <div class="hero__stats" role="list" aria-label="Key statistics">
-      <div class="stat-chip" role="listitem">
-        <span class="stat-chip__num"
-              data-counter
-              data-target="5200"
-              data-suffix="+"
-              aria-label="Over 5200 students trained">0</span>
-        <span class="stat-chip__label">Students Trained</span>
-      </div>
-      <div class="stat-chip" role="listitem">
-        <span class="stat-chip__num"
-              data-counter
-              data-target="14"
-              data-suffix=" yrs"
-              aria-label="14 years of experience">0</span>
-        <span class="stat-chip__label">Years of Excellence</span>
-      </div>
-      <div class="stat-chip" role="listitem">
-        <span class="stat-chip__num"
-              data-counter
-              data-target="98"
-              data-suffix="%"
-              aria-label="98% success rate">0</span>
-        <span class="stat-chip__label">Success Rate</span>
-      </div>
-      <div class="stat-chip" role="listitem">
-        <span class="stat-chip__num"
-              data-counter
-              data-target="4.9"
-              data-suffix="★"
-              aria-label="4.9 star rating">0</span>
-        <span class="stat-chip__label">Average Rating</span>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     WHY CHOOSE US
-═══════════════════════════════════════════ -->
-<section class="why section" id="why" aria-label="Why choose us">
-  <div class="container">
-
-    <header class="section-header">
-      <div class="section-header__badge">
-        <span class="section-badge section-badge--white">Why WE CAN</span>
-      </div>
-      <h2 class="t-section section-header__title reveal">
-        Why Students Choose <br>
-        <span style="color:var(--red)">WE CAN</span> Institute
-      </h2>
-      <p class="t-subtitle section-header__subtitle reveal reveal-delay-1" style="color:var(--text-muted)">
-        We combine proven methodology, expert trainers, and immersive learning
-        to deliver real, lasting transformation.
-      </p>
-    </header>
-
-    <div class="why__grid" role="list">
-
-      <!-- Card 1 -->
-      <article class="why__card reveal" role="listitem">
-        <div class="why__icon" style="background:rgba(227,30,36,0.08);border:1px solid rgba(227,30,36,0.15)">
-          <span aria-hidden="true">🏆</span>
-        </div>
-        <h3 class="why__title">Expert Trainers</h3>
-        <p class="why__desc">Our faculty are certified communication coaches with years of real-world training experience. Each trainer is handpicked for passion and expertise.</p>
-      </article>
-
-      <!-- Card 2 -->
-      <article class="why__card reveal reveal-delay-1" role="listitem">
-        <div class="why__icon" style="background:rgba(27,155,215,0.08);border:1px solid rgba(27,155,215,0.15)">
-          <span aria-hidden="true">🗣️</span>
-        </div>
-        <h3 class="why__title">Spoken English Focus</h3>
-        <p class="why__desc">Unlike textbook-only institutes, we prioritize practical spoken English. Every session involves live conversation, drills, and real-life scenarios.</p>
-      </article>
-
-      <!-- Card 3 -->
-      <article class="why__card reveal reveal-delay-2" role="listitem">
-        <div class="why__icon" style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.15)">
-          <span aria-hidden="true">✨</span>
-        </div>
-        <h3 class="why__title">Personality Development</h3>
-        <p class="why__desc">We go beyond language. Body language, confidence, etiquette, and professional communication are integral parts of our holistic program.</p>
-      </article>
-
-      <!-- Card 4 -->
-      <article class="why__card reveal" role="listitem">
-        <div class="why__icon" style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.15)">
-          <span aria-hidden="true">⚡</span>
-        </div>
-        <h3 class="why__title">Practical Learning</h3>
-        <p class="why__desc">Every concept is applied through group discussions, presentations, and debates. Our activity-based learning ensures you retain and apply what you learn.</p>
-      </article>
-
-      <!-- Card 5 -->
-      <article class="why__card reveal reveal-delay-1" role="listitem">
-        <div class="why__icon" style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.15)">
-          <span aria-hidden="true">👶</span>
-        </div>
-        <h3 class="why__title">Phonics for Kids</h3>
-        <p class="why__desc">Our structured phonics program builds a strong English foundation in children aged 4–12, making reading and pronunciation natural and effortless.</p>
-      </article>
-
-      <!-- Card 6 -->
-      <article class="why__card reveal reveal-delay-2" role="listitem">
-        <div class="why__icon" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15)">
-          <span aria-hidden="true">📅</span>
-        </div>
-        <h3 class="why__title">Flexible Batches</h3>
-        <p class="why__desc">Morning, evening, and weekend batches for students and working professionals. Choose a schedule that fits your life without compromising your learning.</p>
-      </article>
-
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     PROGRAMS / BATCHES
-═══════════════════════════════════════════ -->
-<section class="programs section" id="programs" aria-label="Programs and batches">
-  <div class="programs__bg-accent" aria-hidden="true"></div>
-  <div class="container">
-
-    <header class="section-header">
-      <div class="section-header__badge">
-        <span class="section-badge section-badge--blue">Programs &amp; Batches</span>
-      </div>
-      <h2 class="t-section section-header__title reveal">
-        Find Your Perfect <span style="color:#60c9f8">Batch</span>
-      </h2>
-      <p class="t-subtitle section-header__subtitle reveal reveal-delay-1">
-        From phonics for kids to advanced professional communication — we have the right program for every stage.
-      </p>
-    </header>
-
-    <div class="programs__layout">
-
-      <!-- Featured Batch -->
-      <div class="programs__featured reveal">
-        <div class="programs__featured-glow" aria-hidden="true"></div>
-
-        <span class="programs__featured-badge">⭐ Most Popular</span>
-
-        <h3 class="programs__featured-title">
-          Intermediate<br>Spoken English
-        </h3>
-        <p class="programs__featured-subtitle">
-          Our flagship batch for students and professionals ready to communicate fluently in any situation.
-          Includes group practice, live speaking drills, and personal feedback.
-        </p>
-
-        <div class="programs__featured-tags">
-          <span class="programs__tag">Grammar Mastery</span>
-          <span class="programs__tag">Fluency Drills</span>
-          <span class="programs__tag">GD Practice</span>
-          <span class="programs__tag">Interview Prep</span>
-          <span class="programs__tag">Personality Dev.</span>
-        </div>
-
-        <div class="programs__featured-stats">
-          <div class="programs__stat-box">
-            <div class="programs__stat-val">3</div>
-            <div class="programs__stat-label">Months Duration</div>
-          </div>
-          <div class="programs__stat-box">
-            <div class="programs__stat-val">5</div>
-            <div class="programs__stat-label">Days per Week</div>
-          </div>
-          <div class="programs__stat-box">
-            <div class="programs__stat-val">15</div>
-            <div class="programs__stat-label">Max Batch Size</div>
-          </div>
-          <div class="programs__stat-box">
-            <div class="programs__stat-val">98%</div>
-            <div class="programs__stat-label">Completion Rate</div>
-          </div>
-        </div>
-
-        <button class="btn btn--primary" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">
-          <span class="btn__icon" aria-hidden="true">🎯</span>
-          Enroll in This Batch
-        </button>
-      </div>
-
-      <!-- Batch List -->
-      <div class="programs__list" role="list" aria-label="Available batches">
-
-        <article class="program-card active" role="listitem">
-          <div class="program-card__emoji" aria-hidden="true">🔤</div>
-          <div class="program-card__info">
-            <h4 class="program-card__name">Phonics Batch</h4>
-            <p class="program-card__meta">For ages 4–12 · Build perfect pronunciation from scratch</p>
-          </div>
-          <span class="program-card__badge">Kids</span>
-        </article>
-
-        <article class="program-card" role="listitem">
-          <div class="program-card__emoji" aria-hidden="true">🌱</div>
-          <div class="program-card__info">
-            <h4 class="program-card__name">Pre Basic</h4>
-            <p class="program-card__meta">Absolute beginners · Alphabet to sentences · 6 weeks</p>
-          </div>
-          <span class="program-card__badge">Beginner</span>
-        </article>
-
-        <article class="program-card" role="listitem">
-          <div class="program-card__emoji" aria-hidden="true">📖</div>
-          <div class="program-card__info">
-            <h4 class="program-card__name">Basic</h4>
-            <p class="program-card__meta">Core grammar & spoken English · 2 months</p>
-          </div>
-          <span class="program-card__badge">Foundation</span>
-        </article>
-
-        <article class="program-card" role="listitem">
-          <div class="program-card__emoji" aria-hidden="true">🚀</div>
-          <div class="program-card__info">
-            <h4 class="program-card__name">Pre Intermediate</h4>
-            <p class="program-card__meta">Fluency building · Conversations & vocabulary · 2.5 months</p>
-          </div>
-          <span class="program-card__badge">Growing</span>
-        </article>
-
-        <article class="program-card" role="listitem">
-          <div class="program-card__emoji" aria-hidden="true">🎯</div>
-          <div class="program-card__info">
-            <h4 class="program-card__name">Intermediate</h4>
-            <p class="program-card__meta">Full fluency + personality · Flagship program · 3 months</p>
-          </div>
-          <span class="program-card__badge">Popular</span>
-        </article>
-
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     LEARNING JOURNEY
-═══════════════════════════════════════════ -->
-<section class="journey section" id="journey" aria-label="Learning journey">
-  <div class="journey__bg-glow" aria-hidden="true"></div>
-  <div class="container">
-
-    <header class="section-header">
-      <div class="section-header__badge">
-        <span class="section-badge section-badge--blue">Your Roadmap</span>
-      </div>
-      <h2 class="t-section section-header__title reveal">
-        Your Learning <em style="font-style:italic;color:#60c9f8">Journey</em>
-      </h2>
-      <p class="t-subtitle section-header__subtitle reveal reveal-delay-1">
-        A structured path from absolute beginner to confident, eloquent communicator.
-      </p>
-    </header>
-
-    <div class="journey__timeline" role="list" aria-label="Learning stages">
-
-      <div class="journey__step reveal" role="listitem">
-        <div class="journey__step-num" aria-label="Stage 1">1</div>
-        <div>
-          <h3 class="journey__step-title">Foundation Level</h3>
-          <p class="journey__step-desc">
-            Build core grammar, phonics, and basic vocabulary. Establish correct pronunciation from day one.
-          </p>
-        </div>
-      </div>
-
-      <div class="journey__step reveal reveal-delay-1" role="listitem">
-        <div class="journey__step-num" aria-label="Stage 2">2</div>
-        <div>
-          <h3 class="journey__step-title">Spoken English</h3>
-          <p class="journey__step-desc">
-            Apply grammar in real conversations. Practice fluency, sentence formation, and everyday communication.
-          </p>
-        </div>
-      </div>
-
-      <div class="journey__step reveal reveal-delay-2" role="listitem">
-        <div class="journey__step-num" aria-label="Stage 3">3</div>
-        <div>
-          <h3 class="journey__step-title">Advanced Communication</h3>
-          <p class="journey__step-desc">
-            Master group discussions, debates, presentations, and professional English used in corporate settings.
-          </p>
-        </div>
-      </div>
-
-      <div class="journey__step reveal reveal-delay-3" role="listitem">
-        <div class="journey__step-num" aria-label="Stage 4">4</div>
-        <div>
-          <h3 class="journey__step-title">Confident Speaker</h3>
-          <p class="journey__step-desc">
-            Lead with authority. Command any room — interviews, events, or meetings — with polished English and personality.
-          </p>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     FACULTY SECTION
-═══════════════════════════════════════════ -->
-<section class="faculty section" id="faculty" aria-label="Our Faculty">
-  <div class="faculty__bg" aria-hidden="true"></div>
-  <div class="container">
-
-    <header class="section-header">
-      <div class="section-header__badge">
-        <span class="section-badge section-badge--blue">Meet The Team</span>
-      </div>
-      <h2 class="t-section section-header__title reveal">
-        The Faces Behind <span style="color:#60c9f8">Your Growth</span>
-      </h2>
-      <p class="t-subtitle section-header__subtitle reveal reveal-delay-1">
-        Our trainers are certified communication experts, passionate about helping
-        every student find their voice and speak with confidence.
-      </p>
-    </header>
-
-    <div class="faculty__grid">
-
-      <!-- Faculty 1 -->
-      <article class="faculty-card reveal" aria-label="Faculty member">
-        <div class="faculty-card__photo">
-          <div class="faculty-card__avatar-placeholder">
-            <div class="faculty-card__avatar-circle">MK</div>
-            <span class="faculty-card__placeholder-name">Replace with<br>your photo</span>
-          </div>
-          <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
-          <span class="faculty-card__replace-hint">📷 Add Photo</span>
-        </div>
-        <div class="faculty-card__info">
-          <span class="faculty-card__role-badge">Founder &amp; Director</span>
-          <h3 class="faculty-card__name">Mr. [Your Name]</h3>
-          <p class="faculty-card__speciality">15+ years in English communication & personality development training</p>
-          <div class="faculty-card__tags">
-            <span class="faculty-card__tag">Public Speaking</span>
-            <span class="faculty-card__tag">Personality Dev</span>
-            <span class="faculty-card__tag">Leadership</span>
-          </div>
-          <div class="faculty-card__exp">
-            <span class="faculty-card__exp-dot"></span>
-            15+ Years Experience
-          </div>
-        </div>
-      </article>
-
-      <!-- Faculty 2 -->
-      <article class="faculty-card reveal reveal-delay-1" aria-label="Faculty member">
-        <div class="faculty-card__photo">
-          <div class="faculty-card__avatar-placeholder">
-            <div class="faculty-card__avatar-circle">SR</div>
-            <span class="faculty-card__placeholder-name">Replace with<br>your photo</span>
-          </div>
-          <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
-          <span class="faculty-card__replace-hint">📷 Add Photo</span>
-        </div>
-        <div class="faculty-card__info">
-          <span class="faculty-card__role-badge">Senior Trainer</span>
-          <h3 class="faculty-card__name">Ms. [Trainer Name]</h3>
-          <p class="faculty-card__speciality">Spoken English specialist with expertise in phonics and early childhood language</p>
-          <div class="faculty-card__tags">
-            <span class="faculty-card__tag">Spoken English</span>
-            <span class="faculty-card__tag">Phonics</span>
-            <span class="faculty-card__tag">Kids Program</span>
-          </div>
-          <div class="faculty-card__exp">
-            <span class="faculty-card__exp-dot"></span>
-            10+ Years Experience
-          </div>
-        </div>
-      </article>
-
-      <!-- Faculty 3 -->
-      <article class="faculty-card reveal reveal-delay-2" aria-label="Faculty member">
-        <div class="faculty-card__photo">
-          <div class="faculty-card__avatar-placeholder">
-            <div class="faculty-card__avatar-circle">AP</div>
-            <span class="faculty-card__placeholder-name">Replace with<br>your photo</span>
-          </div>
-          <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
-          <span class="faculty-card__replace-hint">📷 Add Photo</span>
-        </div>
-        <div class="faculty-card__info">
-          <span class="faculty-card__role-badge">Communication Coach</span>
-          <h3 class="faculty-card__name">Mr. [Trainer Name]</h3>
-          <p class="faculty-card__speciality">Corporate communication trainer focused on business English and interview prep</p>
-          <div class="faculty-card__tags">
-            <span class="faculty-card__tag">Business English</span>
-            <span class="faculty-card__tag">Interview Prep</span>
-            <span class="faculty-card__tag">GD Training</span>
-          </div>
-          <div class="faculty-card__exp">
-            <span class="faculty-card__exp-dot"></span>
-            8+ Years Experience
-          </div>
-        </div>
-      </article>
-
-      <!-- Faculty 4 -->
-      <article class="faculty-card reveal reveal-delay-3" aria-label="Faculty member">
-        <div class="faculty-card__photo">
-          <div class="faculty-card__avatar-placeholder">
-            <div class="faculty-card__avatar-circle">ND</div>
-            <span class="faculty-card__placeholder-name">Replace with<br>your photo</span>
-          </div>
-          <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
-          <span class="faculty-card__replace-hint">📷 Add Photo</span>
-        </div>
-        <div class="faculty-card__info">
-          <span class="faculty-card__role-badge">Phonics Specialist</span>
-          <h3 class="faculty-card__name">Ms. [Trainer Name]</h3>
-          <p class="faculty-card__speciality">Dedicated kids language coach with certifications in early literacy and phonics methodology</p>
-          <div class="faculty-card__tags">
-            <span class="faculty-card__tag">Phonics</span>
-            <span class="faculty-card__tag">Kids 4–12</span>
-            <span class="faculty-card__tag">Reading</span>
-          </div>
-          <div class="faculty-card__exp">
-            <span class="faculty-card__exp-dot"></span>
-            6+ Years Experience
-          </div>
-        </div>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     TESTIMONIALS
-═══════════════════════════════════════════ -->
-<section class="testimonials section" id="testimonials" aria-label="Student testimonials">
-  <div class="testimonials__bg-glow" aria-hidden="true"></div>
-  <div class="container">
-
-    <header class="section-header">
-      <div class="section-header__badge">
-        <span class="section-badge section-badge--red">Student Stories</span>
-      </div>
-      <h2 class="t-section section-header__title reveal">
-        Real Students. <span style="color:var(--red-light)">Real Results.</span>
-      </h2>
-      <p class="t-subtitle section-header__subtitle reveal reveal-delay-1">
-        Hear from the students and parents whose lives changed after joining WE CAN Institute.
-      </p>
-    </header>
-
-    <!-- Big featured quote -->
-    <blockquote class="testimonials__hero-quote reveal" aria-label="Featured testimonial">
-      <div class="testimonials__big-text">
-        "WE CAN Institute didn't just teach me English — they gave me the confidence to walk into any room and own it. My interviews, my presentations, my daily conversations — everything changed within 3 months."
-      </div>
-      <div class="testimonials__author-row">
-        <div class="testimonials__author-avatar" aria-hidden="true">RK</div>
-        <div>
-          <p class="testimonials__author-name">Raj Kothari</p>
-          <p class="testimonials__author-role">Software Engineer · TCS Pune</p>
-        </div>
-      </div>
-    </blockquote>
-
-    <!-- Grid testimonials -->
-    <div class="testimonials__grid" role="list">
-
-      <article class="testimonial-card reveal" role="listitem">
-        <div class="testimonial-card__stars" aria-label="5 stars">★★★★★</div>
-        <p class="testimonial-card__quote">
-          "My daughter's phonics classes have made her the best reader in her class. The teachers are patient, warm, and incredibly skilled. Highly recommend the kids program!"
-        </p>
-        <div class="testimonial-card__author">
-          <div class="testimonial-card__avatar" aria-hidden="true">PM</div>
-          <div>
-            <p class="testimonial-card__name">Priya Mehta</p>
-            <p class="testimonial-card__role">Parent · Ahmedabad</p>
-          </div>
-        </div>
-      </article>
-
-      <article class="testimonial-card reveal reveal-delay-1" role="listitem">
-        <div class="testimonial-card__stars" aria-label="5 stars">★★★★★</div>
-        <p class="testimonial-card__quote">
-          "I used to freeze during group discussions. After the Intermediate batch, I got promoted to team lead — communication skills were a key reason. WE CAN changed my career."
-        </p>
-        <div class="testimonial-card__author">
-          <div class="testimonial-card__avatar" aria-hidden="true">AS</div>
-          <div>
-            <p class="testimonial-card__name">Arjun Shah</p>
-            <p class="testimonial-card__role">Team Lead · Infosys</p>
-          </div>
-        </div>
-      </article>
-
-      <article class="testimonial-card reveal reveal-delay-2" role="listitem">
-        <div class="testimonial-card__stars" aria-label="5 stars">★★★★★</div>
-        <p class="testimonial-card__quote">
-          "The Public Speaking module was transformative. I gave my first ever TED-style talk at college after just 2 months here. The trainers believe in you before you believe in yourself."
-        </p>
-        <div class="testimonial-card__author">
-          <div class="testimonial-card__avatar" aria-hidden="true">NP</div>
-          <div>
-            <p class="testimonial-card__name">Nisha Patel</p>
-            <p class="testimonial-card__role">MBA Student · NMIMS</p>
-          </div>
-        </div>
-      </article>
-
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     GALLERY SECTION
-═══════════════════════════════════════════ -->
-<section class="gallery section" id="gallery" aria-label="Gallery">
-  <div class="gallery__bg" aria-hidden="true"></div>
-  <div class="container">
-
-    <header class="section-header">
-      <div class="section-header__badge">
-        <span class="section-badge section-badge--red">Our Moments</span>
-      </div>
-      <h2 class="t-section section-header__title reveal">
-        Life at <span style="color:var(--red-light)">WE CAN</span>
-      </h2>
-      <p class="t-subtitle section-header__subtitle reveal reveal-delay-1">
-        From classroom activities to grand finale competitions — every moment
-        here is a step towards confidence. Updated monthly.
-      </p>
-    </header>
-
-    <!-- Category filter tabs -->
-    <div class="gallery__tabs reveal" role="tablist" aria-label="Gallery categories">
-      <button class="gallery__tab active" data-filter="all" role="tab" aria-selected="true">All</button>
-      <button class="gallery__tab" data-filter="activities" role="tab">Activities &amp; Programs</button>
-      <button class="gallery__tab" data-filter="grand-finale" role="tab">Grand Finale</button>
-      <button class="gallery__tab" data-filter="awards" role="tab">Award Ceremonies</button>
-      <button class="gallery__tab" data-filter="students" role="tab">Student Moments</button>
-      <button class="gallery__tab" data-filter="video" role="tab">🎬 Videos</button>
-    </div>
-
-    <!-- Masonry grid -->
-    <div class="gallery__grid reveal" id="galleryGrid">
-
-      <!-- Item 1: Big featured -->
-      <div class="gallery__item gallery__item--big" data-category="grand-finale" onclick="openLightbox(this)" aria-label="Grand Finale Competition">
-        <div class="gallery__placeholder" style="background:linear-gradient(135deg,#1a0a0a,#3d1010);">
-          <span class="gallery__placeholder-icon">🏆</span>
-          <span class="gallery__placeholder-label">Grand Finale<br>Competition 2024</span>
-        </div>
-        <span class="gallery__replace-label">📷 Replace</span>
-        <div class="gallery__item-overlay">
-          <div>
-            <span class="gallery__item-cat">Grand Finale</span>
-            <p class="gallery__item-caption">Annual Grand Finale Competition 2024</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Item 2 -->
-      <div class="gallery__item" data-category="activities" onclick="openLightbox(this)" aria-label="Activities">
-        <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a1a2a,#0d3350);">
-          <span class="gallery__placeholder-icon">🗣️</span>
-          <span class="gallery__placeholder-label">Speaking Activity</span>
-        </div>
-        <span class="gallery__replace-label">📷 Replace</span>
-        <div class="gallery__item-overlay">
-          <div>
-            <span class="gallery__item-cat">Activities</span>
-            <p class="gallery__item-caption">Public Speaking Workshop</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Item 3 -->
-      <div class="gallery__item" data-category="students" onclick="openLightbox(this)" aria-label="Student moments">
-        <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a1f0a,#0d3b1a);">
-          <span class="gallery__placeholder-icon">🎓</span>
-          <span class="gallery__placeholder-label">Student Moment</span>
-        </div>
-        <span class="gallery__replace-label">📷 Replace</span>
-        <div class="gallery__item-overlay">
-          <div>
-            <span class="gallery__item-cat">Students</span>
-            <p class="gallery__item-caption">Graduation Day Celebration</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Item 4: Wide -->
-      <div class="gallery__item gallery__item--wide" data-category="awards" onclick="openLightbox(this)" aria-label="Award ceremony">
-        <div class="gallery__placeholder" style="background:linear-gradient(135deg,#1a140a,#3d2d08);">
-          <span class="gallery__placeholder-icon">🥇</span>
-          <span class="gallery__placeholder-label">Award Ceremony 2024</span>
-        </div>
-        <span class="gallery__replace-label">📷 Replace</span>
-        <div class="gallery__item-overlay">
-          <div>
-            <span class="gallery__item-cat">Awards</span>
-            <p class="gallery__item-caption">Annual Award Ceremony — Excellence in Communication</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Item 5: Video -->
-      <div class="gallery__item gallery__item--video" data-category="video" aria-label="Video highlight">
-        <div class="gallery__placeholder" style="background:linear-gradient(135deg,#150a1a,#2d1040);">
-          <span class="gallery__placeholder-icon">🎬</span>
-          <span class="gallery__placeholder-label">Institute Highlight Reel</span>
-        </div>
-        <span class="gallery__replace-label">🎬 Add Video</span>
-        <div class="gallery__play-btn" aria-label="Play video">
-          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-        <div class="gallery__item-overlay">
-          <div>
-            <span class="gallery__item-cat">Video</span>
-            <p class="gallery__item-caption">Institute Highlight Reel 2024</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Item 6 -->
-      <div class="gallery__item" data-category="activities" onclick="openLightbox(this)" aria-label="Group discussion">
-        <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a1a1a,#0d3535);">
-          <span class="gallery__placeholder-icon">👥</span>
-          <span class="gallery__placeholder-label">Group Discussion</span>
-        </div>
-        <span class="gallery__replace-label">📷 Replace</span>
-        <div class="gallery__item-overlay">
-          <div>
-            <span class="gallery__item-cat">Activities</span>
-            <p class="gallery__item-caption">Competitive Group Discussion Session</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Item 7: Tall -->
-      <div class="gallery__item gallery__item--tall" data-category="grand-finale" onclick="openLightbox(this)" aria-label="Stage performance">
-        <div class="gallery__placeholder" style="background:linear-gradient(135deg,#1a0a10,#3d0d20);">
-          <span class="gallery__placeholder-icon">🎤</span>
-          <span class="gallery__placeholder-label">Stage<br>Performance</span>
-        </div>
-        <span class="gallery__replace-label">📷 Replace</span>
-        <div class="gallery__item-overlay">
-          <div>
-            <span class="gallery__item-cat">Grand Finale</span>
-            <p class="gallery__item-caption">Stage Performance — Elocution Finals</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Item 8 -->
-      <div class="gallery__item" data-category="students" onclick="openLightbox(this)" aria-label="Phonics kids">
-        <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a0a1a,#101040);">
-          <span class="gallery__placeholder-icon">🧒</span>
-          <span class="gallery__placeholder-label">Phonics Kids Batch</span>
-        </div>
-        <span class="gallery__replace-label">📷 Replace</span>
-        <div class="gallery__item-overlay">
-          <div>
-            <span class="gallery__item-cat">Students</span>
-            <p class="gallery__item-caption">Phonics Kids Batch — Fun Learning Day</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Item 9: Video -->
-      <div class="gallery__item gallery__item--video" data-category="video" aria-label="Student testimonial video">
-        <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a150a,#0d2b10);">
-          <span class="gallery__placeholder-icon">📹</span>
-          <span class="gallery__placeholder-label">Student Testimonial</span>
-        </div>
-        <span class="gallery__replace-label">🎬 Add Video</span>
-        <div class="gallery__play-btn" aria-label="Play video">
-          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-        <div class="gallery__item-overlay">
-          <div>
-            <span class="gallery__item-cat">Video</span>
-            <p class="gallery__item-caption">Student Success Story</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Item 10: Wide -->
-      <div class="gallery__item gallery__item--wide" data-category="awards" onclick="openLightbox(this)" aria-label="Award distribution">
-        <div class="gallery__placeholder" style="background:linear-gradient(135deg,#1a1200,#3d2d00);">
-          <span class="gallery__placeholder-icon">🎖️</span>
-          <span class="gallery__placeholder-label">Merit Award Distribution 2024</span>
-        </div>
-        <span class="gallery__replace-label">📷 Replace</span>
-        <div class="gallery__item-overlay">
-          <div>
-            <span class="gallery__item-cat">Awards</span>
-            <p class="gallery__item-caption">Merit Award Distribution — Top Performers</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Update CTA note -->
-    <div class="gallery__footer-cta reveal">
-      <p>📅 Gallery is updated every month with fresh photos and videos from our programs.</p>
-      <p><strong>To update:</strong> Simply replace the placeholder images/videos with your actual media files.</p>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     BLOG SECTION
-═══════════════════════════════════════════ -->
-<section class="blog section" id="blog" aria-label="Blog">
-  <div class="blog__bg" aria-hidden="true"></div>
-  <div class="container">
-
-    <header class="section-header">
-      <div class="section-header__badge">
-        <span class="section-badge section-badge--blue">Insights &amp; Advice</span>
-      </div>
-      <h2 class="t-section section-header__title reveal">
-        From Our <em style="font-style:italic;color:#60c9f8">Expert Desk</em>
-      </h2>
-      <p class="t-subtitle section-header__subtitle reveal reveal-delay-1">
-        Practical advice, expert tips, and insights on English communication,
-        public speaking, and personality development.
-      </p>
-    </header>
-
-    <!-- Featured + Sidebar layout -->
-    <div class="blog__layout reveal">
-
-      <!-- Featured article -->
-      <a href="#" class="blog-featured" aria-label="Featured blog post">
-        <div class="blog-featured__cover">
-          <div class="blog-featured__cover-placeholder">
-            <div class="blog-featured__cover-gradient" style="background:linear-gradient(135deg,#0f1f35,#1a3a5c);"></div>
-            <span class="blog-featured__cover-emoji">🗣️</span>
-          </div>
-          <span class="blog-featured__badge">⭐ Featured</span>
-        </div>
-        <div class="blog-featured__body">
-          <div class="blog-featured__meta">
-            <span class="blog-featured__cat">Public Speaking</span>
-            <span>·</span>
-            <span>March 1, 2026</span>
-            <span>·</span>
-            <span>8 min read</span>
-          </div>
-          <h3 class="blog-featured__title">
-            10 Habits That Separate Confident English Speakers from the Rest
-          </h3>
-          <p class="blog-featured__excerpt">
-            Fluency is not just about grammar — it's a daily practice. In this article, our head trainer breaks down the 10 non-negotiable habits that our top students develop in the first 30 days of joining WE CAN. From morning routines to the way you listen, these habits will reshape how you communicate forever.
-          </p>
-          <div class="blog-featured__author">
-            <div class="blog-featured__author-avatar">MK</div>
-            <div>
-              <p class="blog-featured__author-name">[Director Name]</p>
-              <p class="blog-featured__author-role">Founder, WE CAN Institute</p>
-            </div>
-          </div>
-          <span class="blog-featured__read-more">Read Full Article →</span>
-        </div>
-      </a>
-
-      <!-- Sidebar posts -->
-      <div class="blog__sidebar">
-
-        <a href="#" class="blog-card-sm" aria-label="Blog post">
-          <div class="blog-card-sm__cover">
-            <div class="blog-card-sm__cover-placeholder" style="background:linear-gradient(135deg,#1a0f0a,#3d2010);">
-              <span>😨</span>
-            </div>
-          </div>
-          <div class="blog-card-sm__body">
-            <p class="blog-card-sm__cat">Confidence</p>
-            <h4 class="blog-card-sm__title">Why Indians Fear Speaking English — and How to Beat It</h4>
-            <p class="blog-card-sm__meta">Feb 18, 2026 · 5 min read</p>
-          </div>
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="navbar__inner">
+
+        <!-- Logo — left -->
+        <a href="#hero" class="navbar__logo-wrap" aria-label="WE CAN Institute of English">
+          <img src="assets/images/wecan-log.png" alt="WE CAN Institute of English" />
         </a>
 
-        <a href="#" class="blog-card-sm" aria-label="Blog post">
-          <div class="blog-card-sm__cover">
-            <div class="blog-card-sm__cover-placeholder" style="background:linear-gradient(135deg,#0a1a0a,#103520);">
-              <span>📝</span>
-            </div>
-          </div>
-          <div class="blog-card-sm__body">
-            <p class="blog-card-sm__cat">Grammar Tips</p>
-            <h4 class="blog-card-sm__title">5 Grammar Mistakes Every Indian Speaker Makes (and How to Fix Them)</h4>
-            <p class="blog-card-sm__meta">Feb 5, 2026 · 6 min read</p>
-          </div>
-        </a>
+        <!-- Nav links — center -->
+        <ul class="navbar__links" role="list">
+          <li><a href="#hero" class="navbar__link" data-section="hero">Home</a></li>
+          <li><a href="#why" class="navbar__link" data-section="why">About</a></li>
+          <li><a href="#programs" class="navbar__link" data-section="programs">Batches</a></li>
+          <li><a href="#faculty" class="navbar__link" data-section="faculty">Faculty</a></li>
+          <li><a href="#gallery" class="navbar__link" data-section="gallery">Gallery</a></li>
+          <li><a href="#blog" class="navbar__link" data-section="blog">Blog</a></li>
+        </ul>
 
-        <a href="#" class="blog-card-sm" aria-label="Blog post">
-          <div class="blog-card-sm__cover">
-            <div class="blog-card-sm__cover-placeholder" style="background:linear-gradient(135deg,#0d0a1a,#1a1040);">
-              <span>🎤</span>
-            </div>
-          </div>
-          <div class="blog-card-sm__body">
-            <p class="blog-card-sm__cat">Public Speaking</p>
-            <h4 class="blog-card-sm__title">How to Prepare for a Group Discussion in 48 Hours</h4>
-            <p class="blog-card-sm__meta">Jan 22, 2026 · 7 min read</p>
-          </div>
-        </a>
-
-      </div>
-    </div>
-
-    <!-- Bottom 3-column grid -->
-    <div class="blog__grid-bottom reveal reveal-delay-1">
-
-      <a href="#" class="blog-card-grid" aria-label="Blog post">
-        <div class="blog-card-grid__cover">
-          <div class="blog-card-grid__cover-placeholder" style="background:linear-gradient(135deg,#0a1520,#102030);">
-            <span>👶</span>
-          </div>
-        </div>
-        <div class="blog-card-grid__body">
-          <p class="blog-card-grid__cat">Phonics &amp; Kids</p>
-          <h4 class="blog-card-grid__title">When Should You Start Phonics? A Parent's Complete Guide</h4>
-          <p class="blog-card-grid__excerpt">The right age, the right method, and the signs that your child is ready to begin their English learning journey with phonics.</p>
-          <div class="blog-card-grid__footer">
-            <div class="blog-card-grid__author">
-              <div class="blog-card-grid__avatar">SR</div>
-              <span class="blog-card-grid__author-name">Phonics Trainer</span>
-            </div>
-            <span class="blog-card-grid__read">4 min →</span>
-          </div>
-        </div>
-      </a>
-
-      <a href="#" class="blog-card-grid" aria-label="Blog post">
-        <div class="blog-card-grid__cover">
-          <div class="blog-card-grid__cover-placeholder" style="background:linear-gradient(135deg,#150a1a,#2d1240);">
-            <span>💼</span>
-          </div>
-        </div>
-        <div class="blog-card-grid__body">
-          <p class="blog-card-grid__cat">Career English</p>
-          <h4 class="blog-card-grid__title">How to Speak English at Work Without Feeling Judged</h4>
-          <p class="blog-card-grid__excerpt">Practical strategies to build professional vocabulary, handle meetings confidently, and make a strong impression at work.</p>
-          <div class="blog-card-grid__footer">
-            <div class="blog-card-grid__author">
-              <div class="blog-card-grid__avatar">AP</div>
-              <span class="blog-card-grid__author-name">Corp. Trainer</span>
-            </div>
-            <span class="blog-card-grid__read">5 min →</span>
-          </div>
-        </div>
-      </a>
-
-      <a href="#" class="blog-card-grid" aria-label="Blog post">
-        <div class="blog-card-grid__cover">
-          <div class="blog-card-grid__cover-placeholder" style="background:linear-gradient(135deg,#0a1a10,#0d3520);">
-            <span>🏆</span>
-          </div>
-        </div>
-        <div class="blog-card-grid__body">
-          <p class="blog-card-grid__cat">Success Stories</p>
-          <h4 class="blog-card-grid__title">From Zero to Boardroom: A WE CAN Student's Journey</h4>
-          <p class="blog-card-grid__excerpt">Read how one of our students went from dreading English conversations to leading international client calls within 4 months.</p>
-          <div class="blog-card-grid__footer">
-            <div class="blog-card-grid__author">
-              <div class="blog-card-grid__avatar">RK</div>
-              <span class="blog-card-grid__author-name">Alumni Story</span>
-            </div>
-            <span class="blog-card-grid__read">6 min →</span>
-          </div>
-        </div>
-      </a>
-
-    </div>
-
-    <!-- View all -->
-    <div class="blog__view-all reveal">
-      <a href="#" class="btn btn--outline" style="display:inline-flex;">
-        View All Articles
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px;margin-left:8px;">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"/>
-        </svg>
-      </a>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     CALL TO ACTION
-═══════════════════════════════════════════ -->
-<section class="cta-section section--sm" id="cta" aria-label="Book a free demo">
-  <div class="cta-section__glow" aria-hidden="true"></div>
-  <div class="container--narrow">
-
-    <div class="reveal">
-      <span class="section-badge section-badge--red" style="margin-bottom:1.5rem;display:inline-flex">
-        🎓 &nbsp;Start Today — It's Free
-      </span>
-      <h2 class="t-section cta-section__title">
-        Your Confidence Journey<br>
-        Begins with <span style="color:var(--red-light)">One Free Class</span>
-      </h2>
-      <p class="t-subtitle cta-section__subtitle">
-        Join thousands of students who transformed their communication skills.
-        Book your free demo — no commitment required.
-      </p>
-
-      <!-- Mini enquiry form -->
-      <form id="demoForm" class="reveal reveal-delay-1" aria-label="Book a demo form"
-            style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:580px;margin:0 auto 1.5rem;text-align:left;">
-        <div style="grid-column:1/-1">
-          <input type="text" placeholder="Your Full Name" required
-                 style="width:100%;padding:14px 18px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.12);
-                        background:rgba(255,255,255,0.05);color:#fff;font-family:'Poppins',sans-serif;font-size:14px;outline:none;
-                        transition:border-color 0.2s;backdrop-filter:blur(8px);"
-                 onfocus="this.style.borderColor='rgba(27,155,215,0.5)'"
-                 onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
-        </div>
-        <input type="tel" placeholder="Phone Number" required
-               style="padding:14px 18px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.12);
-                      background:rgba(255,255,255,0.05);color:#fff;font-family:'Poppins',sans-serif;font-size:14px;outline:none;
-                      transition:border-color 0.2s;"
-               onfocus="this.style.borderColor='rgba(27,155,215,0.5)'"
-               onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
-        <select style="padding:14px 18px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.12);
-                       background:rgba(30,41,59,0.9);color:rgba(255,255,255,0.7);font-family:'Poppins',sans-serif;font-size:14px;outline:none;"
-                required>
-          <option value="" disabled selected>Select a Batch</option>
-          <option value="phonics">Phonics Batch</option>
-          <option value="pre-basic">Pre Basic</option>
-          <option value="basic">Basic</option>
-          <option value="pre-intermediate">Pre Intermediate</option>
-          <option value="intermediate">Intermediate</option>
-        </select>
-        <div style="grid-column:1/-1">
-          <button type="submit" class="btn btn--primary btn--hero" style="width:100%">
-            <span class="btn__icon" aria-hidden="true">🎯</span>
-            Book My Free Demo Class
+        <!-- CTA + Hamburger — right -->
+        <div class="navbar__actions">
+          <a href="#cta" class="navbar__cta"><i data-lucide="graduation-cap" class="icon-inline"></i>&nbsp; Book Free
+            Demo</a>
+          <button class="navbar__hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
           </button>
         </div>
-      </form>
 
-      <p class="cta-section__note">
-        ✓ Free session &nbsp;·&nbsp; ✓ No credit card &nbsp;·&nbsp; ✓ We'll call to confirm
-      </p>
+      </div>
     </div>
+  </nav>
 
+  <!-- Mobile drawer -->
+  <div class="navbar__mobile" id="mobileMenu" aria-hidden="true">
+    <a href="#hero" class="navbar__mobile-link">Home</a>
+    <a href="#why" class="navbar__mobile-link">About</a>
+    <a href="#programs" class="navbar__mobile-link">Batches</a>
+    <a href="#journey" class="navbar__mobile-link">Journey</a>
+    <a href="#faculty" class="navbar__mobile-link">Faculty</a>
+    <a href="#gallery" class="navbar__mobile-link">Gallery</a>
+    <a href="#blog" class="navbar__mobile-link">Blog</a>
+    <a href="#cta" class="navbar__mobile-link" style="color:var(--red-light)">Book Demo →</a>
   </div>
-</section>
 
 
-<div class="gallery-lightbox" id="galleryLightbox" role="dialog" aria-modal="true" aria-label="Image viewer" onclick="closeLightbox(event)">
-  <div class="gallery-lightbox__inner">
-    <button class="gallery-lightbox__close" onclick="closeLightbox()" aria-label="Close lightbox">✕</button>
-    <div id="lightboxContent" style="display:flex;align-items:center;justify-content:center;min-width:400px;min-height:300px;background:var(--navy-soft);border-radius:16px;padding:3rem;text-align:center;">
-      <p style="color:var(--text-soft);font-size:1rem;">Add your image or video here</p>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     FOOTER
+  <!-- ═══════════════════════════════════════════
+     HERO
 ═══════════════════════════════════════════ -->
-<footer class="footer" role="contentinfo" aria-label="Site footer">
-  <div class="container">
-    <div class="footer__main">
+  <!-- <section class="hero" id="hero" aria-label="Hero"> -->
+  <section class="hero hero--video" id="hero" aria-label="Hero">
 
-      <div>
-        <div style="margin-bottom:1rem;">
-          <img src="assets/images/wecan-log.png" alt="WE CAN Institute"
-               style="height:52px;width:auto;object-fit:contain;" />
+    <!-- Video Background (Toggle with .hero--video class on <section>) -->
+    <!-- <section class="hero hero--video" id="hero" aria-label="Hero"> -->
+    <video class="hero__video" autoplay muted loop playsinline poster="assets/images/hero-poster.jpg">
+      <source src="assets/videos/hero-section-video.mp4" type="video/mp4">
+    </video>
+    <div class="hero__video-overlay" aria-hidden="true"></div>
+
+    <!-- Background elements -->
+    <div class="hero__glow" aria-hidden="true"></div>
+    <div class="hero__grid" aria-hidden="true"></div>
+
+    <div class="hero__content">
+
+      <!-- Eyebrow badge -->
+      <div class="hero__eyebrow">
+        <span class="section-badge section-badge--blue">
+          <i data-lucide="target" class="icon-inline"></i> &nbsp;Speak · Impress · Lead
+        </span>
+      </div>
+
+      <!-- Main title -->
+      <h1 class="t-hero hero__title">
+        Speak With <br>
+        <span class="red">Confidence.</span><br>
+        Lead With <span class="blue">Words.</span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="t-subtitle hero__subtitle">
+        From phonics to public speaking — build confidence in English <br class="br-standard">
+        <br class="br-video">
+        communication and transform your personality with expert guidance.
+      </p>
+
+      <!-- Hero image card -->
+      <div class="hero__card-wrapper">
+        <div class="hero__image-card" role="img" aria-label="WE CAN Institute showcase">
+          <div class="hero__image-card-inner">
+            <div class="hero__card-decoration" aria-hidden="true"></div>
+            <div class="hero__card-text-content">
+              <h2 class="hero__card-headline">
+                Transforming Students into<br>
+                <em style="color:#60c9f8">Confident Communicators</em>
+              </h2>
+              <p class="hero__card-sub">Spoken English · Public Speaking · Personality Development</p>
+              <div class="hero__card-icons">
+                <span class="hero__card-icon-chip"><i data-lucide="mic" class="icon-inline"></i> Public Speaking</span>
+                <span class="hero__card-icon-chip"><i data-lucide="book-text" class="icon-inline"></i> Phonics</span>
+                <span class="hero__card-icon-chip"><i data-lucide="star" class="icon-inline"></i> Personality</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <p class="footer__brand-tagline">
-          Empowering students, professionals, and children to speak English
-          with confidence through expert-guided training.
-        </p>
-        <div class="footer__socials" style="margin-top:1.2rem;">
-          <a href="#" class="footer__social-btn" aria-label="Instagram">in</a>
-          <a href="#" class="footer__social-btn" aria-label="Facebook">fb</a>
-          <a href="#" class="footer__social-btn" aria-label="YouTube">yt</a>
-          <a href="#" class="footer__social-btn" aria-label="WhatsApp">wa</a>
+
+        <!-- Glass badge overlapping bottom of card -->
+        <div class="hero__badge">
+          <span class="glass-badge">
+            <span class="glass-badge__dot" aria-hidden="true"></span>
+            Become A Confident Speaker
+          </span>
         </div>
       </div>
 
-      <nav aria-label="Quick links">
-        <h3 class="footer__col-title">Quick Links</h3>
-        <ul class="footer__col-links">
-          <li><a href="#hero"         class="footer__link">Home</a></li>
-          <li><a href="#why"          class="footer__link">About</a></li>
-          <li><a href="#programs"     class="footer__link">Batches</a></li>
-          <li><a href="#journey"      class="footer__link">Learning Journey</a></li>
-          <li><a href="#faculty"      class="footer__link">Our Faculty</a></li>
-          <li><a href="#gallery"      class="footer__link">Gallery</a></li>
-          <li><a href="#blog"         class="footer__link">Blog</a></li>
-        </ul>
-      </nav>
+      <!-- CTA button below image -->
+      <div class="hero__cta-wrap">
+        <button class="btn btn--primary btn--hero" id="bookDemoBtn" aria-label="Book a free demo class">
+          <span class="btn__icon" aria-hidden="true"><i data-lucide="graduation-cap"></i></span>
+          Book Free Demo
+        </button>
+        <p class="t-small" style="color:var(--text-soft)">No payment required · 100% free session</p>
+      </div>
 
-      <nav aria-label="Programs">
-        <h3 class="footer__col-title">Programs</h3>
-        <ul class="footer__col-links">
-          <li><a href="#programs" class="footer__link">Phonics Batch</a></li>
-          <li><a href="#programs" class="footer__link">Pre Basic</a></li>
-          <li><a href="#programs" class="footer__link">Basic</a></li>
-          <li><a href="#programs" class="footer__link">Pre Intermediate</a></li>
-          <li><a href="#programs" class="footer__link">Intermediate</a></li>
-        </ul>
-      </nav>
-
-      <address>
-        <h3 class="footer__col-title">Contact Us</h3>
-        <div class="footer__contact-item">
-          <span class="footer__contact-icon">📍</span>
-          <span>12, Commerce House, CG Road<br>Ahmedabad, Gujarat 380009</span>
+      <!-- Stats row -->
+      <div class="hero__stats" role="list" aria-label="Key statistics">
+        <div class="stat-chip" role="listitem">
+          <span class="stat-chip__num" data-counter data-target="5200" data-suffix="+"
+            aria-label="Over 5200 students trained">0</span>
+          <span class="stat-chip__label">Students Trained</span>
         </div>
-        <div class="footer__contact-item">
-          <span class="footer__contact-icon">📞</span>
-          <a href="tel:+919876543210" class="footer__link">+91 98765 43210</a>
+        <div class="stat-chip" role="listitem">
+          <span class="stat-chip__num" data-counter data-target="14" data-suffix=" yrs"
+            aria-label="14 years of experience">0</span>
+          <span class="stat-chip__label">Years of Excellence</span>
         </div>
-        <div class="footer__contact-item">
-          <span class="footer__contact-icon">✉️</span>
-          <a href="mailto:hello@wecaninstitute.com" class="footer__link">hello@wecaninstitute.com</a>
+        <div class="stat-chip" role="listitem">
+          <span class="stat-chip__num" data-counter data-target="98" data-suffix="%"
+            aria-label="98% success rate">0</span>
+          <span class="stat-chip__label">Success Rate</span>
         </div>
-        <div class="footer__contact-item">
-          <span class="footer__contact-icon">🕐</span>
-          <span>Mon–Sat: 8:00 AM – 8:00 PM</span>
+        <div class="stat-chip" role="listitem">
+          <span class="stat-chip__num" data-counter data-target="4.9" data-suffix="★"
+            aria-label="4.9 star rating">0</span>
+          <span class="stat-chip__label">Average Rating</span>
         </div>
-      </address>
+      </div>
 
     </div>
+  </section>
 
-    <div class="footer__bottom">
-      <p class="footer__copy">© 2026 WE CAN Institute of English. All rights reserved.</p>
-      <nav class="footer__bottom-links" aria-label="Legal">
-        <a href="#" class="footer__bottom-link">Privacy Policy</a>
-        <a href="#" class="footer__bottom-link">Terms of Use</a>
-      </nav>
+  <!-- ═══════════════════════════════════════════
+     WHY CHOOSE US
+═══════════════════════════════════════════ -->
+  <section class="why section" id="why" aria-label="Why choose us">
+    <div class="container">
+
+      <header class="section-header">
+        <div class="section-header__badge">
+          <span class="section-badge section-badge--white">Why WE CAN</span>
+        </div>
+        <h2 class="t-section section-header__title reveal">
+          Why Students Choose <br>
+          <span style="color:var(--red)">WE CAN</span> Institute
+        </h2>
+        <p class="t-subtitle section-header__subtitle reveal reveal-delay-1" style="color:var(--text-muted)">
+          We combine proven methodology, expert trainers, and immersive learning
+          to deliver real, lasting transformation.
+        </p>
+      </header>
+
+      <div class="why__grid" role="list">
+
+        <!-- Card 1 -->
+        <article class="why__card reveal" role="listitem">
+          <div class="why__icon" style="background:rgba(227,30,36,0.08);border:1px solid rgba(227,30,36,0.15)">
+            <i data-lucide="trophy" aria-hidden="true" style="color: rgba(227, 30, 37, 0.838);"></i>
+          </div>
+          <h3 class="why__title">Expert Trainers</h3>
+          <p class="why__desc">Our faculty are certified communication coaches with years of real-world training
+            experience. Each trainer is handpicked for passion and expertise.</p>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="why__card reveal reveal-delay-1" role="listitem">
+          <div class="why__icon" style="background:rgba(27,155,215,0.08);border:1px solid rgba(27,155,215,0.15)">
+            <i data-lucide="speech" aria-hidden="true" style="color: rgba(27,155,215, 0.838);"></i>
+          </div>
+          <h3 class="why__title">Spoken English Focus</h3>
+          <p class="why__desc">Unlike textbook-only institutes, we prioritize practical spoken English. Every session
+            involves live conversation, drills, and real-life scenarios.</p>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="why__card reveal reveal-delay-2" role="listitem">
+          <div class="why__icon" style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.15)">
+            <i data-lucide="sparkles" aria-hidden="true" style="color: rgba(234,179,8, 0.838);"></i>
+          </div>
+          <h3 class="why__title">Personality Development</h3>
+          <p class="why__desc">We go beyond language. Body language, confidence, etiquette, and professional
+            communication are integral parts of our holistic program.</p>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="why__card reveal" role="listitem">
+          <div class="why__icon" style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.15)">
+            <i data-lucide="zap" aria-hidden="true" style="color: rgba(34,197,94, 0.838);"></i>
+          </div>
+          <h3 class="why__title">Practical Learning</h3>
+          <p class="why__desc">Every concept is applied through group discussions, presentations, and debates. Our
+            activity-based learning ensures you retain and apply what you learn.</p>
+        </article>
+
+        <!-- Card 5 -->
+        <article class="why__card reveal reveal-delay-1" role="listitem">
+          <div class="why__icon" style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.15)">
+            <i data-lucide="baby" aria-hidden="true" style="color: rgba(168,85,247, 0.838);"></i>
+          </div>
+          <h3 class="why__title">Phonics for Kids</h3>
+          <p class="why__desc">Our structured phonics program builds a strong English foundation in children aged 4-12,
+            making reading and pronunciation natural and effortless.</p>
+        </article>
+
+        <!-- Card 6 -->
+        <article class="why__card reveal reveal-delay-2" role="listitem">
+          <div class="why__icon" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15)">
+            <i data-lucide="calendar" aria-hidden="true" style="color: rgba(239,68,68, 0.838);"></i>
+          </div>
+          <h3 class="why__title">Flexible Batches</h3>
+          <p class="why__desc">Morning, evening, and weekend batches for students and working professionals. Choose a
+            schedule that fits your life without compromising your learning.</p>
+        </article>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     PROGRAMS / BATCHES
+═══════════════════════════════════════════ -->
+  <section class="programs section" id="programs" aria-label="Programs and batches">
+    <div class="programs__bg-accent" aria-hidden="true"></div>
+    <div class="container">
+
+      <header class="section-header">
+        <div class="section-header__badge">
+          <span class="section-badge section-badge--blue">Programs &amp; Batches</span>
+        </div>
+        <h2 class="t-section section-header__title reveal">
+          Find Your Perfect <span style="color:#60c9f8">Batch</span>
+        </h2>
+        <p class="t-subtitle section-header__subtitle reveal reveal-delay-1">
+          From phonics for kids to advanced professional communication — we have the right program for every stage.
+        </p>
+      </header>
+
+      <div class="programs__layout">
+
+        <!-- Featured Batch -->
+        <div class="programs__featured reveal">
+          <div class="programs__featured-glow" aria-hidden="true"></div>
+
+          <span class="programs__featured-badge"><i data-lucide="star" class="icon-inline"></i> Most Popular</span>
+
+          <h3 class="programs__featured-title">
+            Intermediate<br>Spoken English
+          </h3>
+          <p class="programs__featured-subtitle">
+            Our flagship batch for students and professionals ready to communicate fluently in any situation.
+            Includes group practice, live speaking drills, and personal feedback.
+          </p>
+
+          <div class="programs__featured-tags">
+            <span class="programs__tag">Grammar Mastery</span>
+            <span class="programs__tag">Fluency Drills</span>
+            <span class="programs__tag">GD Practice</span>
+            <span class="programs__tag">Interview Prep</span>
+            <span class="programs__tag">Personality Dev.</span>
+          </div>
+
+          <div class="programs__featured-stats">
+            <div class="programs__stat-box">
+              <div class="programs__stat-val">3</div>
+              <div class="programs__stat-label">Months Duration</div>
+            </div>
+            <div class="programs__stat-box">
+              <div class="programs__stat-val">5</div>
+              <div class="programs__stat-label">Days per Week</div>
+            </div>
+            <div class="programs__stat-box">
+              <div class="programs__stat-val">15</div>
+              <div class="programs__stat-label">Max Batch Size</div>
+            </div>
+            <div class="programs__stat-box">
+              <div class="programs__stat-val">98%</div>
+              <div class="programs__stat-label">Completion Rate</div>
+            </div>
+          </div>
+
+          <button class="btn btn--primary" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">
+            <span class="btn__icon" aria-hidden="true"><i data-lucide="target"></i></span>
+            Enroll in This Batch
+          </button>
+        </div>
+
+        <!-- Batch List -->
+        <div class="programs__list" role="list" aria-label="Available batches">
+
+          <article class="program-card active" role="listitem">
+            <div class="program-card__emoji" aria-hidden="true"><i data-lucide="type" style="color: white;"></i></div>
+            <div class="program-card__info">
+              <h4 class="program-card__name">Phonics Batch</h4>
+              <p class="program-card__meta">For ages 4-12 · Build perfect pronunciation from scratch</p>
+            </div>
+            <span class="program-card__badge">Kids</span>
+          </article>
+
+          <article class="program-card" role="listitem">
+            <div class="program-card__emoji" aria-hidden="true"><i data-lucide="sprout" style="color: white;"></i></div>
+            <div class="program-card__info">
+              <h4 class="program-card__name">Pre Basic</h4>
+              <p class="program-card__meta">Absolute beginners · Alphabet to sentences · 6 weeks</p>
+            </div>
+            <span class="program-card__badge">Beginner</span>
+          </article>
+
+          <article class="program-card" role="listitem">
+            <div class="program-card__emoji" aria-hidden="true"><i data-lucide="book-open" style="color: white;"></i>
+            </div>
+            <div class="program-card__info">
+              <h4 class="program-card__name">Basic</h4>
+              <p class="program-card__meta">Core grammar & spoken English · 2 months</p>
+            </div>
+            <span class="program-card__badge">Foundation</span>
+          </article>
+
+          <article class="program-card" role="listitem">
+            <div class="program-card__emoji" aria-hidden="true"><i data-lucide="rocket" style="color: white;"></i></div>
+            <div class="program-card__info">
+              <h4 class="program-card__name">Pre Intermediate</h4>
+              <p class="program-card__meta">Fluency building · Conversations & vocabulary · 2.5 months</p>
+            </div>
+            <span class="program-card__badge">Growing</span>
+          </article>
+
+          <article class="program-card" role="listitem">
+            <div class="program-card__emoji" aria-hidden="true"><i data-lucide="target" style="color: white;"></i></div>
+            <div class="program-card__info">
+              <h4 class="program-card__name">Intermediate</h4>
+              <p class="program-card__meta">Full fluency + personality · Flagship program · 3 months</p>
+            </div>
+            <span class="program-card__badge">Popular</span>
+          </article>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     LEARNING JOURNEY
+═══════════════════════════════════════════ -->
+  <section class="journey section" id="journey" aria-label="Learning journey">
+    <div class="journey__bg-glow" aria-hidden="true"></div>
+    <div class="container">
+
+      <header class="section-header">
+        <div class="section-header__badge">
+          <span class="section-badge section-badge--blue">Your Roadmap</span>
+        </div>
+        <h2 class="t-section section-header__title reveal">
+          Your Learning <em style="font-style:italic;color:#60c9f8">Journey</em>
+        </h2>
+        <p class="t-subtitle section-header__subtitle reveal reveal-delay-1">
+          A structured path from absolute beginner to confident, eloquent communicator.
+        </p>
+      </header>
+
+      <div class="journey__timeline" role="list" aria-label="Learning stages">
+
+        <div class="journey__step reveal" role="listitem">
+          <div class="journey__step-num" aria-label="Stage 1">1</div>
+          <div>
+            <h3 class="journey__step-title">Foundation Level</h3>
+            <p class="journey__step-desc">
+              Build core grammar, phonics, and basic vocabulary. Establish correct pronunciation from day one.
+            </p>
+          </div>
+        </div>
+
+        <div class="journey__step reveal reveal-delay-1" role="listitem">
+          <div class="journey__step-num" aria-label="Stage 2">2</div>
+          <div>
+            <h3 class="journey__step-title">Spoken English</h3>
+            <p class="journey__step-desc">
+              Apply grammar in real conversations. Practice fluency, sentence formation, and everyday communication.
+            </p>
+          </div>
+        </div>
+
+        <div class="journey__step reveal reveal-delay-2" role="listitem">
+          <div class="journey__step-num" aria-label="Stage 3">3</div>
+          <div>
+            <h3 class="journey__step-title">Advanced Communication</h3>
+            <p class="journey__step-desc">
+              Master group discussions, debates, presentations, and professional English used in corporate settings.
+            </p>
+          </div>
+        </div>
+
+        <div class="journey__step reveal reveal-delay-3" role="listitem">
+          <div class="journey__step-num" aria-label="Stage 4">4</div>
+          <div>
+            <h3 class="journey__step-title">Confident Speaker</h3>
+            <p class="journey__step-desc">
+              Lead with authority. Command any room — interviews, events, or meetings — with polished English and
+              personality.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     FACULTY SECTION
+═══════════════════════════════════════════ -->
+  <section class="faculty section" id="faculty" aria-label="Our Faculty">
+    <div class="faculty__bg" aria-hidden="true"></div>
+    <div class="container">
+
+      <header class="section-header">
+        <div class="section-header__badge">
+          <span class="section-badge section-badge--blue">Meet The Team</span>
+        </div>
+        <h2 class="t-section section-header__title reveal">
+          The Faces Behind <span style="color:#60c9f8">Your Growth</span>
+        </h2>
+        <p class="t-subtitle section-header__subtitle reveal reveal-delay-1">
+          Our trainers are certified communication experts, passionate about helping
+          every student find their voice and speak with confidence.
+        </p>
+      </header>
+
+      <div class="faculty__grid">
+
+        <!-- Faculty 1 -->
+        <article class="faculty-card reveal" aria-label="Faculty member">
+          <div class="faculty-card__photo">
+            <div class="faculty-card__avatar-placeholder">
+              <div class="faculty-card__avatar-circle">MK</div>
+              <span class="faculty-card__placeholder-name">Replace with<br>your photo</span>
+            </div>
+            <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
+            <span class="faculty-card__replace-hint" style="display: flex; align-items: center; gap: 5px;"><i
+                data-lucide="Camera" style="color: white;"></i> Add Photo</span>
+          </div>
+          <div class="faculty-card__info">
+            <span class="faculty-card__role-badge">Founder &amp; Director</span>
+            <h3 class="faculty-card__name">Mr. [Your Name]</h3>
+            <p class="faculty-card__speciality">15+ years in English communication & personality development training
+            </p>
+            <div class="faculty-card__tags">
+              <span class="faculty-card__tag">Public Speaking</span>
+              <span class="faculty-card__tag">Personality Dev</span>
+              <span class="faculty-card__tag">Leadership</span>
+            </div>
+            <div class="faculty-card__exp">
+              <span class="faculty-card__exp-dot"></span>
+              15+ Years Experience
+            </div>
+          </div>
+        </article>
+
+        <!-- Faculty 2 -->
+        <article class="faculty-card reveal reveal-delay-1" aria-label="Faculty member">
+          <div class="faculty-card__photo">
+            <div class="faculty-card__avatar-placeholder">
+              <div class="faculty-card__avatar-circle">SR</div>
+              <span class="faculty-card__placeholder-name">Replace with<br>your photo</span>
+            </div>
+            <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
+            <span class="faculty-card__replace-hint" style="display: flex; align-items: center; gap: 5px;"><i
+                data-lucide="Camera" style="color: white;"></i> Add Photo</span>
+          </div>
+          <div class="faculty-card__info">
+            <span class="faculty-card__role-badge">Senior Trainer</span>
+            <h3 class="faculty-card__name">Ms. [Trainer Name]</h3>
+            <p class="faculty-card__speciality">Spoken English specialist with expertise in phonics and early childhood
+              language</p>
+            <div class="faculty-card__tags">
+              <span class="faculty-card__tag">Spoken English</span>
+              <span class="faculty-card__tag">Phonics</span>
+              <span class="faculty-card__tag">Kids Program</span>
+            </div>
+            <div class="faculty-card__exp">
+              <span class="faculty-card__exp-dot"></span>
+              10+ Years Experience
+            </div>
+          </div>
+        </article>
+
+        <!-- Faculty 3 -->
+        <article class="faculty-card reveal reveal-delay-2" aria-label="Faculty member">
+          <div class="faculty-card__photo">
+            <div class="faculty-card__avatar-placeholder">
+              <div class="faculty-card__avatar-circle">AP</div>
+              <span class="faculty-card__placeholder-name">Replace with<br>your photo</span>
+            </div>
+            <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
+            <span class="faculty-card__replace-hint" style="display: flex; align-items: center; gap: 5px;"><i
+                data-lucide="Camera" style="color: white;"></i> Add Photo</span>
+          </div>
+          <div class="faculty-card__info">
+            <span class="faculty-card__role-badge">Communication Coach</span>
+            <h3 class="faculty-card__name">Mr. [Trainer Name]</h3>
+            <p class="faculty-card__speciality">Corporate communication trainer focused on business English and
+              interview prep</p>
+            <div class="faculty-card__tags">
+              <span class="faculty-card__tag">Business English</span>
+              <span class="faculty-card__tag">Interview Prep</span>
+              <span class="faculty-card__tag">GD Training</span>
+            </div>
+            <div class="faculty-card__exp">
+              <span class="faculty-card__exp-dot"></span>
+              8+ Years Experience
+            </div>
+          </div>
+        </article>
+
+        <!-- Faculty 4 -->
+        <article class="faculty-card reveal reveal-delay-3" aria-label="Faculty member">
+          <div class="faculty-card__photo">
+            <div class="faculty-card__avatar-placeholder">
+              <div class="faculty-card__avatar-circle">ND</div>
+              <span class="faculty-card__placeholder-name">Replace with<br>your photo</span>
+            </div>
+            <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
+            <span class="faculty-card__replace-hint" style="display: flex; align-items: center; gap: 5px;"><i
+                data-lucide="Camera" style="color: white;"></i> Add Photo</span>
+          </div>
+          <div class="faculty-card__info">
+            <span class="faculty-card__role-badge">Phonics Specialist</span>
+            <h3 class="faculty-card__name">Ms. [Trainer Name]</h3>
+            <p class="faculty-card__speciality">Dedicated kids language coach with certifications in early literacy and
+              phonics methodology</p>
+            <div class="faculty-card__tags">
+              <span class="faculty-card__tag">Phonics</span>
+              <span class="faculty-card__tag">Kids 4-12</span>
+              <span class="faculty-card__tag">Reading</span>
+            </div>
+            <div class="faculty-card__exp">
+              <span class="faculty-card__exp-dot"></span>
+              6+ Years Experience
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     TESTIMONIALS
+═══════════════════════════════════════════ -->
+  <section class="testimonials section" id="testimonials" aria-label="Student testimonials">
+    <div class="testimonials__bg-glow" aria-hidden="true"></div>
+    <div class="container">
+
+      <header class="section-header">
+        <div class="section-header__badge">
+          <span class="section-badge section-badge--red">Student Stories</span>
+        </div>
+        <h2 class="t-section section-header__title reveal">
+          Real Students. <span style="color:var(--red-light)">Real Results.</span>
+        </h2>
+        <p class="t-subtitle section-header__subtitle reveal reveal-delay-1">
+          Hear from the students and parents whose lives changed after joining WE CAN Institute.
+        </p>
+      </header>
+
+      <!-- Big featured quote -->
+      <blockquote class="testimonials__hero-quote reveal" aria-label="Featured testimonial">
+        <div class="testimonials__big-text">
+          "WE CAN Institute didn't just teach me English — they gave me the confidence to walk into any room and own it.
+          My interviews, my presentations, my daily conversations — everything changed within 3 months."
+        </div>
+        <div class="testimonials__author-row">
+          <div class="testimonials__author-avatar" aria-hidden="true">RK</div>
+          <div>
+            <p class="testimonials__author-name">Raj Kothari</p>
+            <p class="testimonials__author-role">Software Engineer · TCS Pune</p>
+          </div>
+        </div>
+      </blockquote>
+
+      <!-- Grid testimonials -->
+      <div class="testimonials__grid" role="list">
+
+        <article class="testimonial-card reveal" role="listitem">
+          <div class="testimonial-card__stars" aria-label="5 stars">★★★★★</div>
+          <p class="testimonial-card__quote">
+            "My daughter's phonics classes have made her the best reader in her class. The teachers are patient, warm,
+            and incredibly skilled. Highly recommend the kids program!"
+          </p>
+          <div class="testimonial-card__author">
+            <div class="testimonial-card__avatar" aria-hidden="true">PM</div>
+            <div>
+              <p class="testimonial-card__name">Priya Mehta</p>
+              <p class="testimonial-card__role">Parent · Ahmedabad</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="testimonial-card reveal reveal-delay-1" role="listitem">
+          <div class="testimonial-card__stars" aria-label="5 stars">★★★★★</div>
+          <p class="testimonial-card__quote">
+            "I used to freeze during group discussions. After the Intermediate batch, I got promoted to team lead —
+            communication skills were a key reason. WE CAN changed my career."
+          </p>
+          <div class="testimonial-card__author">
+            <div class="testimonial-card__avatar" aria-hidden="true">AS</div>
+            <div>
+              <p class="testimonial-card__name">Arjun Shah</p>
+              <p class="testimonial-card__role">Team Lead · Infosys</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="testimonial-card reveal reveal-delay-2" role="listitem">
+          <div class="testimonial-card__stars" aria-label="5 stars">★★★★★</div>
+          <p class="testimonial-card__quote">
+            "The Public Speaking module was transformative. I gave my first ever TED-style talk at college after just 2
+            months here. The trainers believe in you before you believe in yourself."
+          </p>
+          <div class="testimonial-card__author">
+            <div class="testimonial-card__avatar" aria-hidden="true">NP</div>
+            <div>
+              <p class="testimonial-card__name">Nisha Patel</p>
+              <p class="testimonial-card__role">MBA Student · NMIMS</p>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     GALLERY SECTION
+═══════════════════════════════════════════ -->
+  <section class="gallery section" id="gallery" aria-label="Gallery">
+    <div class="gallery__bg" aria-hidden="true"></div>
+    <div class="container">
+
+      <header class="section-header">
+        <div class="section-header__badge">
+          <span class="section-badge section-badge--red">Our Moments</span>
+        </div>
+        <h2 class="t-section section-header__title reveal">
+          Life at <span style="color:var(--red-light)">WE CAN</span>
+        </h2>
+        <p class="t-subtitle section-header__subtitle reveal reveal-delay-1">
+          From classroom activities to grand finale competitions — every moment
+          here is a step towards confidence. Updated monthly.
+        </p>
+      </header>
+
+      <!-- Category filter tabs -->
+      <div class="gallery__tabs reveal" role="tablist" aria-label="Gallery categories">
+        <button class="gallery__tab active" data-filter="all" role="tab" aria-selected="true">All</button>
+        <button class="gallery__tab" data-filter="activities" role="tab">Activities &amp; Programs</button>
+        <button class="gallery__tab" data-filter="grand-finale" role="tab">Grand Finale</button>
+        <button class="gallery__tab" data-filter="awards" role="tab">Award Ceremonies</button>
+        <button class="gallery__tab" data-filter="students" role="tab">Student Moments</button>
+        <button class="gallery__tab" data-filter="video" role="tab"><i data-lucide="clapperboard"
+            class="icon-inline"></i> Videos</button>
+      </div>
+
+      <!-- Masonry grid -->
+      <div class="gallery__grid reveal" id="galleryGrid">
+
+        <!-- Item 1: Big featured -->
+        <div class="gallery__item gallery__item--big" data-category="grand-finale" onclick="openLightbox(this)"
+          aria-label="Grand Finale Competition">
+          <div class="gallery__placeholder" style="background:linear-gradient(135deg,#1a0a0a,#3d1010);">
+            <span class="gallery__placeholder-icon"><i data-lucide="trophy" style="color: white;"></i></span>
+            <span class="gallery__placeholder-label">Grand Finale<br>Competition 2024</span>
+          </div>
+          <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i
+              data-lucide="Camera" style="color: white;"></i> Replace</span>
+          <div class="gallery__item-overlay">
+            <div>
+              <span class="gallery__item-cat">Grand Finale</span>
+              <p class="gallery__item-caption">Annual Grand Finale Competition 2024</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="gallery__item" data-category="activities" onclick="openLightbox(this)" aria-label="Activities">
+          <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a1a2a,#0d3350);">
+            <span class="gallery__placeholder-icon"><i data-lucide="speech" style="color: white;"></i></span>
+            <span class="gallery__placeholder-label">Speaking Activity</span>
+          </div>
+          <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i
+              data-lucide="Camera" style="color: white;"></i> Replace</span>
+          <div class="gallery__item-overlay">
+            <div>
+              <span class="gallery__item-cat">Activities</span>
+              <p class="gallery__item-caption">Public Speaking Workshop</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="gallery__item" data-category="students" onclick="openLightbox(this)" aria-label="Student moments">
+          <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a1f0a,#0d3b1a);">
+            <span class="gallery__placeholder-icon"><i data-lucide="graduation-cap" style="color: white;"></i></span>
+            <span class="gallery__placeholder-label">Student Moment</span>
+          </div>
+          <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i
+              data-lucide="Camera" style="color: white;"></i> Replace</span>
+          <div class="gallery__item-overlay">
+            <div>
+              <span class="gallery__item-cat">Students</span>
+              <p class="gallery__item-caption">Graduation Day Celebration</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 4: Wide -->
+        <div class="gallery__item gallery__item--wide" data-category="awards" onclick="openLightbox(this)"
+          aria-label="Award ceremony">
+          <div class="gallery__placeholder" style="background:linear-gradient(135deg,#1a140a,#3d2d08);">
+            <span class="gallery__placeholder-icon"><i data-lucide="medal" style="color: white;"></i></span>
+            <span class="gallery__placeholder-label">Award Ceremony 2024</span>
+          </div>
+          <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i
+              data-lucide="Camera" style="color: white;"></i> Replace</span>
+          <div class="gallery__item-overlay">
+            <div>
+              <span class="gallery__item-cat">Awards</span>
+              <p class="gallery__item-caption">Annual Award Ceremony — Excellence in Communication</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 5: Video -->
+        <div class="gallery__item gallery__item--video" data-category="video" aria-label="Video highlight">
+          <div class="gallery__placeholder" style="background:linear-gradient(135deg,#150a1a,#2d1040);">
+            <span class="gallery__placeholder-icon"><i data-lucide="clapperboard" style="color: white;"></i></span>
+            <span class="gallery__placeholder-label">Institute Highlight Reel</span>
+          </div>
+          <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i
+              data-lucide="Video" style="color: rgba(255, 255, 255, 0.585);"></i> Add Video</span>
+          <div class="gallery__play-btn" aria-label="Play video">
+            <svg viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+          <div class="gallery__item-overlay">
+            <div>
+              <span class="gallery__item-cat">Video</span>
+              <p class="gallery__item-caption">Institute Highlight Reel 2024</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 6 -->
+        <div class="gallery__item" data-category="activities" onclick="openLightbox(this)"
+          aria-label="Group discussion">
+          <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a1a1a,#0d3535);">
+            <span class="gallery__placeholder-icon"><i data-lucide="users" style="color: white;"></i></span>
+            <span class="gallery__placeholder-label">Group Discussion</span>
+          </div>
+          <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i
+              data-lucide="Camera" style="color: white;"></i> Replace</span>
+          <div class="gallery__item-overlay">
+            <div>
+              <span class="gallery__item-cat">Activities</span>
+              <p class="gallery__item-caption">Competitive Group Discussion Session</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 7: Tall -->
+        <div class="gallery__item gallery__item--tall" data-category="grand-finale" onclick="openLightbox(this)"
+          aria-label="Stage performance">
+          <div class="gallery__placeholder" style="background:linear-gradient(135deg,#1a0a10,#3d0d20);">
+            <span class="gallery__placeholder-icon"><i data-lucide="mic" style="color: white;"></i></span>
+            <span class="gallery__placeholder-label">Stage<br>Performance</span>
+          </div>
+          <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i
+              data-lucide="Camera" style="color: white;"></i> Replace</span>
+          <div class="gallery__item-overlay">
+            <div>
+              <span class="gallery__item-cat">Grand Finale</span>
+              <p class="gallery__item-caption">Stage Performance — Elocution Finals</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 8 -->
+        <div class="gallery__item" data-category="students" onclick="openLightbox(this)" aria-label="Phonics kids">
+          <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a0a1a,#101040);">
+            <span class="gallery__placeholder-icon"><i data-lucide="smile" style="color: white;"></i></span>
+            <span class="gallery__placeholder-label">Phonics Kids Batch</span>
+          </div>
+          <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i
+              data-lucide="Camera" style="color: white;"></i> Replace</span>
+          <div class="gallery__item-overlay">
+            <div>
+              <span class="gallery__item-cat">Students</span>
+              <p class="gallery__item-caption">Phonics Kids Batch — Fun Learning Day</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 9: Video -->
+        <div class="gallery__item gallery__item--video" data-category="video" aria-label="Student testimonial video">
+          <div class="gallery__placeholder" style="background:linear-gradient(135deg,#0a150a,#0d2b10);">
+            <span class="gallery__placeholder-icon"><i data-lucide="video" style="color: white;"></i></span>
+            <span class="gallery__placeholder-label">Student Testimonial</span>
+          </div>
+          <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i
+              data-lucide="Video" style="color: white;"></i> Add Video</span>
+          <div class="gallery__play-btn" aria-label="Play video">
+            <svg viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+          <div class="gallery__item-overlay">
+            <div>
+              <span class="gallery__item-cat">Video</span>
+              <p class="gallery__item-caption">Student Success Story</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 10: Wide -->
+        <div class="gallery__item gallery__item--wide" data-category="awards" onclick="openLightbox(this)"
+          aria-label="Award distribution">
+          <div class="gallery__placeholder" style="background:linear-gradient(135deg,#1a1200,#3d2d00);">
+            <span class="gallery__placeholder-icon"><i data-lucide="award" style="color: white;"></i></span>
+            <span class="gallery__placeholder-label">Merit Award Distribution 2024</span>
+          </div>
+          <span class="gallery__replace-label" style="display: flex; align-items: center; gap: 5px;"><i
+              data-lucide="Camera" style="color: white;"></i> Replace</span>
+          <div class="gallery__item-overlay">
+            <div>
+              <span class="gallery__item-cat">Awards</span>
+              <p class="gallery__item-caption">Merit Award Distribution — Top Performers</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Update CTA note -->
+      <div class="gallery__footer-cta reveal"
+        style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+        <p style="display: flex; gap: 8px; align-items: center;"><i data-lucide="calendar"
+            style="color: var(--text-soft);"></i> Gallery is updated every month with fresh photos and videos from our
+          programs.</p>
+        <p><strong>To update:</strong> Simply replace the placeholder images/videos with your actual media files.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     BLOG SECTION
+═══════════════════════════════════════════ -->
+  <section class="blog section" id="blog" aria-label="Blog">
+    <div class="blog__bg" aria-hidden="true"></div>
+    <div class="container">
+
+      <header class="section-header">
+        <div class="section-header__badge">
+          <span class="section-badge section-badge--blue">Insights &amp; Advice</span>
+        </div>
+        <h2 class="t-section section-header__title reveal">
+          From Our <em style="font-style:italic;color:#60c9f8">Expert Desk</em>
+        </h2>
+        <p class="t-subtitle section-header__subtitle reveal reveal-delay-1">
+          Practical advice, expert tips, and insights on English communication,
+          public speaking, and personality development.
+        </p>
+      </header>
+
+      <!-- Featured + Sidebar layout -->
+      <div class="blog__layout reveal">
+
+        <!-- Featured article -->
+        <a href="#" class="blog-featured" aria-label="Featured blog post">
+          <div class="blog-featured__cover">
+            <div class="blog-featured__cover-placeholder">
+              <div class="blog-featured__cover-gradient" style="background:linear-gradient(135deg,#0f1f35,#1a3a5c);">
+              </div>
+              <span class="blog-featured__cover-emoji" style="color: white"><i data-lucide="speech"></i></span>
+            </div>
+            <span class="blog-featured__badge">⭐ Featured</span>
+          </div>
+          <div class="blog-featured__body">
+            <div class="blog-featured__meta">
+              <span class="blog-featured__cat">Public Speaking</span>
+              <span>·</span>
+              <span>March 1, 2026</span>
+              <span>·</span>
+              <span>8 min read</span>
+            </div>
+            <h3 class="blog-featured__title">
+              10 Habits That Separate Confident English Speakers from the Rest
+            </h3>
+            <p class="blog-featured__excerpt">
+              Fluency is not just about grammar — it's a daily practice. In this article, our head trainer breaks down
+              the 10 non-negotiable habits that our top students develop in the first 30 days of joining WE CAN. From
+              morning routines to the way you listen, these habits will reshape how you communicate forever.
+            </p>
+            <div class="blog-featured__author">
+              <div class="blog-featured__author-avatar">MK</div>
+              <div>
+                <p class="blog-featured__author-name">[Director Name]</p>
+                <p class="blog-featured__author-role">Founder, WE CAN Institute</p>
+              </div>
+            </div>
+            <span class="blog-featured__read-more">Read Full Article →</span>
+          </div>
+        </a>
+
+        <!-- Sidebar posts -->
+        <div class="blog__sidebar">
+
+          <a href="#" class="blog-card-sm" aria-label="Blog post">
+            <div class="blog-card-sm__cover">
+              <div class="blog-card-sm__cover-placeholder" style="background:linear-gradient(135deg,#1a0f0a,#3d2010);">
+                <span style="color: white"><i data-lucide="frown"></i></span>
+              </div>
+            </div>
+            <div class="blog-card-sm__body">
+              <p class="blog-card-sm__cat">Confidence</p>
+              <h4 class="blog-card-sm__title">Why Indians Fear Speaking English — and How to Beat It</h4>
+              <p class="blog-card-sm__meta">Feb 18, 2026 · 5 min read</p>
+            </div>
+          </a>
+
+          <a href="#" class="blog-card-sm" aria-label="Blog post">
+            <div class="blog-card-sm__cover">
+              <div class="blog-card-sm__cover-placeholder" style="background:linear-gradient(135deg,#0a1a0a,#103520);">
+                <span style="color: white"><i data-lucide="file-text"></i></span>
+              </div>
+            </div>
+            <div class="blog-card-sm__body">
+              <p class="blog-card-sm__cat">Grammar Tips</p>
+              <h4 class="blog-card-sm__title">5 Grammar Mistakes Every Indian Speaker Makes (and How to Fix Them)</h4>
+              <p class="blog-card-sm__meta">Feb 5, 2026 · 6 min read</p>
+            </div>
+          </a>
+
+          <a href="#" class="blog-card-sm" aria-label="Blog post">
+            <div class="blog-card-sm__cover">
+              <div class="blog-card-sm__cover-placeholder" style="background:linear-gradient(135deg,#0d0a1a,#1a1040);">
+                <span style="color: white"><i data-lucide="mic"></i></span>
+              </div>
+            </div>
+            <div class="blog-card-sm__body">
+              <p class="blog-card-sm__cat">Public Speaking</p>
+              <h4 class="blog-card-sm__title">How to Prepare for a Group Discussion in 48 Hours</h4>
+              <p class="blog-card-sm__meta">Jan 22, 2026 · 7 min read</p>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Bottom 3-column grid -->
+      <div class="blog__grid-bottom reveal reveal-delay-1">
+
+        <a href="#" class="blog-card-grid" aria-label="Blog post">
+          <div class="blog-card-grid__cover">
+            <div class="blog-card-grid__cover-placeholder" style="background:linear-gradient(135deg,#0a1520,#102030);">
+              <span style="color: white"><i data-lucide="baby"></i></span>
+            </div>
+          </div>
+          <div class="blog-card-grid__body">
+            <p class="blog-card-grid__cat">Phonics &amp; Kids</p>
+            <h4 class="blog-card-grid__title">When Should You Start Phonics? A Parent's Complete Guide</h4>
+            <p class="blog-card-grid__excerpt">The right age, the right method, and the signs that your child is ready
+              to begin their English learning journey with phonics.</p>
+            <div class="blog-card-grid__footer">
+              <div class="blog-card-grid__author">
+                <div class="blog-card-grid__avatar">SR</div>
+                <span class="blog-card-grid__author-name">Phonics Trainer</span>
+              </div>
+              <span class="blog-card-grid__read">4 min →</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="#" class="blog-card-grid" aria-label="Blog post">
+          <div class="blog-card-grid__cover">
+            <div class="blog-card-grid__cover-placeholder" style="background:linear-gradient(135deg,#150a1a,#2d1240);">
+              <span style="color: white"><i data-lucide="briefcase"></i></span>
+            </div>
+          </div>
+          <div class="blog-card-grid__body">
+            <p class="blog-card-grid__cat">Career English</p>
+            <h4 class="blog-card-grid__title">How to Speak English at Work Without Feeling Judged</h4>
+            <p class="blog-card-grid__excerpt">Practical strategies to build professional vocabulary, handle meetings
+              confidently, and make a strong impression at work.</p>
+            <div class="blog-card-grid__footer">
+              <div class="blog-card-grid__author">
+                <div class="blog-card-grid__avatar">AP</div>
+                <span class="blog-card-grid__author-name">Corp. Trainer</span>
+              </div>
+              <span class="blog-card-grid__read">5 min →</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="#" class="blog-card-grid" aria-label="Blog post">
+          <div class="blog-card-grid__cover">
+            <div class="blog-card-grid__cover-placeholder" style="background:linear-gradient(135deg,#0a1a10,#0d3520);">
+              <span style="color: white"><i data-lucide="trophy"></i></span>
+            </div>
+          </div>
+          <div class="blog-card-grid__body">
+            <p class="blog-card-grid__cat">Success Stories</p>
+            <h4 class="blog-card-grid__title">From Zero to Boardroom: A WE CAN Student's Journey</h4>
+            <p class="blog-card-grid__excerpt">Read how one of our students went from dreading English conversations to
+              leading international client calls within 4 months.</p>
+            <div class="blog-card-grid__footer">
+              <div class="blog-card-grid__author">
+                <div class="blog-card-grid__avatar">RK</div>
+                <span class="blog-card-grid__author-name">Alumni Story</span>
+              </div>
+              <span class="blog-card-grid__read">6 min →</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- View all -->
+      <div class="blog__view-all reveal">
+        <a href="#" class="btn btn--outline" style="display:inline-flex;">
+          View All Articles
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+            style="width:16px;height:16px;margin-left:8px;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+          </svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+     CALL TO ACTION
+═══════════════════════════════════════════ -->
+  <section class="cta-section section--sm" id="cta" aria-label="Book a free demo">
+    <div class="cta-section__glow" aria-hidden="true"></div>
+    <div class="container--narrow">
+
+      <div class="reveal">
+        <span class="section-badge section-badge--red" style="margin-bottom:1.5rem;display:inline-flex">
+          <i data-lucide="graduation-cap" class="icon-inline"></i> &nbsp;Start Today — It's Free
+        </span>
+        <h2 class="t-section cta-section__title">
+          Your Confidence Journey<br>
+          Begins with <span style="color:var(--red-light)">One Free Class</span>
+        </h2>
+        <p class="t-subtitle cta-section__subtitle">
+          Join thousands of students who transformed their communication skills.
+          Book your free demo — no commitment required.
+        </p>
+
+        <!-- Mini enquiry form -->
+        <form id="demoForm" class="reveal reveal-delay-1" aria-label="Book a demo form"
+          style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:580px;margin:0 auto 1.5rem;text-align:left;">
+          <div style="grid-column:1/-1">
+            <input type="text" placeholder="Your Full Name" required style="width:100%;padding:14px 18px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.12);
+                        background:rgba(255,255,255,0.05);color:#fff;font-family:'Poppins',sans-serif;font-size:14px;outline:none;
+                        transition:border-color 0.2s;backdrop-filter:blur(8px);"
+              onfocus="this.style.borderColor='rgba(27,155,215,0.5)'"
+              onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
+          </div>
+          <input type="tel" placeholder="Phone Number" required style="padding:14px 18px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.12);
+                      background:rgba(255,255,255,0.05);color:#fff;font-family:'Poppins',sans-serif;font-size:14px;outline:none;
+                      transition:border-color 0.2s;" onfocus="this.style.borderColor='rgba(27,155,215,0.5)'"
+            onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
+          <select
+            style="padding:14px 18px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.12);
+                       background:rgba(30,41,59,0.9);color:rgba(255,255,255,0.7);font-family:'Poppins',sans-serif;font-size:14px;outline:none;"
+            required>
+            <option value="" disabled selected>Select a Batch</option>
+            <option value="phonics">Phonics Batch</option>
+            <option value="pre-basic">Pre Basic</option>
+            <option value="basic">Basic</option>
+            <option value="pre-intermediate">Pre Intermediate</option>
+            <option value="intermediate">Intermediate</option>
+          </select>
+          <div style="grid-column:1/-1">
+            <button type="submit" class="btn btn--primary btn--hero" style="width:100%">
+              <span class="btn__icon" aria-hidden="true"><i data-lucide="target"></i></span>
+              Book My Free Demo Class
+            </button>
+          </div>
+        </form>
+
+        <p class="cta-section__note">
+          ✓ Free session &nbsp;·&nbsp; ✓ No credit card &nbsp;·&nbsp; ✓ We'll call to confirm
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <div class="gallery-lightbox" id="galleryLightbox" role="dialog" aria-modal="true" aria-label="Image viewer"
+    onclick="closeLightbox(event)">
+    <div class="gallery-lightbox__inner">
+      <button class="gallery-lightbox__close" onclick="closeLightbox()" aria-label="Close lightbox">✕</button>
+      <div id="lightboxContent"
+        style="display:flex;align-items:center;justify-content:center;min-width:400px;min-height:300px;background:var(--navy-soft);border-radius:16px;padding:3rem;text-align:center;">
+        <p style="color:var(--text-soft);font-size:1rem;">Add your image or video here</p>
+      </div>
     </div>
   </div>
-</footer>
 
-<!-- JavaScript -->
-<script src="assets/js/main.js"></script>
-<script src="assets/js/gallery.js"></script>
+  <!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════ -->
+  <footer class="footer" role="contentinfo" aria-label="Site footer">
+    <div class="container">
+      <div class="footer__main">
+
+        <div>
+          <div style="margin-bottom:1rem;">
+            <img src="assets/images/wecan-log.png" alt="WE CAN Institute"
+              style="height:52px;width:auto;object-fit:contain;" />
+          </div>
+          <p class="footer__brand-tagline">
+            Empowering students, professionals, and children to speak English
+            with confidence through expert-guided training.
+          </p>
+          <div class="footer__socials" style="margin-top:1.2rem;">
+            <a href="#" class="footer__social-btn" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+            <a href="#" class="footer__social-btn" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+            <a href="#" class="footer__social-btn" aria-label="YouTube"><i data-lucide="youtube"></i></a>
+            <a href="#" class="footer__social-btn" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+
+        <nav aria-label="Quick links">
+          <h3 class="footer__col-title">Quick Links</h3>
+          <ul class="footer__col-links">
+            <li><a href="#hero" class="footer__link">Home</a></li>
+            <li><a href="#why" class="footer__link">About</a></li>
+            <li><a href="#programs" class="footer__link">Batches</a></li>
+            <li><a href="#journey" class="footer__link">Learning Journey</a></li>
+            <li><a href="#faculty" class="footer__link">Our Faculty</a></li>
+            <li><a href="#gallery" class="footer__link">Gallery</a></li>
+            <li><a href="#blog" class="footer__link">Blog</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Programs">
+          <h3 class="footer__col-title">Programs</h3>
+          <ul class="footer__col-links">
+            <li><a href="#programs" class="footer__link">Phonics Batch</a></li>
+            <li><a href="#programs" class="footer__link">Pre Basic</a></li>
+            <li><a href="#programs" class="footer__link">Basic</a></li>
+            <li><a href="#programs" class="footer__link">Pre Intermediate</a></li>
+            <li><a href="#programs" class="footer__link">Intermediate</a></li>
+          </ul>
+        </nav>
+
+        <address>
+          <h3 class="footer__col-title">Contact Us</h3>
+          <div class="footer__contact-item">
+            <span class="footer__contact-icon"><i data-lucide="map-pin"></i></span>
+            <span>12, Commerce House, CG Road<br>Ahmedabad, Gujarat 380009</span>
+          </div>
+          <div class="footer__contact-item">
+            <span class="footer__contact-icon"><i data-lucide="phone"></i></span>
+            <a href="tel:+919876543210" class="footer__link">+91 98765 43210</a>
+          </div>
+          <div class="footer__contact-item">
+            <span class="footer__contact-icon"><i data-lucide="mail"></i></span>
+            <a href="mailto:hello@wecaninstitute.com" class="footer__link">hello@wecaninstitute.com</a>
+          </div>
+          <div class="footer__contact-item">
+            <span class="footer__contact-icon"><i data-lucide="clock"></i></span>
+            <span>Mon-Sat: 8:00 AM - 8:00 PM</span>
+          </div>
+        </address>
+
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__copy">© 2026 WE CAN Institute of English. All rights reserved.</p>
+        <nav class="footer__bottom-links" aria-label="Legal">
+          <a href="#" class="footer__bottom-link">Privacy Policy</a>
+          <a href="#" class="footer__bottom-link">Terms of Use</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/gallery.js"></script>
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+  </script>
 
 </body>
+
 </html>
