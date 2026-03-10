@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery — WE CAN Admin</title>
+  <link rel="stylesheet" href="../assets/css/admin-base.css" />
+  <link rel="stylesheet" href="../assets/css/admin-layout.css" />
+  <link rel="stylesheet" href="../assets/css/admin-components.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
+    .sidebar-overlay.show{display:block;}
+    .gallery-admin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+    .gal-item{border-radius:var(--r-lg);overflow:hidden;border:1.5px solid var(--border);background:var(--surface);transition:box-shadow var(--t-fast);}
+    .gal-item:hover{box-shadow:var(--shadow-md);}
+    .gal-item__thumb{aspect-ratio:4/3;background:linear-gradient(145deg,#e2e8f0,#f1f5f9);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+    .gal-item__thumb img{width:100%;height:100%;object-fit:cover;}
+    .gal-item__thumb-placeholder{text-align:center;color:var(--text-3);}
+    .gal-item__thumb-placeholder .lucide{width:32px;height:32px;margin-bottom:6px;}
+    .gal-item__cat{position:absolute;top:8px;left:8px;}
+    .gal-item__body{padding:10px 12px;}
+    .gal-item__caption{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+    .gal-item__meta{font-size:11px;color:var(--text-3);}
+    .gal-item__footer{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid var(--border);background:var(--surface-2);}
+    .cat-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+    .cat-filter-btn{padding:6px 14px;border-radius:var(--r-full);font-size:12px;font-weight:600;border:1.5px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;transition:all var(--t-fast);}
+    .cat-filter-btn:hover{border-color:var(--blue);color:var(--blue);}
+    .cat-filter-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+  </style>
+</head>
+<body>
+<div class="admin-app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__logo">
+      <img src="../assets/images/wecan-log.png" alt="WE CAN" onerror="this.style.display='none'" />
+      <div class="sidebar__logo-text"><span class="sidebar__logo-name">WE CAN</span><span class="sidebar__logo-sub">Admin Panel</span></div>
+    </div>
+    <nav class="sidebar__nav">
+      <span class="sidebar__section-label">Overview</span>
+      <a href="../index.html" class="sidebar__link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+      <span class="sidebar__section-label">Content</span>
+      <a href="hero.html"               class="sidebar__link"><i data-lucide="monitor-play"></i> Hero Section</a>
+      <a href="batches.html"            class="sidebar__link"><i data-lucide="book-open"></i> Batches</a>
+      <a href="faculty.html"            class="sidebar__link"><i data-lucide="users"></i> Faculty</a>
+      <a href="gallery.html"            class="sidebar__link active"><i data-lucide="image"></i> Gallery</a>
+      <a href="blog.html"               class="sidebar__link"><i data-lucide="pen-line"></i> Blog</a>
+      <a href="testimonials.html"       class="sidebar__link"><i data-lucide="message-square-quote"></i> Testimonials</a>
+      <span class="sidebar__section-label">Activity</span>
+      <a href="enquiries.html"          class="sidebar__link"><i data-lucide="inbox"></i> Enquiries</a>
+      <span class="sidebar__section-label">System</span>
+      <a href="settings.html"           class="sidebar__link"><i data-lucide="settings"></i> Settings</a>
+    </nav>
+    <div class="sidebar__footer">
+      <a href="../../frontend/index.html" class="sidebar__view-site" target="_blank"><i data-lucide="external-link"></i> View Website</a>
+      <div class="sidebar__footer-user"><div class="sidebar__avatar">A</div><div class="sidebar__user-info"><div class="sidebar__user-name">Admin</div><div class="sidebar__user-role">Super Admin</div></div></div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <main class="admin-main">
+    <div class="topbar">
+      <div class="topbar__left">
+        <button class="topbar__hamburger btn btn--ghost btn--icon" id="sidebarToggle"><i data-lucide="menu"></i></button>
+        <div><div class="t-page">Gallery</div><div class="topbar__breadcrumb"><a href="../index.html">Dashboard</a> <i data-lucide="chevron-right"></i> <span>Gallery</span></div></div>
+      </div>
+      <div class="topbar__right">
+        <button class="btn btn--primary" id="addItemBtn"><i data-lucide="plus"></i> Add Item</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- Category filters -->
+      <div class="cat-filters" id="catFilters">
+        <button class="cat-filter-btn active" data-cat="">All</button>
+        <button class="cat-filter-btn" data-cat="activities">Activities</button>
+        <button class="cat-filter-btn" data-cat="grand-finale">Grand Finale</button>
+        <button class="cat-filter-btn" data-cat="awards">Awards</button>
+        <button class="cat-filter-btn" data-cat="students">Students</button>
+        <button class="cat-filter-btn" data-cat="videos">Videos</button>
+      </div>
+
+      <div class="gallery-admin-grid" id="galleryGrid">
+        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-3);">Loading...</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="galleryModal">
+  <div class="modal">
+    <div class="modal__header">
+      <span class="modal__title" id="galleryModalTitle">Add Gallery Item</span>
+      <button class="modal__close" onclick="closeModal('galleryModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <input type="hidden" id="galId" />
+      <div class="form-group">
+        <label class="form-label">Media Type</label>
+        <select class="form-select" id="galType">
+          <option value="image">Image / Photo</option>
+          <option value="video">Video</option>
+        </select>
+      </div>
+      <div class="form-group" id="uploadSection">
+        <label class="form-label">Upload Image</label>
+        <div class="upload-area">
+          <div class="upload-area__icon"><i data-lucide="image-plus" style="width:40px;height:40px;"></i></div>
+          <div class="upload-area__text">Click to upload or drag & drop</div>
+          <div class="upload-area__hint">JPG, PNG, WebP · Max 2MB</div>
+          <input type="file" id="galFileInput" accept="image/*" />
+        </div>
+        <div id="imgPreviewWrap" style="margin-top:10px;display:none;">
+          <img id="imgPreview" style="width:100%;max-height:200px;object-fit:cover;border-radius:var(--r-md);border:1.5px solid var(--border);" />
+        </div>
+      </div>
+      <div class="form-group" id="videoSection" style="display:none;">
+        <label class="form-label">Video URL / File Path</label>
+        <input type="text" class="form-input" id="galVideoUrl" placeholder="assets/videos/filename.mp4 or YouTube URL" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Caption</label>
+        <input type="text" class="form-input" id="galCaption" placeholder="e.g. Group Speaking Activity" />
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-select" id="galCategory">
+            <option value="activities">Activities</option>
+            <option value="grand-finale">Grand Finale</option>
+            <option value="awards">Awards</option>
+            <option value="students">Students</option>
+            <option value="videos">Videos</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-input" id="galDate" />
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--ghost" onclick="closeModal('galleryModal')">Cancel</button>
+      <button class="btn btn--primary" id="saveGalBtn"><i data-lucide="save"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+let allGallery = [], editingId = null, uploadedUrl = '', activeCat = '';
+
+const catLabels = {'activities':'Activities','grand-finale':'Grand Finale','awards':'Awards','students':'Students','videos':'Videos'};
+const catColors = {'activities':'var(--blue)','grand-finale':'var(--purple)','awards':'var(--yellow)','students':'var(--green)','videos':'var(--red)'};
+
+document.getElementById('galType').addEventListener('change', e => {
+  const isVideo = e.target.value === 'video';
+  document.getElementById('uploadSection').style.display = isVideo ? 'none' : '';
+  document.getElementById('videoSection').style.display = isVideo ? '' : 'none';
+});
+
+document.getElementById('galFileInput').addEventListener('change', e => {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = r => {
+    uploadedUrl = r.target.result;
+    document.getElementById('imgPreview').src = uploadedUrl;
+    document.getElementById('imgPreviewWrap').style.display = '';
+  };
+  reader.readAsDataURL(file);
+});
+
+document.querySelectorAll('.cat-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.cat-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat = btn.dataset.cat;
+    renderGrid(filterGallery());
+  });
+});
+
+async function loadGallery() {
+  allGallery = await API.getGallery();
+  renderGrid(allGallery);
+}
+
+function filterGallery() {
+  return activeCat ? allGallery.filter(g => g.category === activeCat) : allGallery;
+}
+
+function renderGrid(data) {
+  const grid = document.getElementById('galleryGrid');
+  if (!data.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1"><div class="empty-state"><i data-lucide="image"></i><div class="empty-state__title">No items in this category</div></div></div>`;
+    lucide.createIcons(); return;
+  }
+  grid.innerHTML = data.map(g => `
+    <div class="gal-item">
+      <div class="gal-item__thumb">
+        ${g.url
+          ? (g.mediaType === 'video'
+              ? `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:#0f172a;"><i data-lucide="play-circle" style="width:40px;height:40px;color:rgba(255,255,255,0.6)"></i></div>`
+              : `<img src="${g.url}" alt="${g.caption}" />`)
+          : `<div class="gal-item__thumb-placeholder"><i data-lucide="${g.mediaType === 'video' ? 'video' : 'image'}"></i><div style="font-size:11px;">${g.mediaType === 'video' ? 'Video' : 'No image'}</div></div>`}
+        <span class="gal-item__cat"><span class="badge" style="background:${catColors[g.category]}22;color:${catColors[g.category]}">${catLabels[g.category]||g.category}</span></span>
+      </div>
+      <div class="gal-item__body">
+        <div class="gal-item__caption">${g.caption || 'Untitled'}</div>
+        <div class="gal-item__meta">${fmtDate(g.date)}</div>
+      </div>
+      <div class="gal-item__footer">
+        <span class="badge badge--${g.mediaType === 'video' ? 'red' : 'blue'}">${g.mediaType}</span>
+        <div style="display:flex;gap:4px;">
+          <button class="btn btn--ghost btn--sm btn--icon" onclick="editGal(${g.id})"><i data-lucide="pencil"></i></button>
+          <button class="btn btn--ghost-red btn--sm btn--icon" onclick="deleteGal(${g.id})"><i data-lucide="trash-2"></i></button>
+        </div>
+      </div>
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+function openAddModal() {
+  editingId = null; uploadedUrl = '';
+  document.getElementById('galleryModalTitle').textContent = 'Add Gallery Item';
+  document.getElementById('galId').value = '';
+  document.getElementById('galType').value = 'image';
+  document.getElementById('galCaption').value = '';
+  document.getElementById('galVideoUrl').value = '';
+  document.getElementById('galDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('imgPreviewWrap').style.display = 'none';
+  document.getElementById('uploadSection').style.display = '';
+  document.getElementById('videoSection').style.display = 'none';
+  if (activeCat) document.getElementById('galCategory').value = activeCat;
+  openModal('galleryModal');
+}
+
+function editGal(id) {
+  const g = allGallery.find(x => x.id === id);
+  if (!g) return;
+  editingId = id; uploadedUrl = g.url || '';
+  document.getElementById('galleryModalTitle').textContent = 'Edit Gallery Item';
+  document.getElementById('galType').value = g.mediaType || 'image';
+  document.getElementById('galCaption').value = g.caption || '';
+  document.getElementById('galCategory').value = g.category;
+  document.getElementById('galDate').value = g.date || '';
+  document.getElementById('galVideoUrl').value = g.mediaType === 'video' ? (g.url || '') : '';
+  const isVideo = g.mediaType === 'video';
+  document.getElementById('uploadSection').style.display = isVideo ? 'none' : '';
+  document.getElementById('videoSection').style.display = isVideo ? '' : 'none';
+  if (g.url && !isVideo) { document.getElementById('imgPreview').src = g.url; document.getElementById('imgPreviewWrap').style.display = ''; }
+  else { document.getElementById('imgPreviewWrap').style.display = 'none'; }
+  openModal('galleryModal');
+}
+
+async function deleteGal(id) {
+  confirmAction('Remove this gallery item?', async () => {
+    await API.deleteGalleryItem(id);
+    allGallery = allGallery.filter(x => x.id !== id);
+    renderGrid(filterGallery());
+    showToast('Item removed', 'success');
+  });
+}
+
+document.getElementById('saveGalBtn').addEventListener('click', async () => {
+  const mediaType = document.getElementById('galType').value;
+  const url = mediaType === 'video' ? document.getElementById('galVideoUrl').value : uploadedUrl;
+  const data = {
+    caption: document.getElementById('galCaption').value,
+    category: document.getElementById('galCategory').value,
+    mediaType, url, date: document.getElementById('galDate').value
+  };
+  if (editingId) {
+    await API.updateGalleryItem(editingId, data);
+    const idx = allGallery.findIndex(x => x.id === editingId);
+    if (idx > -1) allGallery[idx] = { ...allGallery[idx], ...data };
+    showToast('Item updated!', 'success');
+  } else {
+    const ni = await API.createGalleryItem(data);
+    allGallery.push(ni);
+    showToast('Item added!', 'success');
+  }
+  closeModal('galleryModal'); renderGrid(filterGallery());
+});
+
+document.getElementById('addItemBtn').addEventListener('click', openAddModal);
+loadGallery();
+</script>
+</body>
+</html>

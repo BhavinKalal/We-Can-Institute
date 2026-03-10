@@ -1,0 +1,112 @@
+/* ============================================================
+   ADMIN-BASE.CSS — Variables · Reset · Typography
+   WE CAN Institute — Admin Dashboard
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Brand */
+  --red:          #e31e24;
+  --red-dark:     #b91c1c;
+  --red-light:    #ef4444;
+  --red-ghost:    rgba(227,30,36,0.08);
+  --blue:         #1b9bd7;
+  --blue-light:   #38bdf8;
+  --blue-ghost:   rgba(27,155,215,0.08);
+
+  /* Sidebar */
+  --sidebar-bg:       #0b1120;
+  --sidebar-border:   rgba(255,255,255,0.07);
+  --sidebar-text:     rgba(255,255,255,0.5);
+  --sidebar-text-act: #ffffff;
+  --sidebar-hover:    rgba(255,255,255,0.05);
+  --sidebar-active:   rgba(27,155,215,0.15);
+  --sidebar-width:    255px;
+
+  /* Content */
+  --bg:           #f1f5f9;
+  --surface:      #ffffff;
+  --surface-2:    #f8fafc;
+  --border:       #e2e8f0;
+  --border-focus: #1b9bd7;
+  --text:         #0f172a;
+  --text-2:       #475569;
+  --text-3:       #94a3b8;
+
+  /* Status */
+  --green:        #10b981;
+  --green-ghost:  rgba(16,185,129,0.1);
+  --yellow:       #f59e0b;
+  --yellow-ghost: rgba(245,158,11,0.1);
+  --orange:       #f97316;
+  --orange-ghost: rgba(249,115,22,0.1);
+  --purple:       #8b5cf6;
+  --purple-ghost: rgba(139,92,246,0.1);
+
+  /* Layout */
+  --topbar-h:   64px;
+
+  /* Radii */
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   14px;
+  --r-xl:   20px;
+  --r-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.14);
+
+  --t-fast: 0.15s ease;
+  --t-base: 0.22s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text); background: var(--bg); overflow-x: hidden; }
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea { font-family: inherit; font-size: 14px; }
+
+/* Typography */
+.t-page   { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+.t-card   { font-size: 15px; font-weight: 700; color: var(--text); }
+.t-label  { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+.t-body   { font-size: 14px; color: var(--text-2); line-height: 1.6; }
+.t-small  { font-size: 12px; color: var(--text-3); }
+
+/* Lucide */
+.lucide { width: 1em; height: 1em; stroke-width: 2; vertical-align: -0.1em; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+
+/* Badges */
+.badge { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:var(--r-full); font-size:11px; font-weight:600; }
+.badge--green  { background:var(--green-ghost);  color:var(--green); }
+.badge--red    { background:var(--red-ghost);    color:var(--red); }
+.badge--yellow { background:var(--yellow-ghost); color:var(--yellow); }
+.badge--blue   { background:var(--blue-ghost);   color:var(--blue); }
+.badge--grey   { background:#f1f5f9; color:var(--text-3); border:1px solid var(--border); }
+.badge--orange { background:var(--orange-ghost); color:var(--orange); }
+.badge--purple { background:var(--purple-ghost); color:var(--purple); }
+
+/* Utils */
+.flex           { display:flex; }
+.items-center   { align-items:center; }
+.justify-between{ justify-content:space-between; }
+.gap-1 { gap:.25rem; } .gap-2 { gap:.5rem; } .gap-3 { gap:.75rem; }
+.gap-4 { gap:1rem; }   .gap-6 { gap:1.5rem; }
+.w-full { width:100%; }
+.text-red   { color:var(--red); }
+.text-green { color:var(--green); }
+.text-blue  { color:var(--blue); }
+.text-muted { color:var(--text-3); }
+.sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0); }
