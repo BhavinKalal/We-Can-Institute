@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — WE CAN Admin</title>
+  <link rel="stylesheet" href="assets/css/admin-base.css" />
+  <link rel="stylesheet" href="assets/css/admin-layout.css" />
+  <link rel="stylesheet" href="assets/css/admin-components.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:99; }
+    .sidebar-overlay.show { display:block; }
+    .recent-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .quick-actions { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+    .quick-action-btn {
+      display:flex; align-items:center; gap:10px;
+      padding:14px 16px; border-radius:var(--r-lg);
+      border:1.5px solid var(--border); background:var(--surface);
+      font-size:13px; font-weight:600; color:var(--text-2);
+      transition:all var(--t-fast); cursor:pointer;
+      text-decoration:none;
+    }
+    .quick-action-btn:hover { border-color:var(--blue); color:var(--blue); background:var(--blue-ghost); transform:translateY(-1px); box-shadow:var(--shadow-sm); }
+    .quick-action-btn .lucide { width:18px; height:18px; }
+    .welcome-banner {
+      background: linear-gradient(135deg, #0b1120 0%, #0f2040 50%, #0b1a30 100%);
+      border-radius:var(--r-xl); padding:28px 32px; margin-bottom:24px;
+      display:flex; align-items:center; justify-content:space-between;
+      border:1px solid rgba(27,155,215,0.15); position:relative; overflow:hidden;
+    }
+    .welcome-banner::before {
+      content:''; position:absolute; right:-40px; top:-40px;
+      width:200px; height:200px; border-radius:50%;
+      background:radial-gradient(circle, rgba(27,155,215,0.12) 0%, transparent 70%);
+    }
+    .welcome-banner__title { font-size:22px; font-weight:800; color:#fff; margin-bottom:6px; }
+    .welcome-banner__sub   { font-size:13px; color:rgba(255,255,255,0.5); }
+    @media(max-width:900px){ .recent-grid{grid-template-columns:1fr;} .quick-actions{grid-template-columns:repeat(2,1fr);} }
+    @media(max-width:480px){ .quick-actions{grid-template-columns:1fr;} .welcome-banner{flex-direction:column;gap:16px;} }
+  </style>
+</head>
+<body>
+<div class="admin-app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__logo">
+      <img src="assets/images/wecan-log.png" alt="WE CAN" onerror="this.style.display='none'" />
+      <div class="sidebar__logo-text">
+        <span class="sidebar__logo-name">WE CAN</span>
+        <span class="sidebar__logo-sub">Admin Panel</span>
+      </div>
+    </div>
+    <nav class="sidebar__nav">
+      <span class="sidebar__section-label">Overview</span>
+      <a href="index.html"             class="sidebar__link active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+      <span class="sidebar__section-label">Content</span>
+      <a href="pages/hero.html"        class="sidebar__link"><i data-lucide="monitor-play"></i> Hero Section</a>
+      <a href="pages/batches.html"     class="sidebar__link"><i data-lucide="book-open"></i> Batches</a>
+      <a href="pages/faculty.html"     class="sidebar__link"><i data-lucide="users"></i> Faculty</a>
+      <a href="pages/gallery.html"     class="sidebar__link"><i data-lucide="image"></i> Gallery</a>
+      <a href="pages/blog.html"        class="sidebar__link"><i data-lucide="pen-line"></i> Blog</a>
+      <a href="pages/testimonials.html"class="sidebar__link"><i data-lucide="message-square-quote"></i> Testimonials</a>
+      <span class="sidebar__section-label">Activity</span>
+      <a href="pages/enquiries.html"   class="sidebar__link"><i data-lucide="inbox"></i> Enquiries <span class="sidebar__link-badge" id="enquiryCount">8</span></a>
+      <span class="sidebar__section-label">System</span>
+      <a href="pages/settings.html"    class="sidebar__link"><i data-lucide="settings"></i> Settings</a>
+    </nav>
+    <div class="sidebar__footer">
+      <a href="../frontend/index.html" class="sidebar__view-site" target="_blank">
+        <i data-lucide="external-link"></i> View Website
+      </a>
+      <div class="sidebar__footer-user">
+        <div class="sidebar__avatar">A</div>
+        <div class="sidebar__user-info">
+          <div class="sidebar__user-name">Admin</div>
+          <div class="sidebar__user-role">Super Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+    <div class="topbar">
+      <div class="topbar__left">
+        <button class="topbar__hamburger btn btn--ghost btn--icon" id="sidebarToggle"><i data-lucide="menu"></i></button>
+        <div class="t-page">Dashboard</div>
+        <div class="topbar__breadcrumb"><i data-lucide="home"></i> <span>Home</span></div>
+      </div>
+      <div class="topbar__right">
+        <button class="topbar__icon-btn" title="Notifications">
+          <i data-lucide="bell"></i>
+          <span class="topbar__notif-dot"></span>
+        </button>
+        <a href="../frontend/index.html" target="_blank" class="btn btn--ghost btn--sm"><i data-lucide="external-link"></i> View Site</a>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div>
+          <div class="welcome-banner__title">👋 Welcome back, Admin!</div>
+          <div class="welcome-banner__sub">Here's what's happening at WE CAN Institute today.</div>
+        </div>
+        <a href="pages/enquiries.html" class="btn btn--primary"><i data-lucide="inbox"></i> View Enquiries</a>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-card__icon" style="background:var(--blue-ghost);color:var(--blue)"><i data-lucide="users"></i></div>
+          <div class="stat-card__content">
+            <div class="stat-card__num" id="statStudents">5,200</div>
+            <div class="stat-card__label">Students Trained</div>
+            <div class="stat-card__delta stat-card__delta--up"><i data-lucide="trending-up"></i> +120 this month</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__icon" style="background:var(--green-ghost);color:var(--green)"><i data-lucide="inbox"></i></div>
+          <div class="stat-card__content">
+            <div class="stat-card__num" id="statEnquiries">8</div>
+            <div class="stat-card__label">New Enquiries</div>
+            <div class="stat-card__delta stat-card__delta--up"><i data-lucide="trending-up"></i> +3 today</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__icon" style="background:var(--yellow-ghost);color:var(--yellow)"><i data-lucide="book-open"></i></div>
+          <div class="stat-card__content">
+            <div class="stat-card__num" id="statBatches">5</div>
+            <div class="stat-card__label">Active Batches</div>
+            <div class="stat-card__delta stat-card__delta--up"><i data-lucide="check-circle"></i> All running</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__icon" style="background:var(--purple-ghost);color:var(--purple)"><i data-lucide="pen-line"></i></div>
+          <div class="stat-card__content">
+            <div class="stat-card__num" id="statBlogs">5</div>
+            <div class="stat-card__label">Blog Posts</div>
+            <div class="stat-card__delta stat-card__delta--down" style="color:var(--yellow)"><i data-lucide="file-edit"></i> 1 draft pending</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div style="margin-bottom:10px;" class="t-label">Quick Actions</div>
+      <div class="quick-actions">
+        <a href="pages/enquiries.html" class="quick-action-btn"><i data-lucide="inbox"></i> View Enquiries</a>
+        <a href="pages/blog.html"      class="quick-action-btn"><i data-lucide="pen-line"></i> Write Blog Post</a>
+        <a href="pages/gallery.html"   class="quick-action-btn"><i data-lucide="image-plus"></i> Add Gallery Photo</a>
+        <a href="pages/batches.html"   class="quick-action-btn"><i data-lucide="plus-circle"></i> Add Batch</a>
+      </div>
+
+      <!-- Recent content grid -->
+      <div class="recent-grid">
+
+        <!-- Recent Enquiries -->
+        <div class="card">
+          <div class="card__header">
+            <span class="card__title"><i data-lucide="inbox" style="width:15px;height:15px;margin-right:6px;vertical-align:-2px;color:var(--blue)"></i>Recent Enquiries</span>
+            <a href="pages/enquiries.html" class="btn btn--ghost btn--sm">View All</a>
+          </div>
+          <div class="table-wrap" style="border:none;border-radius:0;box-shadow:none;">
+            <table class="table" id="recentEnquiriesTable">
+              <thead><tr>
+                <th>Name</th><th>Batch</th><th>Date</th><th>Status</th>
+              </tr></thead>
+              <tbody id="recentEnquiriesBody">
+                <tr><td colspan="4" style="text-align:center;color:var(--text-3);padding:24px;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Content Summary -->
+        <div class="card">
+          <div class="card__header">
+            <span class="card__title"><i data-lucide="layout-grid" style="width:15px;height:15px;margin-right:6px;vertical-align:-2px;color:var(--blue)"></i>Content Summary</span>
+            <span class="badge badge--green">All Live</span>
+          </div>
+          <div class="card__body" style="padding:0;">
+            <div id="contentSummaryList"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/admin.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  // Load recent enquiries
+  const enquiries = await API.getEnquiries();
+  const tbody = document.getElementById('recentEnquiriesBody');
+  const recent = enquiries.slice(0, 5);
+  tbody.innerHTML = recent.map(e => `
+    <tr>
+      <td class="td-main">${e.name}</td>
+      <td><span class="badge badge--blue">${e.batch}</span></td>
+      <td class="text-muted" style="font-size:12px;">${fmtDate(e.date)}</td>
+      <td>${statusBadge(e.status)}</td>
+    </tr>`).join('');
+
+  // Content summary
+  const [batches, faculty, gallery, blog, testimonials] = await Promise.all([
+    API.getBatches(), API.getFaculty(), API.getGallery(), API.getPosts(), API.getTestimonials()
+  ]);
+
+  const items = [
+    { label:'Batches',      count:batches.length,     icon:'book-open',    href:'pages/batches.html',      color:'var(--blue)' },
+    { label:'Faculty',      count:faculty.length,     icon:'users',        href:'pages/faculty.html',      color:'var(--green)' },
+    { label:'Gallery Items',count:gallery.length,     icon:'image',        href:'pages/gallery.html',      color:'var(--yellow)' },
+    { label:'Blog Posts',   count:blog.length,        icon:'pen-line',     href:'pages/blog.html',         color:'var(--purple)' },
+    { label:'Testimonials', count:testimonials.length,icon:'message-square-quote', href:'pages/testimonials.html', color:'var(--orange)' },
+  ];
+
+  document.getElementById('contentSummaryList').innerHTML = items.map(item => `
+    <a href="${item.href}" style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);transition:background var(--t-fast);text-decoration:none;"
+       onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:32px;height:32px;border-radius:var(--r-md);background:${item.color}18;display:flex;align-items:center;justify-content:center;color:${item.color}">
+          <i data-lucide="${item.icon}" style="width:15px;height:15px;"></i>
+        </div>
+        <span style="font-size:13.5px;font-weight:600;color:var(--text)">${item.label}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:18px;font-weight:800;color:var(--text)">${item.count}</span>
+        <i data-lucide="chevron-right" style="width:14px;height:14px;color:var(--text-3)"></i>
+      </div>
+    </a>`).join('');
+
+  lucide.createIcons();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enquiries — WE CAN Admin</title>
+  <link rel="stylesheet" href="../assets/css/admin-base.css" />
+  <link rel="stylesheet" href="../assets/css/admin-layout.css" />
+  <link rel="stylesheet" href="../assets/css/admin-components.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
+    .sidebar-overlay.show{display:block;}
+    .enq-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+    .enq-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;text-align:center;}
+    .enq-stat__num{font-size:24px;font-weight:800;color:var(--text);margin-bottom:4px;}
+    .enq-stat__label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);}
+    .notes-input{width:100%;padding:6px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;}
+    .notes-input:focus{border-color:var(--border-focus);}
+    @media(max-width:768px){.enq-stats{grid-template-columns:repeat(2,1fr);}}
+  </style>
+</head>
+<body>
+<div class="admin-app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__logo">
+      <img src="../assets/images/wecan-log.png" alt="WE CAN" onerror="this.style.display='none'" />
+      <div class="sidebar__logo-text"><span class="sidebar__logo-name">WE CAN</span><span class="sidebar__logo-sub">Admin Panel</span></div>
+    </div>
+    <nav class="sidebar__nav">
+      <span class="sidebar__section-label">Overview</span>
+      <a href="../index.html"           class="sidebar__link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+      <span class="sidebar__section-label">Content</span>
+      <a href="hero.html"               class="sidebar__link"><i data-lucide="monitor-play"></i> Hero Section</a>
+      <a href="batches.html"            class="sidebar__link"><i data-lucide="book-open"></i> Batches</a>
+      <a href="faculty.html"            class="sidebar__link"><i data-lucide="users"></i> Faculty</a>
+      <a href="gallery.html"            class="sidebar__link"><i data-lucide="image"></i> Gallery</a>
+      <a href="blog.html"               class="sidebar__link"><i data-lucide="pen-line"></i> Blog</a>
+      <a href="testimonials.html"       class="sidebar__link"><i data-lucide="message-square-quote"></i> Testimonials</a>
+      <span class="sidebar__section-label">Activity</span>
+      <a href="enquiries.html"          class="sidebar__link active"><i data-lucide="inbox"></i> Enquiries</a>
+      <span class="sidebar__section-label">System</span>
+      <a href="settings.html"           class="sidebar__link"><i data-lucide="settings"></i> Settings</a>
+    </nav>
+    <div class="sidebar__footer">
+      <a href="../../frontend/index.html" class="sidebar__view-site" target="_blank"><i data-lucide="external-link"></i> View Website</a>
+      <div class="sidebar__footer-user"><div class="sidebar__avatar">A</div><div class="sidebar__user-info"><div class="sidebar__user-name">Admin</div><div class="sidebar__user-role">Super Admin</div></div></div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <main class="admin-main">
+    <div class="topbar">
+      <div class="topbar__left">
+        <button class="topbar__hamburger btn btn--ghost btn--icon" id="sidebarToggle"><i data-lucide="menu"></i></button>
+        <div><div class="t-page">Enquiries</div><div class="topbar__breadcrumb"><a href="../index.html">Dashboard</a> <i data-lucide="chevron-right"></i> <span>Enquiries</span></div></div>
+      </div>
+      <div class="topbar__right">
+        <button class="btn btn--ghost btn--sm" id="exportBtn"><i data-lucide="download"></i> Export CSV</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- Stats -->
+      <div class="enq-stats" id="enqStats">
+        <div class="enq-stat"><div class="enq-stat__num" id="totalCount">0</div><div class="enq-stat__label">Total</div></div>
+        <div class="enq-stat"><div class="enq-stat__num" style="color:var(--blue)" id="newCount">0</div><div class="enq-stat__label">New</div></div>
+        <div class="enq-stat"><div class="enq-stat__num" style="color:var(--yellow)" id="contactedCount">0</div><div class="enq-stat__label">Contacted</div></div>
+        <div class="enq-stat"><div class="enq-stat__num" style="color:var(--green)" id="enrolledCount">0</div><div class="enq-stat__label">Enrolled</div></div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-box"><i data-lucide="search"></i><input type="text" id="searchInput" placeholder="Search by name or phone..." /></div>
+        <select class="filter-select" id="batchFilter"><option value="">All Batches</option></select>
+        <select class="filter-select" id="statusFilter">
+          <option value="">All Status</option>
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="enrolled">Enrolled</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr>
+            <th>#</th><th>Name</th><th>Phone</th><th>Batch</th><th>Date</th><th>Status</th><th>Notes</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="enquiriesBody">
+            <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-3);">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- View/Edit Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal modal--sm">
+    <div class="modal__header">
+      <span class="modal__title">Update Enquiry</span>
+      <button class="modal__close" onclick="closeModal('editModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <input type="hidden" id="editId" />
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="editStatus">
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="enrolled">Enrolled</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="editNotes" rows="3" placeholder="Add follow-up notes..."></textarea>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--ghost" onclick="closeModal('editModal')">Cancel</button>
+      <button class="btn btn--primary" id="saveEnquiryBtn"><i data-lucide="save"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+let allEnquiries = [];
+
+async function loadEnquiries() {
+  allEnquiries = await API.getEnquiries();
+  // Populate batch filter
+  const batches = [...new Set(allEnquiries.map(e => e.batch))];
+  const bf = document.getElementById('batchFilter');
+  batches.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bf.appendChild(o); });
+  renderTable(allEnquiries);
+  updateStats(allEnquiries);
+}
+
+function updateStats(data) {
+  document.getElementById('totalCount').textContent = data.length;
+  document.getElementById('newCount').textContent = data.filter(e => e.status === 'new').length;
+  document.getElementById('contactedCount').textContent = data.filter(e => e.status === 'contacted').length;
+  document.getElementById('enrolledCount').textContent = data.filter(e => e.status === 'enrolled').length;
+}
+
+function renderTable(data) {
+  const tbody = document.getElementById('enquiriesBody');
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;"><div class="empty-state"><i data-lucide="inbox"></i><div class="empty-state__title">No enquiries found</div></div></td></tr>`;
+    lucide.createIcons(); return;
+  }
+  tbody.innerHTML = data.map((e, i) => `
+    <tr>
+      <td class="text-muted" style="font-size:12px;">${i+1}</td>
+      <td class="td-main">${e.name}</td>
+      <td><a href="tel:${e.phone}" style="color:var(--blue);font-size:13px;">${e.phone}</a></td>
+      <td><span class="badge badge--blue">${e.batch}</span></td>
+      <td class="text-muted" style="font-size:12px;">${fmtDate(e.date)}</td>
+      <td>${statusBadge(e.status)}</td>
+      <td style="font-size:12px;color:var(--text-3);max-width:140px;" class="truncate">${e.notes || '—'}</td>
+      <td>
+        <div class="td-actions">
+          <button class="btn btn--ghost btn--sm btn--icon" onclick="editEnquiry(${e.id})" title="Edit"><i data-lucide="pencil"></i></button>
+          <a href="tel:${e.phone}" class="btn btn--ghost btn--sm btn--icon" title="Call"><i data-lucide="phone"></i></a>
+          <button class="btn btn--ghost-red btn--sm btn--icon" onclick="deleteEnquiry(${e.id})" title="Delete"><i data-lucide="trash-2"></i></button>
+        </div>
+      </td>
+    </tr>`).join('');
+  lucide.createIcons();
+}
+
+function editEnquiry(id) {
+  const e = allEnquiries.find(x => x.id === id);
+  if (!e) return;
+  document.getElementById('editId').value = id;
+  document.getElementById('editStatus').value = e.status;
+  document.getElementById('editNotes').value = e.notes || '';
+  openModal('editModal');
+}
+
+async function deleteEnquiry(id) {
+  confirmAction('Delete this enquiry? This cannot be undone.', async () => {
+    await API.deleteEnquiry(id);
+    allEnquiries = allEnquiries.filter(e => e.id !== id);
+    renderTable(allEnquiries); updateStats(allEnquiries);
+    showToast('Enquiry deleted', 'success');
+  });
+}
+
+document.getElementById('saveEnquiryBtn').addEventListener('click', async () => {
+  const id = parseInt(document.getElementById('editId').value);
+  const data = { status: document.getElementById('editStatus').value, notes: document.getElementById('editNotes').value };
+  await API.updateEnquiry(id, data);
+  const idx = allEnquiries.findIndex(e => e.id === id);
+  if (idx > -1) allEnquiries[idx] = { ...allEnquiries[idx], ...data };
+  closeModal('editModal');
+  renderTable(filterData()); updateStats(filterData());
+  showToast('Enquiry updated!', 'success');
+});
+
+function filterData() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const batch = document.getElementById('batchFilter').value;
+  const status = document.getElementById('statusFilter').value;
+  return allEnquiries.filter(e =>
+    (!q || e.name.toLowerCase().includes(q) || e.phone.includes(q)) &&
+    (!batch || e.batch === batch) &&
+    (!status || e.status === status)
+  );
+}
+
+['searchInput','batchFilter','statusFilter'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => renderTable(filterData()));
+});
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const data = filterData();
+  const csv = ['Name,Phone,Batch,Date,Status,Notes', ...data.map(e => `${e.name},${e.phone},${e.batch},${e.date},${e.status},"${e.notes}"`)].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv,' + encodeURIComponent(csv);
+  a.download = 'enquiries.csv';
+  a.click();
+  showToast('Exported successfully!', 'success');
+});
+
+loadEnquiries();
+</script>
+</body>
+</html>

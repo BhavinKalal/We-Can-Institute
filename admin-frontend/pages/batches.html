@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Batches — WE CAN Admin</title>
+  <link rel="stylesheet" href="../assets/css/admin-base.css" />
+  <link rel="stylesheet" href="../assets/css/admin-layout.css" />
+  <link rel="stylesheet" href="../assets/css/admin-components.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
+    .sidebar-overlay.show{display:block;}
+    .batch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+    .batch-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:box-shadow var(--t-fast);}
+    .batch-card:hover{box-shadow:var(--shadow-md);}
+    .batch-card__header{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .batch-card__icon{width:42px;height:42px;border-radius:var(--r-md);background:var(--blue-ghost);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+    .batch-card__name{font-size:15px;font-weight:700;color:var(--text);}
+    .batch-card__body{padding:16px 20px;}
+    .batch-card__row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2);margin-bottom:8px;}
+    .batch-card__row .lucide{width:14px;height:14px;color:var(--text-3);}
+    .batch-card__desc{font-size:13px;color:var(--text-3);line-height:1.5;margin-top:8px;}
+    .batch-card__footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);}
+    .seat-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:4px;}
+    .seat-bar__fill{height:100%;border-radius:99px;background:var(--blue);transition:width .5s ease;}
+  </style>
+</head>
+<body>
+<div class="admin-app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__logo">
+      <img src="../assets/images/wecan-log.png" alt="WE CAN" onerror="this.style.display='none'" />
+      <div class="sidebar__logo-text"><span class="sidebar__logo-name">WE CAN</span><span class="sidebar__logo-sub">Admin Panel</span></div>
+    </div>
+    <nav class="sidebar__nav">
+      <span class="sidebar__section-label">Overview</span>
+      <a href="../index.html"           class="sidebar__link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+      <span class="sidebar__section-label">Content</span>
+      <a href="hero.html"               class="sidebar__link"><i data-lucide="monitor-play"></i> Hero Section</a>
+      <a href="batches.html"            class="sidebar__link active"><i data-lucide="book-open"></i> Batches</a>
+      <a href="faculty.html"            class="sidebar__link"><i data-lucide="users"></i> Faculty</a>
+      <a href="gallery.html"            class="sidebar__link"><i data-lucide="image"></i> Gallery</a>
+      <a href="blog.html"               class="sidebar__link"><i data-lucide="pen-line"></i> Blog</a>
+      <a href="testimonials.html"       class="sidebar__link"><i data-lucide="message-square-quote"></i> Testimonials</a>
+      <span class="sidebar__section-label">Activity</span>
+      <a href="enquiries.html"          class="sidebar__link"><i data-lucide="inbox"></i> Enquiries</a>
+      <span class="sidebar__section-label">System</span>
+      <a href="settings.html"           class="sidebar__link"><i data-lucide="settings"></i> Settings</a>
+    </nav>
+    <div class="sidebar__footer">
+      <a href="../../frontend/index.html" class="sidebar__view-site" target="_blank"><i data-lucide="external-link"></i> View Website</a>
+      <div class="sidebar__footer-user"><div class="sidebar__avatar">A</div><div class="sidebar__user-info"><div class="sidebar__user-name">Admin</div><div class="sidebar__user-role">Super Admin</div></div></div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <main class="admin-main">
+    <div class="topbar">
+      <div class="topbar__left">
+        <button class="topbar__hamburger btn btn--ghost btn--icon" id="sidebarToggle"><i data-lucide="menu"></i></button>
+        <div><div class="t-page">Batches</div><div class="topbar__breadcrumb"><a href="../index.html">Dashboard</a> <i data-lucide="chevron-right"></i> <span>Batches</span></div></div>
+      </div>
+      <div class="topbar__right">
+        <button class="btn btn--primary" id="addBatchBtn"><i data-lucide="plus"></i> Add Batch</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="toolbar">
+        <div class="search-box"><i data-lucide="search"></i><input type="text" id="searchInput" placeholder="Search batches..." /></div>
+        <select class="filter-select" id="levelFilter">
+          <option value="">All Levels</option>
+          <option>Beginner</option><option>Elementary</option><option>Intermediate</option><option>Advanced</option>
+        </select>
+      </div>
+      <div class="batch-grid" id="batchGrid">
+        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-3);">Loading...</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="batchModal">
+  <div class="modal">
+    <div class="modal__header">
+      <span class="modal__title" id="batchModalTitle">Add Batch</span>
+      <button class="modal__close" onclick="closeModal('batchModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <input type="hidden" id="batchId" />
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Batch Name <span class="required">*</span></label>
+          <input type="text" class="form-input" id="batchName" placeholder="e.g. Basic" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Icon (Emoji)</label>
+          <input type="text" class="form-input" id="batchIcon" placeholder="💬" maxlength="4" />
+        </div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Level <span class="required">*</span></label>
+          <select class="form-select" id="batchLevel">
+            <option>Beginner</option><option>Elementary</option><option>Intermediate</option><option>Advanced</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Duration</label>
+          <input type="text" class="form-input" id="batchDuration" placeholder="e.g. 3 Months" />
+        </div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Timing / Schedule</label>
+          <input type="text" class="form-input" id="batchTiming" placeholder="e.g. Mon-Wed · 5PM" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Badge Label (optional)</label>
+          <input type="text" class="form-input" id="batchBadge" placeholder="e.g. Most Popular" />
+        </div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Total Seats</label>
+          <input type="number" class="form-input" id="batchSeats" placeholder="20" min="1" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Seats Filled</label>
+          <input type="number" class="form-input" id="batchFilled" placeholder="0" min="0" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="batchDesc" rows="3" placeholder="Brief description of this batch..."></textarea>
+      </div>
+      <div class="form-group">
+        <div class="toggle-wrap">
+          <label class="toggle"><input type="checkbox" id="batchActive" checked /><div class="toggle__track"></div><div class="toggle__thumb"></div></label>
+          <span style="font-size:13.5px;font-weight:500;color:var(--text-2)">Active (visible on website)</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--ghost" onclick="closeModal('batchModal')">Cancel</button>
+      <button class="btn btn--primary" id="saveBatchBtn"><i data-lucide="save"></i> Save Batch</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+let allBatches = [], editingId = null;
+
+async function loadBatches() {
+  allBatches = await API.getBatches();
+  renderGrid(allBatches);
+}
+
+function renderGrid(data) {
+  const grid = document.getElementById('batchGrid');
+  if (!data.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1"><div class="empty-state"><i data-lucide="book-open"></i><div class="empty-state__title">No batches found</div><button class="btn btn--primary" onclick="openAddModal()"><i data-lucide="plus"></i> Add First Batch</button></div></div>`;
+    lucide.createIcons(); return;
+  }
+  grid.innerHTML = data.map(b => {
+    const pct = b.seats ? Math.round((b.filled/b.seats)*100) : 0;
+    const barColor = pct >= 90 ? 'var(--red)' : pct >= 70 ? 'var(--yellow)' : 'var(--blue)';
+    return `
+    <div class="batch-card">
+      <div class="batch-card__header">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="batch-card__icon">${b.icon || '📚'}</div>
+          <div>
+            <div class="batch-card__name">${b.name}</div>
+            ${levelBadge(b.level)}
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn--ghost btn--sm btn--icon" onclick="editBatch(${b.id})" title="Edit"><i data-lucide="pencil"></i></button>
+          <button class="btn btn--ghost-red btn--sm btn--icon" onclick="deleteBatch(${b.id})" title="Delete"><i data-lucide="trash-2"></i></button>
+        </div>
+      </div>
+      <div class="batch-card__body">
+        <div class="batch-card__row"><i data-lucide="clock"></i> ${b.duration}</div>
+        <div class="batch-card__row"><i data-lucide="calendar"></i> ${b.timing}</div>
+        <div class="batch-card__row">
+          <i data-lucide="users"></i>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span>${b.filled}/${b.seats} seats</span>
+              <span style="font-weight:600;color:${barColor}">${pct}%</span>
+            </div>
+            <div class="seat-bar"><div class="seat-bar__fill" style="width:${pct}%;background:${barColor}"></div></div>
+          </div>
+        </div>
+        ${b.description ? `<div class="batch-card__desc">${b.description}</div>` : ''}
+      </div>
+      <div class="batch-card__footer">
+        ${b.badge ? `<span class="badge badge--blue">${b.badge}</span>` : '<span></span>'}
+        ${statusBadge(b.active ? 'active' : 'inactive')}
+      </div>
+    </div>`}).join('');
+  lucide.createIcons();
+}
+
+function openAddModal() {
+  editingId = null;
+  document.getElementById('batchModalTitle').textContent = 'Add Batch';
+  document.getElementById('batchId').value = '';
+  ['batchName','batchIcon','batchDuration','batchTiming','batchBadge','batchDesc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('batchSeats').value = '20';
+  document.getElementById('batchFilled').value = '0';
+  document.getElementById('batchLevel').value = 'Beginner';
+  document.getElementById('batchActive').checked = true;
+  openModal('batchModal');
+}
+
+function editBatch(id) {
+  const b = allBatches.find(x => x.id === id);
+  if (!b) return;
+  editingId = id;
+  document.getElementById('batchModalTitle').textContent = 'Edit Batch';
+  document.getElementById('batchId').value = id;
+  document.getElementById('batchName').value = b.name;
+  document.getElementById('batchIcon').value = b.icon || '';
+  document.getElementById('batchLevel').value = b.level;
+  document.getElementById('batchDuration').value = b.duration;
+  document.getElementById('batchTiming').value = b.timing;
+  document.getElementById('batchBadge').value = b.badge || '';
+  document.getElementById('batchSeats').value = b.seats;
+  document.getElementById('batchFilled').value = b.filled;
+  document.getElementById('batchDesc').value = b.description || '';
+  document.getElementById('batchActive').checked = b.active;
+  openModal('batchModal');
+}
+
+async function deleteBatch(id) {
+  const b = allBatches.find(x => x.id === id);
+  confirmAction(`Delete "${b.name}"? This cannot be undone.`, async () => {
+    await API.deleteBatch(id);
+    allBatches = allBatches.filter(x => x.id !== id);
+    renderGrid(filterBatches());
+    showToast('Batch deleted', 'success');
+  });
+}
+
+document.getElementById('saveBatchBtn').addEventListener('click', async () => {
+  const name = document.getElementById('batchName').value.trim();
+  if (!name) { showToast('Batch name is required', 'error'); return; }
+  const data = {
+    name, icon: document.getElementById('batchIcon').value,
+    level: document.getElementById('batchLevel').value,
+    duration: document.getElementById('batchDuration').value,
+    timing: document.getElementById('batchTiming').value,
+    badge: document.getElementById('batchBadge').value,
+    seats: parseInt(document.getElementById('batchSeats').value) || 20,
+    filled: parseInt(document.getElementById('batchFilled').value) || 0,
+    description: document.getElementById('batchDesc').value,
+    active: document.getElementById('batchActive').checked
+  };
+  if (editingId) {
+    await API.updateBatch(editingId, data);
+    const idx = allBatches.findIndex(x => x.id === editingId);
+    if (idx > -1) allBatches[idx] = { ...allBatches[idx], ...data };
+    showToast('Batch updated!', 'success');
+  } else {
+    const newB = await API.createBatch(data);
+    allBatches.push(newB);
+    showToast('Batch added!', 'success');
+  }
+  closeModal('batchModal');
+  renderGrid(filterBatches());
+});
+
+function filterBatches() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const level = document.getElementById('levelFilter').value;
+  return allBatches.filter(b => (!q || b.name.toLowerCase().includes(q)) && (!level || b.level === level));
+}
+
+document.getElementById('addBatchBtn').addEventListener('click', openAddModal);
+['searchInput','levelFilter'].forEach(id => document.getElementById(id).addEventListener('input', () => renderGrid(filterBatches())));
+loadBatches();
+</script>
+</body>
+</html>

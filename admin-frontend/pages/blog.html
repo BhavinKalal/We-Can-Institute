@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog — WE CAN Admin</title>
+  <link rel="stylesheet" href="../assets/css/admin-base.css" />
+  <link rel="stylesheet" href="../assets/css/admin-layout.css" />
+  <link rel="stylesheet" href="../assets/css/admin-components.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
+    .sidebar-overlay.show{display:block;}
+    .blog-list-view { display: flex; flex-direction: column; gap: 0; }
+    .blog-row {
+      display: grid; grid-template-columns: 2.5fr 1fr 1fr 120px 100px;
+      align-items: center; gap: 16px;
+      padding: 14px 20px; border-bottom: 1px solid var(--border);
+      transition: background var(--t-fast);
+    }
+    .blog-row:last-child { border-bottom: none; }
+    .blog-row:hover { background: var(--surface-2); }
+    .blog-row__title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .blog-row__meta  { font-size: 12px; color: var(--text-3); }
+    @media(max-width:900px){ .blog-row{ grid-template-columns:1fr 80px; } .blog-row > *:nth-child(n+3){ display:none; } }
+  </style>
+</head>
+<body>
+<div class="admin-app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__logo">
+      <img src="../assets/images/wecan-log.png" alt="WE CAN" onerror="this.style.display='none'" />
+      <div class="sidebar__logo-text"><span class="sidebar__logo-name">WE CAN</span><span class="sidebar__logo-sub">Admin Panel</span></div>
+    </div>
+    <nav class="sidebar__nav">
+      <span class="sidebar__section-label">Overview</span>
+      <a href="../index.html" class="sidebar__link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+      <span class="sidebar__section-label">Content</span>
+      <a href="hero.html"               class="sidebar__link"><i data-lucide="monitor-play"></i> Hero Section</a>
+      <a href="batches.html"            class="sidebar__link"><i data-lucide="book-open"></i> Batches</a>
+      <a href="faculty.html"            class="sidebar__link"><i data-lucide="users"></i> Faculty</a>
+      <a href="gallery.html"            class="sidebar__link"><i data-lucide="image"></i> Gallery</a>
+      <a href="blog.html"               class="sidebar__link active"><i data-lucide="pen-line"></i> Blog</a>
+      <a href="testimonials.html"       class="sidebar__link"><i data-lucide="message-square-quote"></i> Testimonials</a>
+      <span class="sidebar__section-label">Activity</span>
+      <a href="enquiries.html"          class="sidebar__link"><i data-lucide="inbox"></i> Enquiries</a>
+      <span class="sidebar__section-label">System</span>
+      <a href="settings.html"           class="sidebar__link"><i data-lucide="settings"></i> Settings</a>
+    </nav>
+    <div class="sidebar__footer">
+      <a href="../../frontend/index.html" class="sidebar__view-site" target="_blank"><i data-lucide="external-link"></i> View Website</a>
+      <div class="sidebar__footer-user"><div class="sidebar__avatar">A</div><div class="sidebar__user-info"><div class="sidebar__user-name">Admin</div><div class="sidebar__user-role">Super Admin</div></div></div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <main class="admin-main">
+    <div class="topbar">
+      <div class="topbar__left">
+        <button class="topbar__hamburger btn btn--ghost btn--icon" id="sidebarToggle"><i data-lucide="menu"></i></button>
+        <div><div class="t-page">Blog</div><div class="topbar__breadcrumb"><a href="../index.html">Dashboard</a> <i data-lucide="chevron-right"></i> <span>Blog</span></div></div>
+      </div>
+      <div class="topbar__right">
+        <button class="btn btn--primary" id="newPostBtn"><i data-lucide="plus"></i> New Post</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <!-- List view -->
+      <div id="listView">
+        <div class="toolbar">
+          <div class="search-box"><i data-lucide="search"></i><input type="text" id="searchInput" placeholder="Search posts..." /></div>
+          <select class="filter-select" id="statusFilter"><option value="">All Status</option><option value="published">Published</option><option value="draft">Draft</option></select>
+          <select class="filter-select" id="catFilter"><option value="">All Categories</option></select>
+        </div>
+        <div class="card">
+          <div class="blog-list-view" style="padding:0;">
+            <div class="blog-row" style="background:var(--surface-2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);">
+              <div>Post</div><div>Category</div><div>Author</div><div>Date</div><div>Actions</div>
+            </div>
+            <div id="blogList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editor view (hidden initially) -->
+      <div id="editorView" style="display:none;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+          <button class="btn btn--ghost btn--sm" id="backToListBtn"><i data-lucide="arrow-left"></i> Back to Posts</button>
+          <span class="text-muted" style="font-size:13px;" id="editingLabel">New Post</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start;">
+          <div>
+            <div class="card" style="margin-bottom:16px;">
+              <div class="card__body">
+                <div class="form-group">
+                  <label class="form-label">Post Title <span class="required">*</span></label>
+                  <input type="text" class="form-input" id="postTitle" placeholder="Enter post title..." style="font-size:18px;font-weight:700;padding:12px 16px;" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Excerpt / Summary</label>
+                  <textarea class="form-textarea" id="postExcerpt" rows="2" placeholder="Brief summary shown in post cards..."></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card__header"><span class="card__title">Content</span></div>
+              <div class="card__body" style="padding:0;">
+                <div class="editor-toolbar">
+                  <button class="editor-toolbar-btn" onclick="fmt('bold')" title="Bold"><b>B</b></button>
+                  <button class="editor-toolbar-btn" onclick="fmt('italic')" title="Italic"><i>I</i></button>
+                  <button class="editor-toolbar-btn" onclick="fmt('underline')" title="Underline"><u>U</u></button>
+                  <div class="editor-toolbar-sep"></div>
+                  <button class="editor-toolbar-btn" onclick="fmt('insertUnorderedList')" title="Bullet List"><i data-lucide="list" style="width:14px;height:14px;"></i></button>
+                  <button class="editor-toolbar-btn" onclick="fmt('insertOrderedList')" title="Numbered List"><i data-lucide="list-ordered" style="width:14px;height:14px;"></i></button>
+                  <div class="editor-toolbar-sep"></div>
+                  <button class="editor-toolbar-btn" onclick="fmt('formatBlock','H2')" title="Heading">H2</button>
+                  <button class="editor-toolbar-btn" onclick="fmt('formatBlock','H3')" title="Subheading">H3</button>
+                  <button class="editor-toolbar-btn" onclick="fmt('formatBlock','P')" title="Paragraph">P</button>
+                </div>
+                <div class="editor-content" id="postContent" contenteditable="true" data-placeholder="Start writing your post..."></div>
+              </div>
+            </div>
+          </div>
+          <!-- Sidebar -->
+          <div>
+            <div class="card" style="margin-bottom:14px;">
+              <div class="card__header"><span class="card__title">Publish</span></div>
+              <div class="card__body">
+                <div class="form-group">
+                  <label class="form-label">Status</label>
+                  <select class="form-select" id="postStatus"><option value="draft">Draft</option><option value="published">Published</option></select>
+                </div>
+                <div class="form-group">
+                  <div class="toggle-wrap">
+                    <label class="toggle"><input type="checkbox" id="postFeatured" /><div class="toggle__track"></div><div class="toggle__thumb"></div></label>
+                    <span style="font-size:13px;font-weight:500;color:var(--text-2)">Featured post</span>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <button class="btn btn--ghost w-full" id="saveDraftBtn"><i data-lucide="save"></i> Save Draft</button>
+                  <button class="btn btn--primary w-full" id="publishBtn"><i data-lucide="send"></i> Publish</button>
+                </div>
+              </div>
+            </div>
+            <div class="card" style="margin-bottom:14px;">
+              <div class="card__header"><span class="card__title">Details</span></div>
+              <div class="card__body">
+                <div class="form-group">
+                  <label class="form-label">Category</label>
+                  <select class="form-select" id="postCategory">
+                    <option>Tips & Tricks</option><option>Public Speaking</option><option>Phonics</option>
+                    <option>Events</option><option>Student Stories</option><option>Grammar</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Author</label>
+                  <input type="text" class="form-input" id="postAuthor" placeholder="Author name" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Read Time</label>
+                  <input type="text" class="form-input" id="postReadTime" placeholder="e.g. 5 min" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+let allPosts = [], editingId = null;
+
+window.fmt = (cmd, val) => { document.execCommand(cmd, false, val || null); document.getElementById('postContent').focus(); };
+
+async function loadPosts() {
+  allPosts = await API.getPosts();
+  const cats = [...new Set(allPosts.map(p => p.category))];
+  const cf = document.getElementById('catFilter');
+  cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; cf.appendChild(o); });
+  renderList(allPosts);
+}
+
+function renderList(data) {
+  const list = document.getElementById('blogList');
+  if (!data.length) {
+    list.innerHTML = `<div style="padding:40px;text-align:center;"><div class="empty-state"><i data-lucide="pen-line"></i><div class="empty-state__title">No posts yet</div><button class="btn btn--primary" onclick="openEditor()"><i data-lucide="plus"></i> Write First Post</button></div></div>`;
+    lucide.createIcons(); return;
+  }
+  list.innerHTML = data.map(p => `
+    <div class="blog-row">
+      <div>
+        <div class="blog-row__title">${p.title} ${p.featured ? '<span class="badge badge--yellow" style="font-size:10px;">Featured</span>' : ''}</div>
+        <div class="blog-row__meta">${p.readTime} read</div>
+      </div>
+      <div><span class="badge badge--blue">${p.category}</span></div>
+      <div style="font-size:13px;color:var(--text-2);">${p.author}</div>
+      <div style="font-size:12px;color:var(--text-3);">${fmtDate(p.date)}</div>
+      <div style="display:flex;gap:6px;">
+        ${statusBadge(p.status)}
+        <button class="btn btn--ghost btn--sm btn--icon" onclick="editPost(${p.id})" title="Edit"><i data-lucide="pencil"></i></button>
+        <button class="btn btn--ghost-red btn--sm btn--icon" onclick="deletePost(${p.id})" title="Delete"><i data-lucide="trash-2"></i></button>
+      </div>
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+function openEditor(post = null) {
+  editingId = post ? post.id : null;
+  document.getElementById('listView').style.display = 'none';
+  document.getElementById('editorView').style.display = '';
+  document.getElementById('editingLabel').textContent = post ? `Editing: ${post.title}` : 'New Post';
+  document.getElementById('postTitle').value = post?.title || '';
+  document.getElementById('postExcerpt').value = post?.excerpt || '';
+  document.getElementById('postContent').innerHTML = post?.content || '';
+  document.getElementById('postStatus').value = post?.status || 'draft';
+  document.getElementById('postFeatured').checked = post?.featured || false;
+  document.getElementById('postCategory').value = post?.category || 'Tips & Tricks';
+  document.getElementById('postAuthor').value = post?.author || '';
+  document.getElementById('postReadTime').value = post?.readTime || '';
+  lucide.createIcons();
+}
+
+function editPost(id) { openEditor(allPosts.find(p => p.id === id)); }
+
+async function deletePost(id) {
+  const p = allPosts.find(x => x.id === id);
+  confirmAction(`Delete "${p.title}"?`, async () => {
+    await API.deletePost(id);
+    allPosts = allPosts.filter(x => x.id !== id);
+    renderList(filterPosts());
+    showToast('Post deleted', 'success');
+  });
+}
+
+async function savePost(status) {
+  const title = document.getElementById('postTitle').value.trim();
+  if (!title) { showToast('Title is required', 'error'); return; }
+  const data = {
+    title, excerpt: document.getElementById('postExcerpt').value,
+    content: document.getElementById('postContent').innerHTML,
+    status: status || document.getElementById('postStatus').value,
+    featured: document.getElementById('postFeatured').checked,
+    category: document.getElementById('postCategory').value,
+    author: document.getElementById('postAuthor').value,
+    readTime: document.getElementById('postReadTime').value,
+    date: new Date().toISOString().slice(0,10)
+  };
+  if (editingId) {
+    await API.updatePost(editingId, data);
+    const idx = allPosts.findIndex(p => p.id === editingId);
+    if (idx > -1) allPosts[idx] = { ...allPosts[idx], ...data };
+    showToast('Post updated!', 'success');
+  } else {
+    const np = await API.createPost(data);
+    allPosts.push(np);
+    showToast('Post saved!', 'success');
+  }
+  document.getElementById('listView').style.display = '';
+  document.getElementById('editorView').style.display = 'none';
+  renderList(filterPosts());
+}
+
+function filterPosts() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const status = document.getElementById('statusFilter').value;
+  const cat = document.getElementById('catFilter').value;
+  return allPosts.filter(p =>
+    (!q || p.title.toLowerCase().includes(q)) &&
+    (!status || p.status === status) &&
+    (!cat || p.category === cat)
+  );
+}
+
+document.getElementById('newPostBtn').addEventListener('click', () => openEditor());
+document.getElementById('backToListBtn').addEventListener('click', () => { document.getElementById('listView').style.display=''; document.getElementById('editorView').style.display='none'; });
+document.getElementById('saveDraftBtn').addEventListener('click', () => savePost('draft'));
+document.getElementById('publishBtn').addEventListener('click', () => savePost('published'));
+['searchInput','statusFilter','catFilter'].forEach(id => document.getElementById(id).addEventListener('input', () => renderList(filterPosts())));
+loadPosts();
+</script>
+</body>
+</html>

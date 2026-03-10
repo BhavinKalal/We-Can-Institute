@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Testimonials — WE CAN Admin</title>
+  <link rel="stylesheet" href="../assets/css/admin-base.css" />
+  <link rel="stylesheet" href="../assets/css/admin-layout.css" />
+  <link rel="stylesheet" href="../assets/css/admin-components.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
+    .sidebar-overlay.show{display:block;}
+    .test-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+    .test-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-xl);padding:20px;transition:box-shadow var(--t-fast);}
+    .test-card:hover{box-shadow:var(--shadow-md);}
+    .test-card__quote{font-size:14px;color:var(--text-2);line-height:1.65;margin-bottom:16px;font-style:italic;}
+    .test-card__quote::before{content:'"';font-size:32px;color:var(--blue);font-family:Georgia,serif;line-height:0;vertical-align:-12px;margin-right:4px;}
+    .test-card__author{display:flex;align-items:center;gap:10px;}
+    .test-card__footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
+    .star-picker{display:flex;gap:4px;cursor:pointer;}
+    .star-pick{width:22px;height:22px;color:#e2e8f0;transition:color var(--t-fast);}
+    .star-pick.filled,.star-pick:hover,.star-pick.hover{color:var(--yellow);}
+  </style>
+</head>
+<body>
+<div class="admin-app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__logo">
+      <img src="../assets/images/wecan-log.png" alt="WE CAN" onerror="this.style.display='none'" />
+      <div class="sidebar__logo-text"><span class="sidebar__logo-name">WE CAN</span><span class="sidebar__logo-sub">Admin Panel</span></div>
+    </div>
+    <nav class="sidebar__nav">
+      <span class="sidebar__section-label">Overview</span>
+      <a href="../index.html" class="sidebar__link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+      <span class="sidebar__section-label">Content</span>
+      <a href="hero.html"               class="sidebar__link"><i data-lucide="monitor-play"></i> Hero Section</a>
+      <a href="batches.html"            class="sidebar__link"><i data-lucide="book-open"></i> Batches</a>
+      <a href="faculty.html"            class="sidebar__link"><i data-lucide="users"></i> Faculty</a>
+      <a href="gallery.html"            class="sidebar__link"><i data-lucide="image"></i> Gallery</a>
+      <a href="blog.html"               class="sidebar__link"><i data-lucide="pen-line"></i> Blog</a>
+      <a href="testimonials.html"       class="sidebar__link active"><i data-lucide="message-square-quote"></i> Testimonials</a>
+      <span class="sidebar__section-label">Activity</span>
+      <a href="enquiries.html"          class="sidebar__link"><i data-lucide="inbox"></i> Enquiries</a>
+      <span class="sidebar__section-label">System</span>
+      <a href="settings.html"           class="sidebar__link"><i data-lucide="settings"></i> Settings</a>
+    </nav>
+    <div class="sidebar__footer">
+      <a href="../../frontend/index.html" class="sidebar__view-site" target="_blank"><i data-lucide="external-link"></i> View Website</a>
+      <div class="sidebar__footer-user"><div class="sidebar__avatar">A</div><div class="sidebar__user-info"><div class="sidebar__user-name">Admin</div><div class="sidebar__user-role">Super Admin</div></div></div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <main class="admin-main">
+    <div class="topbar">
+      <div class="topbar__left">
+        <button class="topbar__hamburger btn btn--ghost btn--icon" id="sidebarToggle"><i data-lucide="menu"></i></button>
+        <div><div class="t-page">Testimonials</div><div class="topbar__breadcrumb"><a href="../index.html">Dashboard</a> <i data-lucide="chevron-right"></i> <span>Testimonials</span></div></div>
+      </div>
+      <div class="topbar__right">
+        <button class="btn btn--primary" id="addTestBtn"><i data-lucide="plus"></i> Add Testimonial</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="test-grid" id="testGrid">
+        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-3);">Loading...</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="testModal">
+  <div class="modal">
+    <div class="modal__header">
+      <span class="modal__title" id="testModalTitle">Add Testimonial</span>
+      <button class="modal__close" onclick="closeModal('testModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <input type="hidden" id="testId" />
+      <div class="form-group">
+        <label class="form-label">Review / Quote <span class="required">*</span></label>
+        <textarea class="form-textarea" id="testQuote" rows="4" placeholder="What did the student say..."></textarea>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Student Name <span class="required">*</span></label>
+          <input type="text" class="form-input" id="testName" placeholder="e.g. Priya Sharma" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role / Profession</label>
+          <input type="text" class="form-input" id="testRole" placeholder="e.g. IT Professional" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Initials (for avatar)</label>
+        <input type="text" class="form-input" id="testInitials" placeholder="PS" maxlength="3" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Star Rating</label>
+        <div class="star-picker" id="starPicker">
+          <svg class="star-pick" viewBox="0 0 24 24" fill="currentColor" data-val="1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="star-pick" viewBox="0 0 24 24" fill="currentColor" data-val="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="star-pick" viewBox="0 0 24 24" fill="currentColor" data-val="3"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="star-pick" viewBox="0 0 24 24" fill="currentColor" data-val="4"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="star-pick" viewBox="0 0 24 24" fill="currentColor" data-val="5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <input type="hidden" id="testStars" value="5" />
+      </div>
+      <div class="form-group">
+        <div class="toggle-wrap">
+          <label class="toggle"><input type="checkbox" id="testActive" checked /><div class="toggle__track"></div><div class="toggle__thumb"></div></label>
+          <span style="font-size:13.5px;font-weight:500;color:var(--text-2)">Active (visible on website)</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--ghost" onclick="closeModal('testModal')">Cancel</button>
+      <button class="btn btn--primary" id="saveTestBtn"><i data-lucide="save"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+let allTest = [], editingId = null, selectedStars = 5;
+
+// Star picker
+document.querySelectorAll('.star-pick').forEach(star => {
+  star.addEventListener('click', () => { selectedStars = parseInt(star.dataset.val); updateStars(); document.getElementById('testStars').value = selectedStars; });
+  star.addEventListener('mouseenter', () => { const v = parseInt(star.dataset.val); document.querySelectorAll('.star-pick').forEach(s => s.classList.toggle('hover', parseInt(s.dataset.val) <= v)); });
+  star.addEventListener('mouseleave', () => { document.querySelectorAll('.star-pick').forEach(s => s.classList.remove('hover')); });
+});
+function updateStars() { document.querySelectorAll('.star-pick').forEach(s => s.classList.toggle('filled', parseInt(s.dataset.val) <= selectedStars)); }
+
+async function loadTest() {
+  allTest = await API.getTestimonials();
+  renderGrid(allTest);
+}
+
+function renderGrid(data) {
+  const grid = document.getElementById('testGrid');
+  if (!data.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1"><div class="empty-state"><i data-lucide="message-square-quote"></i><div class="empty-state__title">No testimonials yet</div><button class="btn btn--primary" onclick="openAddModal()"><i data-lucide="plus"></i> Add First Testimonial</button></div></div>`;
+    lucide.createIcons(); return;
+  }
+  grid.innerHTML = data.map(t => `
+    <div class="test-card">
+      <div class="stars" style="margin-bottom:10px;">${starsHtml(t.stars)}</div>
+      <div class="test-card__quote">${t.quote}</div>
+      <div class="test-card__author">
+        <div class="avatar avatar--md avatar--blue">${t.initials || t.name.slice(0,2)}</div>
+        <div><div style="font-size:14px;font-weight:700;color:var(--text);">${t.name}</div><div style="font-size:12px;color:var(--text-3);">${t.role}</div></div>
+      </div>
+      <div class="test-card__footer">
+        ${statusBadge(t.active ? 'active' : 'inactive')}
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn--ghost btn--sm btn--icon" onclick="editTest(${t.id})"><i data-lucide="pencil"></i></button>
+          <button class="btn btn--ghost-red btn--sm btn--icon" onclick="deleteTest(${t.id})"><i data-lucide="trash-2"></i></button>
+        </div>
+      </div>
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+function openAddModal() {
+  editingId = null; selectedStars = 5;
+  document.getElementById('testModalTitle').textContent = 'Add Testimonial';
+  ['testQuote','testName','testRole','testInitials'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('testActive').checked = true;
+  updateStars(); openModal('testModal');
+}
+
+function editTest(id) {
+  const t = allTest.find(x => x.id === id);
+  if (!t) return;
+  editingId = id; selectedStars = t.stars || 5;
+  document.getElementById('testModalTitle').textContent = 'Edit Testimonial';
+  document.getElementById('testQuote').value = t.quote;
+  document.getElementById('testName').value = t.name;
+  document.getElementById('testRole').value = t.role || '';
+  document.getElementById('testInitials').value = t.initials || '';
+  document.getElementById('testActive').checked = t.active;
+  updateStars(); openModal('testModal');
+}
+
+async function deleteTest(id) {
+  const t = allTest.find(x => x.id === id);
+  confirmAction(`Delete testimonial from "${t.name}"?`, async () => {
+    await API.deleteTestimonial(id);
+    allTest = allTest.filter(x => x.id !== id);
+    renderGrid(allTest);
+    showToast('Testimonial deleted', 'success');
+  });
+}
+
+document.getElementById('saveTestBtn').addEventListener('click', async () => {
+  const quote = document.getElementById('testQuote').value.trim();
+  const name  = document.getElementById('testName').value.trim();
+  if (!quote || !name) { showToast('Quote and name are required', 'error'); return; }
+  const data = {
+    quote, name, role: document.getElementById('testRole').value,
+    initials: document.getElementById('testInitials').value || name.slice(0,2).toUpperCase(),
+    stars: selectedStars, active: document.getElementById('testActive').checked
+  };
+  if (editingId) {
+    await API.updateTestimonial(editingId, data);
+    const idx = allTest.findIndex(x => x.id === editingId);
+    if (idx > -1) allTest[idx] = { ...allTest[idx], ...data };
+    showToast('Testimonial updated!', 'success');
+  } else {
+    const nt = await API.createTestimonial(data);
+    allTest.push(nt);
+    showToast('Testimonial added!', 'success');
+  }
+  closeModal('testModal'); renderGrid(allTest);
+});
+
+document.getElementById('addTestBtn').addEventListener('click', openAddModal);
+loadTest();
+</script>
+</body>
+</html>
