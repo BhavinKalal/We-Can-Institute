@@ -216,6 +216,13 @@
 
 .topbar__left {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar__left-text {
+  display: flex;
   flex-direction: column;
   gap: 2px;
 }
