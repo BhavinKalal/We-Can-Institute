@@ -891,6 +891,108 @@
 }
 
 /* ══════════════════════════════════════════════
+   FACULTY — REPLACE HINT FLEX
+══════════════════════════════════════════════ */
+.faculty-card__replace-hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.faculty-card__replace-hint i { color: var(--white); }
+
+/* ══════════════════════════════════════════════
+   GALLERY PLACEHOLDER — COLOR VARIANTS
+══════════════════════════════════════════════ */
+.gallery__placeholder--red-dark {
+  background: linear-gradient(135deg, #1a0a0a, #3d1010);
+}
+.gallery__placeholder--blue-dark {
+  background: linear-gradient(135deg, #0a1a2a, #0d3350);
+}
+.gallery__placeholder--green-dark {
+  background: linear-gradient(135deg, #0a1f0a, #0d3b1a);
+}
+.gallery__placeholder--gold-dark {
+  background: linear-gradient(135deg, #1a140a, #3d2d08);
+}
+.gallery__placeholder--purple-dark {
+  background: linear-gradient(135deg, #150a1a, #2d1040);
+}
+.gallery__placeholder--teal-dark {
+  background: linear-gradient(135deg, #0a1a1a, #0d3535);
+}
+.gallery__placeholder--rose-dark {
+  background: linear-gradient(135deg, #1a0a10, #3d0d20);
+}
+.gallery__placeholder--indigo-dark {
+  background: linear-gradient(135deg, #0a0a1a, #101040);
+}
+.gallery__placeholder--emerald-dark {
+  background: linear-gradient(135deg, #0a150a, #0d2b10);
+}
+.gallery__placeholder--amber-dark {
+  background: linear-gradient(135deg, #1a1200, #3d2d00);
+}
+
+.gallery__placeholder i  { color: var(--white); }
+.gallery__placeholder-video i { color: rgba(255,255,255,0.6); }
+
+/* Gallery replace label flex */
+.gallery__replace-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.gallery__replace-label i { color: var(--white); }
+.gallery__replace-label--video i { color: rgba(255,255,255,0.6); }
+
+/* Gallery update note */
+.gallery__update-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.gallery__update-note-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.gallery__update-note-row i { color: var(--text-soft); }
+
+/* ══════════════════════════════════════════════
+   BLOG COVER PLACEHOLDER — COLOR VARIANTS
+══════════════════════════════════════════════ */
+.blog-cover--featured {
+  background: linear-gradient(135deg, #0f1f35, #1a3a5c);
+}
+.blog-cover--red-brown {
+  background: linear-gradient(135deg, #1a0f0a, #3d2010);
+}
+.blog-cover--green-dark {
+  background: linear-gradient(135deg, #0a1a0a, #103520);
+}
+.blog-cover--indigo {
+  background: linear-gradient(135deg, #0d0a1a, #1a1040);
+}
+.blog-cover--navy {
+  background: linear-gradient(135deg, #0a1520, #102030);
+}
+.blog-cover--purple-dark {
+  background: linear-gradient(135deg, #150a1a, #2d1240);
+}
+.blog-cover--emerald {
+  background: linear-gradient(135deg, #0a1a10, #0d3520);
+}
+
+.blog-featured__cover-emoji i { color: var(--white); }
+.blog-card-sm__cover-placeholder i { color: var(--white); }
+.blog-card-grid__cover-placeholder i { color: var(--white); }
+
+/* ══════════════════════════════════════════════
    NAVBAR UPDATE — add Faculty/Gallery/Blog links
 ══════════════════════════════════════════════ */
 .navbar__right .navbar__link[href="#faculty"],
@@ -932,4 +1034,3 @@
   .gallery__tabs { gap: 0.4rem; }
   .gallery__tab { padding: 7px 14px; font-size: 12px; }
 }
-

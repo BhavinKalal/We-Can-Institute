@@ -73,8 +73,8 @@
           <select class="filter-select" id="catFilter"><option value="">All Categories</option></select>
         </div>
         <div class="card">
-          <div class="blog-list-view" style="padding:0;">
-            <div class="blog-row" style="background:var(--surface-2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);">
+          <div class="blog-list-view">
+            <div class="blog-row blog-row--header">
               <div>Post</div><div>Category</div><div>Author</div><div>Date</div><div>Actions</div>
             </div>
             <div id="blogList"></div>
@@ -83,18 +83,18 @@
       </div>
 
       <!-- Editor view (hidden initially) -->
-      <div id="editorView" style="display:none;">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+      <div id="editorView" class="js-hidden">
+        <div class="editor-back-row">
           <button class="btn btn--ghost btn--sm" id="backToListBtn"><i data-lucide="arrow-left"></i> Back to Posts</button>
-          <span class="text-muted" style="font-size:13px;" id="editingLabel">New Post</span>
+          <span class="editing-label text-muted" id="editingLabel">New Post</span>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start;">
+        <div class="editor-layout">
           <div>
-            <div class="card" style="margin-bottom:16px;">
+            <div class="card card--mb">
               <div class="card__body">
                 <div class="form-group">
                   <label class="form-label">Post Title <span class="required">*</span></label>
-                  <input type="text" class="form-input" id="postTitle" placeholder="Enter post title..." style="font-size:18px;font-weight:700;padding:12px 16px;" />
+                  <input type="text" class="form-input form-input--title" id="postTitle" placeholder="Enter post title..." />
                 </div>
                 <div class="form-group">
                   <label class="form-label">Excerpt / Summary</label>
@@ -104,14 +104,14 @@
             </div>
             <div class="card">
               <div class="card__header"><span class="card__title">Content</span></div>
-              <div class="card__body" style="padding:0;">
+              <div class="card__body card__body--flush">
                 <div class="editor-toolbar">
                   <button class="editor-toolbar-btn" onclick="fmt('bold')" title="Bold"><b>B</b></button>
                   <button class="editor-toolbar-btn" onclick="fmt('italic')" title="Italic"><i>I</i></button>
                   <button class="editor-toolbar-btn" onclick="fmt('underline')" title="Underline"><u>U</u></button>
                   <div class="editor-toolbar-sep"></div>
-                  <button class="editor-toolbar-btn" onclick="fmt('insertUnorderedList')" title="Bullet List"><i data-lucide="list" style="width:14px;height:14px;"></i></button>
-                  <button class="editor-toolbar-btn" onclick="fmt('insertOrderedList')" title="Numbered List"><i data-lucide="list-ordered" style="width:14px;height:14px;"></i></button>
+                  <button class="editor-toolbar-btn" onclick="fmt('insertUnorderedList')" title="Bullet List"><i data-lucide="list" class="toolbar-icon"></i></button>
+                  <button class="editor-toolbar-btn" onclick="fmt('insertOrderedList')" title="Numbered List"><i data-lucide="list-ordered" class="toolbar-icon"></i></button>
                   <div class="editor-toolbar-sep"></div>
                   <button class="editor-toolbar-btn" onclick="fmt('formatBlock','H2')" title="Heading">H2</button>
                   <button class="editor-toolbar-btn" onclick="fmt('formatBlock','H3')" title="Subheading">H3</button>
@@ -123,7 +123,7 @@
           </div>
           <!-- Sidebar -->
           <div>
-            <div class="card" style="margin-bottom:14px;">
+            <div class="card card--mb-sm">
               <div class="card__header"><span class="card__title">Publish</span></div>
               <div class="card__body">
                 <div class="form-group">
@@ -133,16 +133,16 @@
                 <div class="form-group">
                   <div class="toggle-wrap">
                     <label class="toggle"><input type="checkbox" id="postFeatured" /><div class="toggle__track"></div><div class="toggle__thumb"></div></label>
-                    <span style="font-size:13px;font-weight:500;color:var(--text-2)">Featured post</span>
+                    <span class="toggle-label">Featured post</span>
                   </div>
                 </div>
-                <div style="display:flex;gap:8px;">
+                <div class="btn-group">
                   <button class="btn btn--ghost w-full" id="saveDraftBtn"><i data-lucide="save"></i> Save Draft</button>
                   <button class="btn btn--primary w-full" id="publishBtn"><i data-lucide="send"></i> Publish</button>
                 </div>
               </div>
             </div>
-            <div class="card" style="margin-bottom:14px;">
+            <div class="card card--mb-sm">
               <div class="card__header"><span class="card__title">Details</span></div>
               <div class="card__body">
                 <div class="form-group">
@@ -188,19 +188,19 @@ async function loadPosts() {
 function renderList(data) {
   const list = document.getElementById('blogList');
   if (!data.length) {
-    list.innerHTML = `<div style="padding:40px;text-align:center;"><div class="empty-state"><i data-lucide="pen-line"></i><div class="empty-state__title">No posts yet</div><button class="btn btn--primary" onclick="openEditor()"><i data-lucide="plus"></i> Write First Post</button></div></div>`;
+    list.innerHTML = `<div class="grid-loading"><div class="empty-state"><i data-lucide="pen-line"></i><div class="empty-state__title">No posts yet</div><button class="btn btn--primary" onclick="openEditor()"><i data-lucide="plus"></i> Write First Post</button></div></div>`;
     lucide.createIcons(); return;
   }
   list.innerHTML = data.map(p => `
     <div class="blog-row">
       <div>
-        <div class="blog-row__title">${p.title} ${p.featured ? '<span class="badge badge--yellow" style="font-size:10px;">Featured</span>' : ''}</div>
+        <div class="blog-row__title">${p.title} ${p.featured ? '<span class="badge badge--yellow badge--xs">Featured</span>' : ''}</div>
         <div class="blog-row__meta">${p.readTime} read</div>
       </div>
       <div><span class="badge badge--blue">${p.category}</span></div>
-      <div style="font-size:13px;color:var(--text-2);">${p.author}</div>
-      <div style="font-size:12px;color:var(--text-3);">${fmtDate(p.date)}</div>
-      <div style="display:flex;gap:6px;">
+      <div class="blog-row__author">${p.author}</div>
+      <div class="blog-row__date">${fmtDate(p.date)}</div>
+      <div class="btn-group">
         ${statusBadge(p.status)}
         <button class="btn btn--ghost btn--sm btn--icon" onclick="editPost(${p.id})" title="Edit"><i data-lucide="pencil"></i></button>
         <button class="btn btn--ghost-red btn--sm btn--icon" onclick="deletePost(${p.id})" title="Delete"><i data-lucide="trash-2"></i></button>

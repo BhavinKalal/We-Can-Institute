@@ -74,7 +74,7 @@
         </select>
       </div>
       <div class="batch-grid" id="batchGrid">
-        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-3);">Loading...</div>
+        <div class="grid-loading">Loading...</div>
       </div>
     </div>
   </main>
@@ -138,7 +138,7 @@
       <div class="form-group">
         <div class="toggle-wrap">
           <label class="toggle"><input type="checkbox" id="batchActive" checked /><div class="toggle__track"></div><div class="toggle__thumb"></div></label>
-          <span style="font-size:13.5px;font-weight:500;color:var(--text-2)">Active (visible on website)</span>
+          <span class="toggle-label">Active (visible on website)</span>
         </div>
       </div>
     </div>
@@ -163,7 +163,7 @@ async function loadBatches() {
 function renderGrid(data) {
   const grid = document.getElementById('batchGrid');
   if (!data.length) {
-    grid.innerHTML = `<div style="grid-column:1/-1"><div class="empty-state"><i data-lucide="book-open"></i><div class="empty-state__title">No batches found</div><button class="btn btn--primary" onclick="openAddModal()"><i data-lucide="plus"></i> Add First Batch</button></div></div>`;
+    grid.innerHTML = `<div class="grid-full"><div class="empty-state"><i data-lucide="book-open"></i><div class="empty-state__title">No batches found</div><button class="btn btn--primary" onclick="openAddModal()"><i data-lucide="plus"></i> Add First Batch</button></div></div>`;
     lucide.createIcons(); return;
   }
   grid.innerHTML = data.map(b => {
@@ -172,14 +172,14 @@ function renderGrid(data) {
     return `
     <div class="batch-card">
       <div class="batch-card__header">
-        <div style="display:flex;align-items:center;gap:12px;">
+        <div class="batch-card__header-info">
           <div class="batch-card__icon">${b.icon || '📚'}</div>
           <div>
             <div class="batch-card__name">${b.name}</div>
             ${levelBadge(b.level)}
           </div>
         </div>
-        <div style="display:flex;gap:6px;">
+        <div class="btn-group">
           <button class="btn btn--ghost btn--sm btn--icon" onclick="editBatch(${b.id})" title="Edit"><i data-lucide="pencil"></i></button>
           <button class="btn btn--ghost-red btn--sm btn--icon" onclick="deleteBatch(${b.id})" title="Delete"><i data-lucide="trash-2"></i></button>
         </div>
@@ -189,10 +189,10 @@ function renderGrid(data) {
         <div class="batch-card__row"><i data-lucide="calendar"></i> ${b.timing}</div>
         <div class="batch-card__row">
           <i data-lucide="users"></i>
-          <div style="flex:1">
-            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+          <div class="seat-fill">
+            <div class="seat-fill__top">
               <span>${b.filled}/${b.seats} seats</span>
-              <span style="font-weight:600;color:${barColor}">${pct}%</span>
+              <span class="seat-fill__pct" style="color:${barColor}">${pct}%</span>
             </div>
             <div class="seat-bar"><div class="seat-bar__fill" style="width:${pct}%;background:${barColor}"></div></div>
           </div>

@@ -76,8 +76,8 @@
         <!-- LEFT: Editor -->
         <div>
           <!-- Video Background -->
-          <div class="card" style="margin-bottom:16px;">
-            <div class="card__header"><span class="card__title"><i data-lucide="video" style="width:15px;height:15px;margin-right:6px;vertical-align:-2px;color:var(--blue)"></i>Background Video</span></div>
+          <div class="card card--mb">
+            <div class="card__header"><span class="card__title"><i data-lucide="video" class="card-icon card-icon--blue"></i>Background Video</span></div>
             <div class="card__body">
               <div class="form-group">
                 <label class="form-label">Video File Path</label>
@@ -91,15 +91,15 @@
               <div class="form-group">
                 <div class="toggle-wrap">
                   <label class="toggle"><input type="checkbox" id="videoMode" checked /><div class="toggle__track"></div><div class="toggle__thumb"></div></label>
-                  <span style="font-size:13.5px;font-weight:500;color:var(--text-2)">Video background enabled (hero--video mode)</span>
+                  <span class="toggle-label">Video background enabled (hero--video mode)</span>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Text Content -->
-          <div class="card" style="margin-bottom:16px;">
-            <div class="card__header"><span class="card__title"><i data-lucide="type" style="width:15px;height:15px;margin-right:6px;vertical-align:-2px;color:var(--blue)"></i>Text Content</span></div>
+          <div class="card card--mb">
+            <div class="card__header"><span class="card__title"><i data-lucide="type" class="card-icon card-icon--blue"></i>Text Content</span></div>
             <div class="card__body">
               <div class="form-group">
                 <label class="form-label">Eyebrow Text (top badge)</label>
@@ -129,8 +129,8 @@
           </div>
 
           <!-- CTA -->
-          <div class="card" style="margin-bottom:16px;">
-            <div class="card__header"><span class="card__title"><i data-lucide="mouse-pointer-click" style="width:15px;height:15px;margin-right:6px;vertical-align:-2px;color:var(--blue)"></i>Call-to-Action Button</span></div>
+          <div class="card card--mb">
+            <div class="card__header"><span class="card__title"><i data-lucide="mouse-pointer-click" class="card-icon card-icon--blue"></i>Call-to-Action Button</span></div>
             <div class="card__body">
               <div class="form-grid-2">
                 <div class="form-group">
@@ -147,7 +147,7 @@
 
           <!-- Stats -->
           <div class="card">
-            <div class="card__header"><span class="card__title"><i data-lucide="bar-chart-2" style="width:15px;height:15px;margin-right:6px;vertical-align:-2px;color:var(--blue)"></i>Stats Row</span><span class="t-small">Shown below video in standard mode</span></div>
+            <div class="card__header"><span class="card__title"><i data-lucide="bar-chart-2" class="card-icon card-icon--blue"></i>Stats Row</span><span class="t-small">Shown below video in standard mode</span></div>
             <div class="card__body">
               <div id="statsEditor"></div>
             </div>
@@ -203,9 +203,9 @@ function populateFields(d) {
 function renderStatsEditor(stats) {
   document.getElementById('statsEditor').innerHTML = stats.map((s, i) => `
     <div class="stat-editor-row">
-      <div class="form-group" style="margin:0"><label class="form-label">Number</label><input type="number" class="form-input" id="statNum${i}" value="${s.num}" /></div>
-      <div class="form-group" style="margin:0"><label class="form-label">Label</label><input type="text" class="form-input" id="statLabel${i}" value="${s.label}" /></div>
-      <div class="form-group" style="margin:0"><label class="form-label">Suffix</label><input type="text" class="form-input" id="statSuffix${i}" value="${s.suffix}" /></div>
+      <div class="form-group form-group--no-margin"><label class="form-label">Number</label><input type="number" class="form-input" id="statNum${i}" value="${s.num}" /></div>
+      <div class="form-group form-group--no-margin"><label class="form-label">Label</label><input type="text" class="form-input" id="statLabel${i}" value="${s.label}" /></div>
+      <div class="form-group form-group--no-margin"><label class="form-label">Suffix</label><input type="text" class="form-input" id="statSuffix${i}" value="${s.suffix}" /></div>
     </div>`).join('');
   // Attach events
   stats.forEach((_, i) => {

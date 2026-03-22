@@ -61,8 +61,8 @@
         <!-- Contact Info -->
         <div class="card">
           <div class="card__header">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <div class="settings-card-icon" style="background:var(--blue-ghost);color:var(--blue)"><i data-lucide="map-pin"></i></div>
+            <div class="settings-card-header">
+              <div class="settings-card-icon settings-card-icon--blue"><i data-lucide="map-pin"></i></div>
               <span class="card__title">Contact Information</span>
             </div>
           </div>
@@ -97,22 +97,22 @@
         <!-- Social Links -->
         <div class="card">
           <div class="card__header">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <div class="settings-card-icon" style="background:var(--purple-ghost);color:var(--purple)"><i data-lucide="share-2"></i></div>
+            <div class="settings-card-header">
+              <div class="settings-card-icon settings-card-icon--purple"><i data-lucide="share-2"></i></div>
               <span class="card__title">Social Media Links</span>
             </div>
           </div>
           <div class="card__body">
             <div class="form-group">
-              <label class="form-label"><i data-lucide="instagram" style="width:13px;height:13px;margin-right:4px;vertical-align:-1px;"></i>Instagram</label>
+              <label class="form-label"><i data-lucide="instagram" class="label-icon"></i>Instagram</label>
               <input type="url" class="form-input" id="instagram" placeholder="https://instagram.com/wecaninstitute" />
             </div>
             <div class="form-group">
-              <label class="form-label"><i data-lucide="facebook" style="width:13px;height:13px;margin-right:4px;vertical-align:-1px;"></i>Facebook</label>
+              <label class="form-label"><i data-lucide="facebook" class="label-icon"></i>Facebook</label>
               <input type="url" class="form-input" id="facebook" placeholder="https://facebook.com/wecaninstitute" />
             </div>
             <div class="form-group">
-              <label class="form-label"><i data-lucide="youtube" style="width:13px;height:13px;margin-right:4px;vertical-align:-1px;"></i>YouTube</label>
+              <label class="form-label"><i data-lucide="youtube" class="label-icon"></i>YouTube</label>
               <input type="url" class="form-input" id="youtube" placeholder="https://youtube.com/wecaninstitute" />
             </div>
             <div class="form-group">
@@ -126,8 +126,8 @@
         <!-- SEO / Meta -->
         <div class="card">
           <div class="card__header">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <div class="settings-card-icon" style="background:var(--green-ghost);color:var(--green)"><i data-lucide="search"></i></div>
+            <div class="settings-card-header">
+              <div class="settings-card-icon settings-card-icon--green"><i data-lucide="search"></i></div>
               <span class="card__title">SEO & Meta Tags</span>
             </div>
           </div>
@@ -148,8 +148,8 @@
         <!-- Map -->
         <div class="card">
           <div class="card__header">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <div class="settings-card-icon" style="background:var(--red-ghost);color:var(--red)"><i data-lucide="map"></i></div>
+            <div class="settings-card-header">
+              <div class="settings-card-icon settings-card-icon--red"><i data-lucide="map"></i></div>
               <span class="card__title">Google Maps Embed</span>
             </div>
           </div>
@@ -159,8 +159,8 @@
               <input type="url" class="form-input" id="mapEmbed" placeholder="https://www.google.com/maps/embed?pb=..." />
               <div class="form-hint">Go to Google Maps → Share → Embed a map → Copy the src URL from the iframe code.</div>
             </div>
-            <div id="mapPreview" style="display:none;margin-top:12px;border-radius:var(--r-md);overflow:hidden;height:200px;">
-              <iframe id="mapFrame" width="100%" height="200" frameborder="0" style="border:0;" allowfullscreen></iframe>
+            <div id="mapPreview" class="map-preview js-hidden">
+              <iframe id="mapFrame" width="100%" height="200" frameborder="0" class="map-frame" allowfullscreen></iframe>
             </div>
           </div>
         </div>

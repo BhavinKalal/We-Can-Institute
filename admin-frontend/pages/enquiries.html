@@ -64,9 +64,9 @@
       <!-- Stats -->
       <div class="enq-stats" id="enqStats">
         <div class="enq-stat"><div class="enq-stat__num" id="totalCount">0</div><div class="enq-stat__label">Total</div></div>
-        <div class="enq-stat"><div class="enq-stat__num" style="color:var(--blue)" id="newCount">0</div><div class="enq-stat__label">New</div></div>
-        <div class="enq-stat"><div class="enq-stat__num" style="color:var(--yellow)" id="contactedCount">0</div><div class="enq-stat__label">Contacted</div></div>
-        <div class="enq-stat"><div class="enq-stat__num" style="color:var(--green)" id="enrolledCount">0</div><div class="enq-stat__label">Enrolled</div></div>
+        <div class="enq-stat"><div class="enq-stat__num enq-stat__num--blue" id="newCount">0</div><div class="enq-stat__label">New</div></div>
+        <div class="enq-stat"><div class="enq-stat__num enq-stat__num--yellow" id="contactedCount">0</div><div class="enq-stat__label">Contacted</div></div>
+        <div class="enq-stat"><div class="enq-stat__num enq-stat__num--green" id="enrolledCount">0</div><div class="enq-stat__label">Enrolled</div></div>
       </div>
 
       <!-- Toolbar -->
@@ -89,7 +89,7 @@
             <th>#</th><th>Name</th><th>Phone</th><th>Batch</th><th>Date</th><th>Status</th><th>Notes</th><th>Actions</th>
           </tr></thead>
           <tbody id="enquiriesBody">
-            <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-3);">Loading...</td></tr>
+            <tr><td colspan="8" class="td-loading">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -154,18 +154,18 @@ function updateStats(data) {
 function renderTable(data) {
   const tbody = document.getElementById('enquiriesBody');
   if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;"><div class="empty-state"><i data-lucide="inbox"></i><div class="empty-state__title">No enquiries found</div></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="td-empty"><div class="empty-state"><i data-lucide="inbox"></i><div class="empty-state__title">No enquiries found</div></div></td></tr>`;
     lucide.createIcons(); return;
   }
   tbody.innerHTML = data.map((e, i) => `
     <tr>
       <td class="text-muted" style="font-size:12px;">${i+1}</td>
       <td class="td-main">${e.name}</td>
-      <td><a href="tel:${e.phone}" style="color:var(--blue);font-size:13px;">${e.phone}</a></td>
+      <td><a href="tel:${e.phone}" class="td-phone">${e.phone}</a></td>
       <td><span class="badge badge--blue">${e.batch}</span></td>
       <td class="text-muted" style="font-size:12px;">${fmtDate(e.date)}</td>
       <td>${statusBadge(e.status)}</td>
-      <td style="font-size:12px;color:var(--text-3);max-width:140px;" class="truncate">${e.notes || '—'}</td>
+      <td class="td-notes truncate">${e.notes || '—'}</td>
       <td>
         <div class="td-actions">
           <button class="btn btn--ghost btn--sm btn--icon" onclick="editEnquiry(${e.id})" title="Edit"><i data-lucide="pencil"></i></button>

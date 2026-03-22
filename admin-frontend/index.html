@@ -146,20 +146,20 @@
 
       <!-- Welcome Banner -->
       <div class="welcome-banner">
-        <div style="z-index:1;">
+        <div class="welcome-banner__content">
           <div class="welcome-banner__title">👋 Welcome back, Admin!</div>
-          <div class="welcome-banner__sub">Here's what's happening at WE CAN Institute — <span id="todayDate" style="color:rgba(255,255,255,0.65);font-weight:500;"></span></div>
+          <div class="welcome-banner__sub">Here's what's happening at WE CAN Institute — <span id="todayDate" class="welcome-date"></span></div>
         </div>
         <div class="welcome-banner__actions">
           <a href="pages/enquiries.html" class="btn btn--primary"><i data-lucide="inbox"></i> View Enquiries</a>
-          <a href="pages/blog.html" class="btn btn--ghost" style="color:#fff;border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.07);"><i data-lucide="pen-line"></i> New Post</a>
+          <a href="pages/blog.html" class="btn btn--ghost btn--ghost-light"><i data-lucide="pen-line"></i> New Post</a>
         </div>
       </div>
 
       <!-- Stat Cards -->
       <div class="stat-cards">
         <div class="stat-card">
-          <div class="stat-card__icon" style="background:rgba(27,155,215,0.12);color:var(--blue)"><i data-lucide="users"></i></div>
+          <div class="stat-card__icon stat-card__icon--blue"><i data-lucide="users"></i></div>
           <div class="stat-card__content">
             <div class="stat-card__num">5,200</div>
             <div class="stat-card__label">Students Trained</div>
@@ -167,7 +167,7 @@
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-card__icon" style="background:rgba(16,185,129,0.12);color:var(--green)"><i data-lucide="inbox"></i></div>
+          <div class="stat-card__icon stat-card__icon--green"><i data-lucide="inbox"></i></div>
           <div class="stat-card__content">
             <div class="stat-card__num" id="statEnquiries">8</div>
             <div class="stat-card__label">New Enquiries</div>
@@ -175,7 +175,7 @@
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-card__icon" style="background:rgba(245,158,11,0.12);color:var(--yellow)"><i data-lucide="book-open"></i></div>
+          <div class="stat-card__icon stat-card__icon--yellow"><i data-lucide="book-open"></i></div>
           <div class="stat-card__content">
             <div class="stat-card__num">5</div>
             <div class="stat-card__label">Active Batches</div>
@@ -183,11 +183,11 @@
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-card__icon" style="background:rgba(139,92,246,0.12);color:var(--purple)"><i data-lucide="pen-line"></i></div>
+          <div class="stat-card__icon stat-card__icon--purple"><i data-lucide="pen-line"></i></div>
           <div class="stat-card__content">
             <div class="stat-card__num">5</div>
             <div class="stat-card__label">Blog Posts</div>
-            <div class="stat-card__delta" style="color:var(--yellow);display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;margin-top:6px;"><i data-lucide="file-edit"></i> 1 draft pending</div>
+            <div class="stat-card__delta stat-card__delta--warning"><i data-lucide="file-edit"></i> 1 draft pending</div>
           </div>
         </div>
       </div>
@@ -198,12 +198,12 @@
         <!-- Batch Seat Fill -->
         <div class="card">
           <div class="card__header">
-            <span class="card__title"><i data-lucide="book-open" style="width:15px;height:15px;margin-right:6px;vertical-align:-2px;color:var(--blue)"></i>Batch Seat Fill</span>
+            <span class="card__title"><i data-lucide="book-open" class="card-icon card-icon--blue"></i>Batch Seat Fill</span>
             <a href="pages/batches.html" class="btn btn--ghost btn--sm">Manage</a>
           </div>
           <div class="card__body">
             <div class="batch-fill-list" id="batchFillList">
-              <div style="color:var(--text-3);font-size:13px;text-align:center;padding:20px;">Loading...</div>
+              <div class="loading-state">Loading...</div>
             </div>
           </div>
         </div>
@@ -211,12 +211,12 @@
         <!-- Enquiry Status -->
         <div class="card">
           <div class="card__header">
-            <span class="card__title"><i data-lucide="pie-chart" style="width:15px;height:15px;margin-right:6px;vertical-align:-2px;color:var(--green)"></i>Enquiry Status</span>
+            <span class="card__title"><i data-lucide="pie-chart" class="card-icon card-icon--green"></i>Enquiry Status</span>
             <a href="pages/enquiries.html" class="btn btn--ghost btn--sm">View All</a>
           </div>
           <div class="card__body">
             <div class="status-summary" id="enquiryStatus">
-              <div style="color:var(--text-3);font-size:13px;text-align:center;padding:20px;">Loading...</div>
+              <div class="loading-state">Loading...</div>
             </div>
           </div>
         </div>
@@ -224,9 +224,9 @@
         <!-- Recent Activity -->
         <div class="card">
           <div class="card__header">
-            <span class="card__title"><i data-lucide="activity" style="width:15px;height:15px;margin-right:6px;vertical-align:-2px;color:var(--purple)"></i>Recent Activity</span>
+            <span class="card__title"><i data-lucide="activity" class="card-icon card-icon--purple"></i>Recent Activity</span>
           </div>
-          <div class="card__body" style="padding:4px 16px;">
+          <div class="card__body card__body--compact">
             <div class="activity-feed" id="activityFeed"></div>
           </div>
         </div>
@@ -239,26 +239,26 @@
         <!-- Recent Enquiries Table -->
         <div class="card">
           <div class="card__header">
-            <span class="card__title"><i data-lucide="inbox" style="width:15px;height:15px;margin-right:6px;vertical-align:-2px;color:var(--blue)"></i>Recent Enquiries</span>
+            <span class="card__title"><i data-lucide="inbox" class="card-icon card-icon--blue"></i>Recent Enquiries</span>
             <a href="pages/enquiries.html" class="btn btn--ghost btn--sm">View All</a>
           </div>
-          <div class="table-wrap" style="border:none;border-radius:0;box-shadow:none;">
+          <div class="table-wrap table-wrap--flat">
             <table class="table">
               <thead><tr><th>Name</th><th>Batch</th><th>Date</th><th>Status</th></tr></thead>
               <tbody id="recentEnquiriesBody">
-                <tr><td colspan="4" style="text-align:center;color:var(--text-3);padding:24px;">Loading...</td></tr>
+                <tr><td colspan="4" class="td-loading">Loading...</td></tr>
               </tbody>
             </table>
           </div>
         </div>
 
         <!-- Quick Actions + Content Summary -->
-        <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="right-col">
 
           <!-- Quick Actions -->
           <div class="card">
             <div class="card__header">
-              <span class="card__title"><i data-lucide="zap" style="width:15px;height:15px;margin-right:6px;vertical-align:-2px;color:var(--yellow)"></i>Quick Actions</span>
+              <span class="card__title"><i data-lucide="zap" class="card-icon card-icon--yellow"></i>Quick Actions</span>
             </div>
             <div class="card__body">
               <div class="quick-actions-grid">
@@ -283,12 +283,12 @@
           </div>
 
           <!-- Content Summary -->
-          <div class="card" style="flex:1;">
+          <div class="card card--flex">
             <div class="card__header">
-              <span class="card__title"><i data-lucide="layout-grid" style="width:15px;height:15px;margin-right:6px;vertical-align:-2px;color:var(--blue)"></i>Content Summary</span>
+              <span class="card__title"><i data-lucide="layout-grid" class="card-icon card-icon--blue"></i>Content Summary</span>
               <span class="badge badge--green">All Live</span>
             </div>
-            <div class="card__body" style="padding:0;">
+            <div class="card__body card__body--flush">
               <div id="contentSummaryList"></div>
             </div>
           </div>
@@ -367,8 +367,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="status-dot" style="background:${meta.dot}"></div>
         <span class="status-row__label">${meta.label}</span>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:80px;height:5px;border-radius:99px;background:var(--border);overflow:hidden;">
+      <div class="status-row__right">
+        <div class="status-mini-bar">
           <div style="width:${pct}%;height:100%;border-radius:99px;background:${meta.dot};"></div>
         </div>
         <span class="status-row__count">${count}</span>
@@ -406,15 +406,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('contentSummaryList').innerHTML = items.map(item => `
     <a href="${item.href}" style="display:flex;align-items:center;justify-content:space-between;padding:11px 20px;border-bottom:1px solid var(--border);text-decoration:none;transition:background var(--t-fast);"
        onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''">
-      <div style="display:flex;align-items:center;gap:10px;">
+      <div class="status-row__right">
         <div style="width:30px;height:30px;border-radius:var(--r-md);background:${item.color}18;display:flex;align-items:center;justify-content:center;color:${item.color};">
           <i data-lucide="${item.icon}" style="width:14px;height:14px;"></i>
         </div>
         <span style="font-size:13.5px;font-weight:600;color:var(--text);">${item.label}</span>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;">
+      <div class="summary-row__right">
         <span style="font-size:17px;font-weight:800;color:var(--text);">${item.count}</span>
-        <i data-lucide="chevron-right" style="width:13px;height:13px;color:var(--text-3);"></i>
+        <i data-lucide="chevron-right" class="chevron-icon"></i>
       </div>
     </a>`).join('');
 

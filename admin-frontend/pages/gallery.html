@@ -81,7 +81,7 @@
       </div>
 
       <div class="gallery-admin-grid" id="galleryGrid">
-        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-3);">Loading...</div>
+        <div class="grid-loading">Loading...</div>
       </div>
     </div>
   </main>
@@ -106,16 +106,16 @@
       <div class="form-group" id="uploadSection">
         <label class="form-label">Upload Image</label>
         <div class="upload-area">
-          <div class="upload-area__icon"><i data-lucide="image-plus" style="width:40px;height:40px;"></i></div>
+          <div class="upload-area__icon"><i data-lucide="image-plus" class="upload-icon-lg"></i></div>
           <div class="upload-area__text">Click to upload or drag & drop</div>
           <div class="upload-area__hint">JPG, PNG, WebP · Max 2MB</div>
           <input type="file" id="galFileInput" accept="image/*" />
         </div>
-        <div id="imgPreviewWrap" style="margin-top:10px;display:none;">
-          <img id="imgPreview" style="width:100%;max-height:200px;object-fit:cover;border-radius:var(--r-md);border:1.5px solid var(--border);" />
+        <div id="imgPreviewWrap" class="img-preview-wrap js-hidden">
+          <img id="imgPreview" class="img-preview" />
         </div>
       </div>
-      <div class="form-group" id="videoSection" style="display:none;">
+      <div class="form-group js-hidden" id="videoSection">
         <label class="form-label">Video URL / File Path</label>
         <input type="text" class="form-input" id="galVideoUrl" placeholder="assets/videos/filename.mp4 or YouTube URL" />
       </div>
@@ -194,7 +194,7 @@ function filterGallery() {
 function renderGrid(data) {
   const grid = document.getElementById('galleryGrid');
   if (!data.length) {
-    grid.innerHTML = `<div style="grid-column:1/-1"><div class="empty-state"><i data-lucide="image"></i><div class="empty-state__title">No items in this category</div></div></div>`;
+    grid.innerHTML = `<div class="grid-full"><div class="empty-state"><i data-lucide="image"></i><div class="empty-state__title">No items in this category</div></div></div>`;
     lucide.createIcons(); return;
   }
   grid.innerHTML = data.map(g => `
@@ -202,7 +202,7 @@ function renderGrid(data) {
       <div class="gal-item__thumb">
         ${g.url
           ? (g.mediaType === 'video'
-              ? `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:#0f172a;"><i data-lucide="play-circle" style="width:40px;height:40px;color:rgba(255,255,255,0.6)"></i></div>`
+              ? `<div class="gal-video-thumb"><i data-lucide="play-circle" class="gal-play-icon"></i></div>`
               : `<img src="${g.url}" alt="${g.caption}" />`)
           : `<div class="gal-item__thumb-placeholder"><i data-lucide="${g.mediaType === 'video' ? 'video' : 'image'}"></i><div style="font-size:11px;">${g.mediaType === 'video' ? 'Video' : 'No image'}</div></div>`}
         <span class="gal-item__cat"><span class="badge" style="background:${catColors[g.category]}22;color:${catColors[g.category]}">${catLabels[g.category]||g.category}</span></span>
@@ -213,7 +213,7 @@ function renderGrid(data) {
       </div>
       <div class="gal-item__footer">
         <span class="badge badge--${g.mediaType === 'video' ? 'red' : 'blue'}">${g.mediaType}</span>
-        <div style="display:flex;gap:4px;">
+        <div class="btn-group">
           <button class="btn btn--ghost btn--sm btn--icon" onclick="editGal(${g.id})"><i data-lucide="pencil"></i></button>
           <button class="btn btn--ghost-red btn--sm btn--icon" onclick="deleteGal(${g.id})"><i data-lucide="trash-2"></i></button>
         </div>

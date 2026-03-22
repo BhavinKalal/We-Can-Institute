@@ -64,7 +64,7 @@
 
     <div class="page-content">
       <div class="test-grid" id="testGrid">
-        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-3);">Loading...</div>
+        <div class="grid-loading">Loading...</div>
       </div>
     </div>
   </main>
@@ -111,7 +111,7 @@
       <div class="form-group">
         <div class="toggle-wrap">
           <label class="toggle"><input type="checkbox" id="testActive" checked /><div class="toggle__track"></div><div class="toggle__thumb"></div></label>
-          <span style="font-size:13.5px;font-weight:500;color:var(--text-2)">Active (visible on website)</span>
+          <span class="toggle-label">Active (visible on website)</span>
         </div>
       </div>
     </div>
@@ -144,20 +144,20 @@ async function loadTest() {
 function renderGrid(data) {
   const grid = document.getElementById('testGrid');
   if (!data.length) {
-    grid.innerHTML = `<div style="grid-column:1/-1"><div class="empty-state"><i data-lucide="message-square-quote"></i><div class="empty-state__title">No testimonials yet</div><button class="btn btn--primary" onclick="openAddModal()"><i data-lucide="plus"></i> Add First Testimonial</button></div></div>`;
+    grid.innerHTML = `<div class="grid-full"><div class="empty-state"><i data-lucide="message-square-quote"></i><div class="empty-state__title">No testimonials yet</div><button class="btn btn--primary" onclick="openAddModal()"><i data-lucide="plus"></i> Add First Testimonial</button></div></div>`;
     lucide.createIcons(); return;
   }
   grid.innerHTML = data.map(t => `
     <div class="test-card">
-      <div class="stars" style="margin-bottom:10px;">${starsHtml(t.stars)}</div>
+      <div class="stars stars--mb">${starsHtml(t.stars)}</div>
       <div class="test-card__quote">${t.quote}</div>
       <div class="test-card__author">
         <div class="avatar avatar--md avatar--blue">${t.initials || t.name.slice(0,2)}</div>
-        <div><div style="font-size:14px;font-weight:700;color:var(--text);">${t.name}</div><div style="font-size:12px;color:var(--text-3);">${t.role}</div></div>
+        <div><div class="test-author-name">${t.name}</div><div class="test-author-role">${t.role}</div></div>
       </div>
       <div class="test-card__footer">
         ${statusBadge(t.active ? 'active' : 'inactive')}
-        <div style="display:flex;gap:6px;">
+        <div class="btn-group">
           <button class="btn btn--ghost btn--sm btn--icon" onclick="editTest(${t.id})"><i data-lucide="pencil"></i></button>
           <button class="btn btn--ghost-red btn--sm btn--icon" onclick="deleteTest(${t.id})"><i data-lucide="trash-2"></i></button>
         </div>
