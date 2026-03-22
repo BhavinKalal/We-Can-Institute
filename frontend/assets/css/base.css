@@ -216,3 +216,10 @@ button {
 .reveal-delay-5 {
   transition-delay: 0.5s;
 }
+
+/* ── EXTENDED COLOR UTILITIES ── */
+.text-red-light  { color: var(--red-light); }
+.text-blue-light { color: #60c9f8; }
+.text-italic     { font-style: italic; }
+.icon-white      { color: #ffffff; }
+.icon-soft       { color: var(--text-soft); }

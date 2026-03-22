@@ -1003,6 +1003,163 @@
 .footer__bottom-link:hover { color: var(--white); }
 
 /* ══════════════════════════════════════════════
+   UTILITY COLOR CLASSES
+══════════════════════════════════════════════ */
+.text-red-light  { color: var(--red-light); }
+.text-blue-light { color: #60c9f8; }
+.text-muted-color { color: var(--text-muted); }
+.font-italic     { font-style: italic; }
+
+/* ══════════════════════════════════════════════
+   WHY SECTION — ICON COLOR VARIANTS
+══════════════════════════════════════════════ */
+.why__icon--red {
+  background: rgba(227,30,36,0.08);
+  border: 1px solid rgba(227,30,36,0.15);
+}
+.why__icon--red i { color: rgba(227,30,37,0.84); }
+
+.why__icon--blue {
+  background: rgba(27,155,215,0.08);
+  border: 1px solid rgba(27,155,215,0.15);
+}
+.why__icon--blue i { color: rgba(27,155,215,0.84); }
+
+.why__icon--yellow {
+  background: rgba(234,179,8,0.08);
+  border: 1px solid rgba(234,179,8,0.15);
+}
+.why__icon--yellow i { color: rgba(234,179,8,0.84); }
+
+.why__icon--green {
+  background: rgba(34,197,94,0.08);
+  border: 1px solid rgba(34,197,94,0.15);
+}
+.why__icon--green i { color: rgba(34,197,94,0.84); }
+
+.why__icon--purple {
+  background: rgba(168,85,247,0.08);
+  border: 1px solid rgba(168,85,247,0.15);
+}
+.why__icon--purple i { color: rgba(168,85,247,0.84); }
+
+.why__icon--rose {
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.15);
+}
+.why__icon--rose i { color: rgba(239,68,68,0.84); }
+
+/* ══════════════════════════════════════════════
+   PROGRAM CARD EMOJI — ICON COLOR
+══════════════════════════════════════════════ */
+.program-card__emoji i { color: var(--white); }
+
+/* ══════════════════════════════════════════════
+   SECTION BADGE — display fix
+══════════════════════════════════════════════ */
+.section-badge--inline {
+  margin-bottom: 1.5rem;
+  display: inline-flex;
+}
+
+/* ══════════════════════════════════════════════
+   CTA FORM
+══════════════════════════════════════════════ */
+.cta-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-width: 580px;
+  margin: 0 auto 1.5rem;
+  text-align: left;
+}
+
+.cta-form__full { grid-column: 1 / -1; }
+
+.cta-form__input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  color: var(--white);
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  backdrop-filter: blur(8px);
+}
+
+.cta-form__input::placeholder { color: rgba(255,255,255,0.4); }
+.cta-form__input:focus { border-color: rgba(27,155,215,0.5); }
+
+.cta-form__select {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(30,41,59,0.9);
+  color: rgba(255,255,255,0.7);
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+.cta-form__select:focus { border-color: rgba(27,155,215,0.5); }
+
+.cta-form__btn { width: 100%; }
+
+/* ══════════════════════════════════════════════
+   LIGHTBOX CONTENT
+══════════════════════════════════════════════ */
+#lightboxContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 400px;
+  min-height: 300px;
+  background: var(--navy-soft);
+  border-radius: 16px;
+  padding: 3rem;
+  text-align: center;
+}
+
+.lightbox-placeholder-text {
+  color: var(--text-soft);
+  font-size: 1rem;
+}
+
+/* ══════════════════════════════════════════════
+   FOOTER LOGO
+══════════════════════════════════════════════ */
+.footer__logo-wrap { margin-bottom: 1rem; }
+
+.footer__logo-img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+}
+
+.footer__socials-wrap { margin-top: 1.2rem; }
+
+/* ══════════════════════════════════════════════
+   BTN FULL WIDTH
+══════════════════════════════════════════════ */
+.btn--full { width: 100%; }
+
+/* ══════════════════════════════════════════════
+   BLOG VIEW ALL — inline-flex fix
+══════════════════════════════════════════════ */
+.btn--inline-flex { display: inline-flex; }
+
+.btn--icon-sm svg {
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+}
+
+/* ══════════════════════════════════════════════
    KEYFRAMES
 ══════════════════════════════════════════════ */
 @keyframes fadeDown {
@@ -1049,4 +1206,3 @@
   .hero__card-icons { flex-direction: column; align-items: center; }
   .cta-section__actions { flex-direction: column; }
 }
-
