@@ -935,6 +935,11 @@
   background: linear-gradient(135deg, #1a1200, #3d2d00);
 }
 
+.gallery__placeholder--red-dark img {
+  object-fit: cover;
+  width: 100%;
+}
+
 .gallery__placeholder i  { color: var(--white); }
 .gallery__placeholder-video i { color: rgba(255,255,255,0.6); }
 
