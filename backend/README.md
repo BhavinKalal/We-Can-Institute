@@ -42,6 +42,7 @@ App URLs:
 - OpenAPI docs: `http://127.0.0.1:8000/docs`
 - Health: `http://127.0.0.1:8000/api/v1/health`
 - Readiness: `http://127.0.0.1:8000/api/v1/health/ready`
+- Public homepage payload: `http://127.0.0.1:8000/api/v1/public/homepage`
 
 ## Run Migrations
 
