@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from sqlalchemy import select
+from sqlalchemy import inspect, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models.batch import Batch
@@ -11,7 +11,27 @@ from app.models.site_settings import SiteSettings
 from app.schemas.homepage import HomepagePayload
 
 
+def _homepage_schema_ready(db: Session) -> bool:
+    inspector = inspect(db.get_bind())
+    required_tables = {
+        "hero_sections",
+        "hero_stats",
+        "site_settings",
+        "batches",
+    }
+    existing_tables = set(inspector.get_table_names())
+    return required_tables.issubset(existing_tables)
+
+
 def build_homepage_payload(db: Session) -> HomepagePayload:
+    if not _homepage_schema_ready(db):
+        return HomepagePayload(
+            hero=None,
+            settings=None,
+            batches=[],
+            generated_at=datetime.now(timezone.utc),
+        )
+
     hero = db.scalar(
         select(HeroSection)
         .options(selectinload(HeroSection.stats))
