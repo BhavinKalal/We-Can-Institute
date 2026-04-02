@@ -155,9 +155,37 @@
 <script>
 let allBatches = [], editingId = null;
 
+// --- Data Transformation ---
+function toCamel(s) {
+  return s.replace(/([-_][a-z])/ig, ($1) => $1.toUpperCase().replace('-', '').replace('_', ''));
+}
+function toSnake(s) {
+  return s.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+}
+function transformKeys(obj, transformer) {
+  if (Array.isArray(obj)) return obj.map(v => transformKeys(v, transformer));
+  if (obj !== null && typeof obj === 'object') {
+    return Object.keys(obj).reduce((acc, key) => {
+      acc[transformer(key)] = transformKeys(obj[key], transformer);
+      return acc;
+    }, {});
+  }
+  return obj;
+}
+
 async function loadBatches() {
-  allBatches = await API.getBatches();
-  renderGrid(allBatches);
+  const grid = document.getElementById('batchGrid');
+  grid.innerHTML = '<div class="grid-loading">Loading...</div>';
+  try {
+    const rawData = await API.getBatches();
+    allBatches = transformKeys(rawData, toCamel);
+    renderGrid(filterBatches());
+  } catch (error) {
+    console.error('Failed to load batches:', error);
+    showToast('Failed to load batches. See console for details.', 'error');
+    grid.innerHTML = '<div class="grid-full"><div class="empty-state empty-state--error"><i data-lucide="server-off"></i><div class="empty-state__title">Could not connect to server</div></div></div>';
+    lucide.createIcons();
+  }
 }
 
 function renderGrid(data) {
@@ -201,7 +229,7 @@ function renderGrid(data) {
       </div>
       <div class="batch-card__footer">
         ${b.badge ? `<span class="badge badge--blue">${b.badge}</span>` : '<span></span>'}
-        ${statusBadge(b.active ? 'active' : 'inactive')}
+        ${statusBadge(b.isActive ? 'active' : 'inactive')}
       </div>
     </div>`}).join('');
   lucide.createIcons();
@@ -234,25 +262,31 @@ function editBatch(id) {
   document.getElementById('batchSeats').value = b.seats;
   document.getElementById('batchFilled').value = b.filled;
   document.getElementById('batchDesc').value = b.description || '';
-  document.getElementById('batchActive').checked = b.active;
+  document.getElementById('batchActive').checked = b.isActive;
   openModal('batchModal');
 }
 
 async function deleteBatch(id) {
   const b = allBatches.find(x => x.id === id);
-  confirmAction(`Delete "${b.name}"? This cannot be undone.`, async () => {
-    await API.deleteBatch(id);
-    allBatches = allBatches.filter(x => x.id !== id);
-    renderGrid(filterBatches());
-    showToast('Batch deleted', 'success');
+  confirmAction(`Delete "${b?.name || 'this batch'}"? This cannot be undone.`, async () => {
+    try {
+      await API.deleteBatch(id);
+      showToast('Batch deleted', 'success');
+      loadBatches(); // Reload from server
+    } catch (error) {
+      console.error('Failed to delete batch:', error);
+      showToast('Failed to delete batch.', 'error');
+    }
   });
 }
 
 document.getElementById('saveBatchBtn').addEventListener('click', async () => {
   const name = document.getElementById('batchName').value.trim();
   if (!name) { showToast('Batch name is required', 'error'); return; }
-  const data = {
-    name, icon: document.getElementById('batchIcon').value,
+  
+  const frontendData = {
+    name, 
+    icon: document.getElementById('batchIcon').value,
     level: document.getElementById('batchLevel').value,
     duration: document.getElementById('batchDuration').value,
     timing: document.getElementById('batchTiming').value,
@@ -260,20 +294,26 @@ document.getElementById('saveBatchBtn').addEventListener('click', async () => {
     seats: parseInt(document.getElementById('batchSeats').value) || 20,
     filled: parseInt(document.getElementById('batchFilled').value) || 0,
     description: document.getElementById('batchDesc').value,
-    active: document.getElementById('batchActive').checked
+    isActive: document.getElementById('batchActive').checked,
+    sortOrder: 0 // Default sort order
   };
-  if (editingId) {
-    await API.updateBatch(editingId, data);
-    const idx = allBatches.findIndex(x => x.id === editingId);
-    if (idx > -1) allBatches[idx] = { ...allBatches[idx], ...data };
-    showToast('Batch updated!', 'success');
-  } else {
-    const newB = await API.createBatch(data);
-    allBatches.push(newB);
-    showToast('Batch added!', 'success');
+  
+  const backendData = transformKeys(frontendData, toSnake);
+
+  try {
+    if (editingId) {
+      await API.updateBatch(editingId, backendData);
+      showToast('Batch updated!', 'success');
+    } else {
+      await API.createBatch(backendData);
+      showToast('Batch added!', 'success');
+    }
+    closeModal('batchModal');
+    loadBatches(); // Reload from server
+  } catch (error) {
+    console.error('Failed to save batch:', error);
+    showToast('Failed to save batch.', 'error');
   }
-  closeModal('batchModal');
-  renderGrid(filterBatches());
 });
 
 function filterBatches() {

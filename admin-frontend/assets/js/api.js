@@ -8,7 +8,7 @@
    3. All functions will automatically use real API calls
    ============================================================ */
 
-const USE_MOCK = true;
+const USE_MOCK = false;
 const BASE_URL = 'http://localhost:8000/api/v1';
 
 /* ── MOCK DATA STORE ── */
@@ -131,14 +131,14 @@ const API = {
   getStats:        () => USE_MOCK ? Promise.resolve(MOCK.stats)        : apiFetch('/stats'),
 
   /* Hero */
-  getHero:         () => USE_MOCK ? Promise.resolve(MOCK.hero)         : apiFetch('/content/hero'),
-  updateHero: (data) => USE_MOCK ? Promise.resolve({...MOCK.hero,...data}) : apiFetch('/content/hero', {method:'PUT', body:JSON.stringify(data)}),
+  getHero:         () => USE_MOCK ? Promise.resolve(MOCK.hero)         : apiFetch('/admin/hero'),
+  updateHero: (data) => USE_MOCK ? Promise.resolve({...MOCK.hero,...data}) : apiFetch('/admin/hero', {method:'PUT', body:JSON.stringify(data)}),
 
   /* Batches */
-  getBatches:      ()     => USE_MOCK ? Promise.resolve([...MOCK.batches])          : apiFetch('/batches'),
-  createBatch: (data)     => USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/batches', {method:'POST',body:JSON.stringify(data)}),
-  updateBatch: (id, data) => USE_MOCK ? Promise.resolve({id,...data})               : apiFetch(`/batches/${id}`, {method:'PUT',body:JSON.stringify(data)}),
-  deleteBatch: (id)       => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/batches/${id}`, {method:'DELETE'}),
+  getBatches:      ()     => USE_MOCK ? Promise.resolve([...MOCK.batches])          : apiFetch('/admin/batches'),
+  createBatch: (data)     => USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/batches', {method:'POST',body:JSON.stringify(data)}),
+  updateBatch: (id, data) => USE_MOCK ? Promise.resolve({id,...data})               : apiFetch(`/admin/batches/${id}`, {method:'PUT',body:JSON.stringify(data)}),
+  deleteBatch: (id)       => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/admin/batches/${id}`, {method:'DELETE'}),
 
   /* Faculty */
   getFaculty:      ()     => USE_MOCK ? Promise.resolve([...MOCK.faculty])          : apiFetch('/faculty'),
@@ -170,6 +170,6 @@ const API = {
   deleteEnquiry: (id)     => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/enquiries/${id}`, {method:'DELETE'}),
 
   /* Settings */
-  getSettings:     ()     => USE_MOCK ? Promise.resolve({...MOCK.settings})         : apiFetch('/settings'),
-  updateSettings: (data)  => USE_MOCK ? Promise.resolve({...MOCK.settings,...data}) : apiFetch('/settings', {method:'PUT',body:JSON.stringify(data)}),
+  getSettings:     ()     => USE_MOCK ? Promise.resolve({...MOCK.settings})         : apiFetch('/admin/settings'),
+  updateSettings: (data)  => USE_MOCK ? Promise.resolve({...MOCK.settings,...data}) : apiFetch('/admin/settings', {method:'PUT',body:JSON.stringify(data)}),
 };

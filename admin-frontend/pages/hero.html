@@ -180,40 +180,104 @@
 <script>
 let heroData = null;
 
+// --- Data Transformation ---
+function transformHeroDataForFrontend(backendData) {
+  return {
+    ...backendData,
+    stats: backendData.stats.map(s => ({
+      num: s.value,
+      label: s.label,
+      suffix: s.suffix,
+      sort_order: s.sort_order || 0
+    }))
+  };
+}
+
+function transformHeroDataForBackend(frontendData) {
+    const transformed = {
+        ...frontendData,
+        is_active: true, // Assuming it's always active from this editor
+        stats: frontendData.stats.map((s, i) => ({
+            value: parseFloat(s.num) || 0,
+            label: s.label,
+            suffix: s.suffix,
+            sort_order: i
+        }))
+    };
+    // The videoMode property is already a boolean in the frontend data, so no special handling is needed.
+    return transformed;
+}
+
+
 async function loadHero() {
-  heroData = await API.getHero();
-  populateFields(heroData);
-  renderStatsEditor(heroData.stats);
-  updatePreview();
+  try {
+    const rawData = await API.getHero();
+    if (!rawData) {
+        showToast('Could not load hero data from server.', 'error');
+        return;
+    }
+    heroData = transformHeroDataForFrontend(rawData);
+    populateFields(heroData);
+    renderStatsEditor(heroData.stats);
+    updatePreview();
+  } catch (error) {
+    console.error('Error loading hero data:', error);
+    showToast('Error loading hero data. Check console.', 'error');
+  }
 }
 
 function populateFields(d) {
-  document.getElementById('videoUrl').value = d.videoUrl || '';
-  document.getElementById('posterUrl').value = d.posterUrl || '';
+  document.getElementById('videoUrl').value = d.video_url || '';
+  document.getElementById('posterUrl').value = d.poster_url || '';
+  document.getElementById('videoMode').checked = d.video_mode;
   document.getElementById('eyebrow').value = d.eyebrow || '';
-  document.getElementById('titleLine1').value = d.titleLine1 || '';
-  document.getElementById('titleLine2').value = d.titleLine2 || '';
-  document.getElementById('titleLine3').value = d.titleLine3 || '';
+  document.getElementById('titleLine1').value = d.title_line1 || '';
+  document.getElementById('titleLine2').value = d.title_line2 || '';
+  document.getElementById('titleLine3').value = d.title_line3 || '';
   document.getElementById('subtitle').value = d.subtitle || '';
-  document.getElementById('badgeText').value = d.badgeText || '';
-  document.getElementById('ctaText').value = d.ctaText || '';
-  document.getElementById('ctaSubtext').value = d.ctaSubtext || '';
+  document.getElementById('badgeText').value = d.badge_text || '';
+  document.getElementById('ctaText').value = d.cta_text || '';
+  document.getElementById('ctaSubtext').value = d.cta_subtext || '';
 }
 
 function renderStatsEditor(stats) {
-  document.getElementById('statsEditor').innerHTML = stats.map((s, i) => `
+  document.getElementById('statsEditor').innerHTML = (stats || []).map((s, i) => `
     <div class="stat-editor-row">
       <div class="form-group form-group--no-margin"><label class="form-label">Number</label><input type="number" class="form-input" id="statNum${i}" value="${s.num}" /></div>
       <div class="form-group form-group--no-margin"><label class="form-label">Label</label><input type="text" class="form-input" id="statLabel${i}" value="${s.label}" /></div>
-      <div class="form-group form-group--no-margin"><label class="form-label">Suffix</label><input type="text" class="form-input" id="statSuffix${i}" value="${s.suffix}" /></div>
+      <div class="form-group form-group--no-margin"><label class="form-label">Suffix</label><input type="text" class="form-input" id="statSuffix${i}" value="${s.suffix || ''}" /></div>
     </div>`).join('');
   // Attach events
-  stats.forEach((_, i) => {
+  (stats || []).forEach((_, i) => {
     ['statNum','statLabel','statSuffix'].forEach(prefix => {
       document.getElementById(`${prefix}${i}`)?.addEventListener('input', updatePreview);
     });
   });
 }
+
+function gatherDataFromFields() {
+    const stats = (heroData?.stats || []).map((_, i) => ({
+        num: parseFloat(document.getElementById('statNum'+i).value) || 0,
+        label: document.getElementById('statLabel'+i).value,
+        suffix: document.getElementById('statSuffix'+i).value
+    }));
+
+    return {
+        video_url: document.getElementById('videoUrl').value,
+        poster_url: document.getElementById('posterUrl').value,
+        video_mode: document.getElementById('videoMode').checked,
+        eyebrow: document.getElementById('eyebrow').value,
+        title_line1: document.getElementById('titleLine1').value,
+        title_line2: document.getElementById('titleLine2').value,
+        title_line3: document.getElementById('titleLine3').value,
+        subtitle: document.getElementById('subtitle').value,
+        badge_text: document.getElementById('badgeText').value,
+        cta_text: document.getElementById('ctaText').value,
+        cta_subtext: document.getElementById('ctaSubtext').value,
+        stats
+    };
+}
+
 
 function updatePreview() {
   document.getElementById('prev-eyebrow').textContent = '🎯 ' + (document.getElementById('eyebrow').value || 'Speak · Impress · Lead');
@@ -230,7 +294,7 @@ function updatePreview() {
 
   const statsContainer = document.getElementById('prev-stats');
   if (heroData) {
-    statsContainer.innerHTML = heroData.stats.map((_, i) => `
+    statsContainer.innerHTML = (heroData.stats || []).map((_, i) => `
       <div>
         <div class="preview-stat__num">${document.getElementById('statNum'+i)?.value || ''}${document.getElementById('statSuffix'+i)?.value || ''}</div>
         <div class="preview-stat__label">${document.getElementById('statLabel'+i)?.value || ''}</div>
@@ -239,40 +303,32 @@ function updatePreview() {
 }
 
 // Live preview on input
-document.querySelectorAll('.form-input, .form-textarea').forEach(el => {
+document.querySelectorAll('.form-input, .form-textarea, #videoMode').forEach(el => {
   el.addEventListener('input', updatePreview);
 });
 
 document.getElementById('saveBtn').addEventListener('click', async () => {
-  const stats = heroData.stats.map((_, i) => ({
-    num: parseFloat(document.getElementById('statNum'+i).value),
-    label: document.getElementById('statLabel'+i).value,
-    suffix: document.getElementById('statSuffix'+i).value
-  }));
-  const data = {
-    videoUrl: document.getElementById('videoUrl').value,
-    posterUrl: document.getElementById('posterUrl').value,
-    videoMode: document.getElementById('videoMode').checked,
-    eyebrow: document.getElementById('eyebrow').value,
-    titleLine1: document.getElementById('titleLine1').value,
-    titleLine2: document.getElementById('titleLine2').value,
-    titleLine3: document.getElementById('titleLine3').value,
-    subtitle: document.getElementById('subtitle').value,
-    badgeText: document.getElementById('badgeText').value,
-    ctaText: document.getElementById('ctaText').value,
-    ctaSubtext: document.getElementById('ctaSubtext').value,
-    stats
-  };
-  await API.updateHero(data);
-  showToast('Hero section saved!', 'success');
+  try {
+    const frontendData = gatherDataFromFields();
+    const backendData = transformHeroDataForBackend(frontendData);
+    await API.updateHero(backendData);
+    // Reload data to get fresh state from server
+    await loadHero(); 
+    showToast('Hero section saved successfully!', 'success');
+  } catch (error) {
+    console.error('Error saving hero data:', error);
+    showToast('Error saving hero data. Check console.', 'error');
+  }
 });
 
 document.getElementById('resetBtn').addEventListener('click', () => {
   confirmAction('Reset all hero fields to current saved values?', () => {
-    populateFields(heroData);
-    renderStatsEditor(heroData.stats);
-    updatePreview();
-    showToast('Reset to saved values', 'info');
+    if (heroData) {
+        populateFields(heroData);
+        renderStatsEditor(heroData.stats);
+        updatePreview();
+        showToast('Reset to saved values', 'info');
+    }
   });
 });
 
