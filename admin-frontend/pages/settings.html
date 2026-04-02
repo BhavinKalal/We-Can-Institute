@@ -176,22 +176,60 @@
 <script>
 let settings = null;
 
+// --- Data Transformation ---
+function toCamel(s) {
+  return s.replace(/([-_][a-z])/ig, ($1) => {
+    return $1.toUpperCase().replace('-', '').replace('_', '');
+  });
+}
+
+function toSnake(s) {
+    return s.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+}
+
+function transformKeys(obj, transformer) {
+    if (Array.isArray(obj)) {
+        return obj.map(v => transformKeys(v, transformer));
+    } else if (obj !== null && typeof obj === 'object') {
+        return Object.keys(obj).reduce((acc, key) => {
+            acc[transformer(key)] = transformKeys(obj[key], transformer);
+            return acc;
+        }, {});
+    }
+    return obj;
+}
+
+
 async function loadSettings() {
-  settings = await API.getSettings();
-  document.getElementById('siteName').value = settings.siteName || '';
-  document.getElementById('tagline').value = settings.tagline || '';
-  document.getElementById('phone').value = settings.phone || '';
-  document.getElementById('email').value = settings.email || '';
-  document.getElementById('address').value = settings.address || '';
-  document.getElementById('timings').value = settings.timings || '';
-  document.getElementById('instagram').value = settings.instagram || '';
-  document.getElementById('facebook').value = settings.facebook || '';
-  document.getElementById('youtube').value = settings.youtube || '';
-  document.getElementById('whatsapp').value = settings.whatsapp || '';
-  document.getElementById('metaTitle').value = settings.metaTitle || '';
-  document.getElementById('metaDescription').value = settings.metaDescription || '';
-  document.getElementById('mapEmbed').value = settings.mapEmbed || '';
-  if (settings.mapEmbed) showMapPreview(settings.mapEmbed);
+  try {
+    const rawData = await API.getSettings();
+    if (!rawData) {
+      showToast('Could not load settings from server.', 'error');
+      return;
+    }
+    settings = transformKeys(rawData, toCamel);
+    populateFields(settings);
+  } catch (error) {
+    console.error('Error loading settings:', error);
+    showToast('Error loading settings. Check console.', 'error');
+  }
+}
+
+function populateFields(s) {
+  document.getElementById('siteName').value = s.siteName || '';
+  document.getElementById('tagline').value = s.tagline || '';
+  document.getElementById('phone').value = s.phone || '';
+  document.getElementById('email').value = s.email || '';
+  document.getElementById('address').value = s.address || '';
+  document.getElementById('timings').value = s.timings || '';
+  document.getElementById('instagram').value = s.instagram || '';
+  document.getElementById('facebook').value = s.facebook || '';
+  document.getElementById('youtube').value = s.youtube || '';
+  document.getElementById('whatsapp').value = s.whatsapp || '';
+  document.getElementById('metaTitle').value = s.metaTitle || '';
+  document.getElementById('metaDescription').value = s.metaDescription || '';
+  document.getElementById('mapEmbed').value = s.mapEmbed || '';
+  if (s.mapEmbed) showMapPreview(s.mapEmbed);
 }
 
 document.getElementById('mapEmbed').addEventListener('input', e => {
@@ -205,23 +243,29 @@ function showMapPreview(url) {
 }
 
 document.getElementById('saveAllBtn').addEventListener('click', async () => {
-  const data = {
-    siteName: document.getElementById('siteName').value,
-    tagline: document.getElementById('tagline').value,
-    phone: document.getElementById('phone').value,
-    email: document.getElementById('email').value,
-    address: document.getElementById('address').value,
-    timings: document.getElementById('timings').value,
-    instagram: document.getElementById('instagram').value,
-    facebook: document.getElementById('facebook').value,
-    youtube: document.getElementById('youtube').value,
-    whatsapp: document.getElementById('whatsapp').value,
-    metaTitle: document.getElementById('metaTitle').value,
-    metaDescription: document.getElementById('metaDescription').value,
-    mapEmbed: document.getElementById('mapEmbed').value,
-  };
-  await API.updateSettings(data);
-  showToast('Settings saved successfully!', 'success');
+  try {
+    const data = {
+      siteName: document.getElementById('siteName').value,
+      tagline: document.getElementById('tagline').value,
+      phone: document.getElementById('phone').value,
+      email: document.getElementById('email').value,
+      address: document.getElementById('address').value,
+      timings: document.getElementById('timings').value,
+      instagram: document.getElementById('instagram').value,
+      facebook: document.getElementById('facebook').value,
+      youtube: document.getElementById('youtube').value,
+      whatsapp: document.getElementById('whatsapp').value,
+      metaTitle: document.getElementById('metaTitle').value,
+      metaDescription: document.getElementById('metaDescription').value,
+      mapEmbed: document.getElementById('mapEmbed').value,
+    };
+    const snakeCaseData = transformKeys(data, toSnake);
+    await API.updateSettings(snakeCaseData);
+    showToast('Settings saved successfully!', 'success');
+  } catch (error) {
+    console.error('Error saving settings:', error);
+    showToast('Error saving settings. Check console.', 'error');
+  }
 });
 
 loadSettings();
