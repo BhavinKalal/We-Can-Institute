@@ -80,13 +80,29 @@
             <div class="card__header"><span class="card__title"><i data-lucide="video" class="card-icon card-icon--blue"></i>Background Video</span></div>
             <div class="card__body">
               <div class="form-group">
-                <label class="form-label">Video File Path</label>
-                <input type="text" class="form-input" id="videoUrl" placeholder="assets/videos/hero-section-video.mp4" />
-                <div class="form-hint">Relative path from frontend folder. e.g. assets/videos/hero-section-video.mp4</div>
+                <label class="form-label">Video Path (auto-managed)</label>
+                <input type="text" class="form-input" id="videoUrl" placeholder="/media/hero_video/..." readonly />
+                <div class="form-hint">Path is generated automatically after upload and saved immediately.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Upload Hero Video</label>
+                <div class="form-grid-2">
+                  <input type="file" class="form-input" id="videoFile" accept="video/mp4,video/webm,video/ogg,video/quicktime" />
+                  <button class="btn btn--ghost btn--sm" id="uploadVideoBtn" type="button"><i data-lucide="upload"></i> Upload Video</button>
+                </div>
+                <div class="form-hint">Supported: MP4, WebM, OGG, MOV (max 50MB).</div>
               </div>
               <div class="form-group">
                 <label class="form-label">Poster Image (shown before video loads)</label>
-                <input type="text" class="form-input" id="posterUrl" placeholder="assets/images/hero-poster.jpg" />
+                <input type="text" class="form-input" id="posterUrl" placeholder="/media/hero_poster/..." readonly />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Upload Poster Image</label>
+                <div class="form-grid-2">
+                  <input type="file" class="form-input" id="posterFile" accept="image/jpeg,image/png,image/webp" />
+                  <button class="btn btn--ghost btn--sm" id="uploadPosterBtn" type="button"><i data-lucide="upload"></i> Upload Poster</button>
+                </div>
+                <div class="form-hint">Supported: JPG, PNG, WebP.</div>
               </div>
               <div class="form-group">
                 <div class="toggle-wrap">
@@ -179,6 +195,35 @@
 <script src="../assets/js/admin.js"></script>
 <script>
 let heroData = null;
+
+async function uploadHeroMedia(fileInputId, kind, targetInputId, buttonId) {
+  const input = document.getElementById(fileInputId);
+  const button = document.getElementById(buttonId);
+  const file = input?.files?.[0];
+  if (!file) {
+    showToast('Please select a file first.', 'warning');
+    return;
+  }
+
+  button.disabled = true;
+  button.innerHTML = '<i data-lucide="loader-2"></i> Uploading...';
+  if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [button] });
+
+  try {
+    const result = await API.uploadHeroMedia(file, kind);
+    document.getElementById(targetInputId).value = result.url || result.relative_url || '';
+    await loadHero();
+    showToast('Upload successful and published.', 'success');
+    input.value = '';
+  } catch (error) {
+    console.error('Hero media upload failed:', error);
+    showToast(error.message || 'Upload failed.', 'error');
+  } finally {
+    button.disabled = false;
+    button.innerHTML = '<i data-lucide="upload"></i> ' + (kind === 'hero_video' ? 'Upload Video' : 'Upload Poster');
+    if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [button] });
+  }
+}
 
 // --- Data Transformation ---
 function transformHeroDataForFrontend(backendData) {
@@ -305,6 +350,13 @@ function updatePreview() {
 // Live preview on input
 document.querySelectorAll('.form-input, .form-textarea, #videoMode').forEach(el => {
   el.addEventListener('input', updatePreview);
+});
+
+document.getElementById('uploadVideoBtn').addEventListener('click', () => {
+  uploadHeroMedia('videoFile', 'hero_video', 'videoUrl', 'uploadVideoBtn');
+});
+document.getElementById('uploadPosterBtn').addEventListener('click', () => {
+  uploadHeroMedia('posterFile', 'hero_poster', 'posterUrl', 'uploadPosterBtn');
 });
 
 document.getElementById('saveBtn').addEventListener('click', async () => {

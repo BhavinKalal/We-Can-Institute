@@ -1,11 +1,11 @@
 from __future__ import annotations
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.api.deps import SessionDep
+from app.api.deps import AdminDep, SessionDep
 from app.schemas.batches import Batch, BatchCreate, BatchUpdate
 from app.services import batch_service
 
-router = APIRouter(prefix="/batches", tags=["Batches"])
+router = APIRouter(prefix="/batches", tags=["Batches"], dependencies=[AdminDep])
 
 @router.post("/", response_model=Batch, status_code=status.HTTP_201_CREATED)
 def create_batch(db: SessionDep, batch_in: BatchCreate):

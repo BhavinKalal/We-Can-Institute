@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog — WE CAN Admin</title>
+  <title>Blog â€” WE CAN Admin</title>
   <link rel="stylesheet" href="../assets/css/admin-base.css" />
   <link rel="stylesheet" href="../assets/css/admin-layout.css" />
   <link rel="stylesheet" href="../assets/css/admin-components.css" />
@@ -160,6 +160,11 @@
                   <label class="form-label">Read Time</label>
                   <input type="text" class="form-input" id="postReadTime" placeholder="e.g. 5 min" />
                 </div>
+                <div class="form-group">
+                  <label class="form-label">Cover Image</label>
+                  <input type="file" id="postCoverFile" accept="image/jpeg,image/png,image/webp" class="form-input" />
+                  <input type="text" class="form-input" id="postCoverUrl" placeholder="/media/blog_cover/..." readonly />
+                </div>
               </div>
             </div>
           </div>
@@ -175,12 +180,41 @@
 <script>
 let allPosts = [], editingId = null;
 
+function toCamel(s) { return s.replace(/([-_][a-z])/ig, p => p.toUpperCase().replace('-', '').replace('_', '')); }
+function toSnake(s) { return s.replace(/[A-Z]/g, l => `_${l.toLowerCase()}`); }
+function transformKeys(obj, transformer) {
+  if (Array.isArray(obj)) return obj.map(v => transformKeys(v, transformer));
+  if (obj !== null && typeof obj === 'object') {
+    return Object.keys(obj).reduce((acc, key) => {
+      acc[transformer(key)] = transformKeys(obj[key], transformer);
+      return acc;
+    }, {});
+  }
+  return obj;
+}
+
 window.fmt = (cmd, val) => { document.execCommand(cmd, false, val || null); document.getElementById('postContent').focus(); };
 
+document.getElementById('postCoverFile').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const uploaded = await API.uploadBlogCover(file);
+    document.getElementById('postCoverUrl').value = uploaded.relative_url || uploaded.url || '';
+    showToast('Cover image uploaded', 'success');
+  } catch (error) {
+    showToast(error.message || 'Cover upload failed', 'error');
+  } finally {
+    e.target.value = '';
+  }
+});
+
 async function loadPosts() {
-  allPosts = await API.getPosts();
-  const cats = [...new Set(allPosts.map(p => p.category))];
+  const raw = await API.getPosts();
+  allPosts = transformKeys(raw, toCamel);
+  const cats = [...new Set(allPosts.map(p => p.category).filter(Boolean))];
   const cf = document.getElementById('catFilter');
+  cf.innerHTML = '<option value="">All Categories</option>';
   cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; cf.appendChild(o); });
   renderList(allPosts);
 }
@@ -195,11 +229,11 @@ function renderList(data) {
     <div class="blog-row">
       <div>
         <div class="blog-row__title">${p.title} ${p.featured ? '<span class="badge badge--yellow badge--xs">Featured</span>' : ''}</div>
-        <div class="blog-row__meta">${p.readTime} read</div>
+        <div class="blog-row__meta">${p.readTime || '-'} read</div>
       </div>
-      <div><span class="badge badge--blue">${p.category}</span></div>
-      <div class="blog-row__author">${p.author}</div>
-      <div class="blog-row__date">${fmtDate(p.date)}</div>
+      <div><span class="badge badge--blue">${p.category || 'General'}</span></div>
+      <div class="blog-row__author">${p.author || '-'}</div>
+      <div class="blog-row__date">${p.publishedDate ? fmtDate(p.publishedDate) : '-'}</div>
       <div class="btn-group">
         ${statusBadge(p.status)}
         <button class="btn btn--ghost btn--sm btn--icon" onclick="editPost(${p.id})" title="Edit"><i data-lucide="pencil"></i></button>
@@ -222,6 +256,7 @@ function openEditor(post = null) {
   document.getElementById('postCategory').value = post?.category || 'Tips & Tricks';
   document.getElementById('postAuthor').value = post?.author || '';
   document.getElementById('postReadTime').value = post?.readTime || '';
+  document.getElementById('postCoverUrl').value = post?.coverImageUrl || '';
   lucide.createIcons();
 }
 
@@ -231,7 +266,7 @@ async function deletePost(id) {
   const p = allPosts.find(x => x.id === id);
   confirmAction(`Delete "${p.title}"?`, async () => {
     await API.deletePost(id);
-    allPosts = allPosts.filter(x => x.id !== id);
+    await loadPosts();
     renderList(filterPosts());
     showToast('Post deleted', 'success');
   });
@@ -240,28 +275,31 @@ async function deletePost(id) {
 async function savePost(status) {
   const title = document.getElementById('postTitle').value.trim();
   if (!title) { showToast('Title is required', 'error'); return; }
-  const data = {
-    title, excerpt: document.getElementById('postExcerpt').value,
+  const frontendData = {
+    title,
+    excerpt: document.getElementById('postExcerpt').value,
     content: document.getElementById('postContent').innerHTML,
     status: status || document.getElementById('postStatus').value,
     featured: document.getElementById('postFeatured').checked,
     category: document.getElementById('postCategory').value,
     author: document.getElementById('postAuthor').value,
     readTime: document.getElementById('postReadTime').value,
-    date: new Date().toISOString().slice(0,10)
+    coverImageUrl: document.getElementById('postCoverUrl').value || null,
+    publishedDate: new Date().toISOString().slice(0, 10),
+    isActive: true,
+    sortOrder: editingId ? (allPosts.find(p => p.id === editingId)?.sortOrder || 0) : allPosts.length,
   };
+  const data = transformKeys(frontendData, toSnake);
   if (editingId) {
     await API.updatePost(editingId, data);
-    const idx = allPosts.findIndex(p => p.id === editingId);
-    if (idx > -1) allPosts[idx] = { ...allPosts[idx], ...data };
     showToast('Post updated!', 'success');
   } else {
-    const np = await API.createPost(data);
-    allPosts.push(np);
+    await API.createPost(data);
     showToast('Post saved!', 'success');
   }
   document.getElementById('listView').style.display = '';
   document.getElementById('editorView').style.display = 'none';
+  await loadPosts();
   renderList(filterPosts());
 }
 

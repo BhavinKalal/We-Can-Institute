@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Faculty — WE CAN Admin</title>
+  <title>Faculty â€” WE CAN Admin</title>
   <link rel="stylesheet" href="../assets/css/admin-base.css" />
   <link rel="stylesheet" href="../assets/css/admin-layout.css" />
   <link rel="stylesheet" href="../assets/css/admin-components.css" />
@@ -99,7 +99,7 @@
           <div class="form-label">Profile Photo</div>
           <input type="file" id="photoInput" accept="image/*" class="js-hidden" />
           <button class="btn btn--ghost btn--sm" onclick="document.getElementById('photoInput').click()"><i data-lucide="upload"></i> Upload Photo</button>
-          <div class="form-hint">Recommended: 400×533px, JPG/WebP, under 200KB</div>
+          <div class="form-hint">Recommended: 400Ã—533px, JPG/WebP, under 200KB</div>
         </div>
       </div>
 
@@ -153,8 +153,26 @@
 <script>
 let allFaculty = [], editingId = null, currentTags = [], uploadedPhotoUrl = '';
 
+function toCamel(s) {
+  return s.replace(/([-_][a-z])/ig, part => part.toUpperCase().replace('-', '').replace('_', ''));
+}
+function toSnake(s) {
+  return s.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+}
+function transformKeys(obj, transformer) {
+  if (Array.isArray(obj)) return obj.map(v => transformKeys(v, transformer));
+  if (obj !== null && typeof obj === 'object') {
+    return Object.keys(obj).reduce((acc, key) => {
+      acc[transformer(key)] = transformKeys(obj[key], transformer);
+      return acc;
+    }, {});
+  }
+  return obj;
+}
+
 async function loadFaculty() {
-  allFaculty = await API.getFaculty();
+  const rawData = await API.getFaculty();
+  allFaculty = transformKeys(rawData, toCamel);
   renderGrid(allFaculty);
 }
 
@@ -167,17 +185,17 @@ function renderGrid(data) {
   grid.innerHTML = data.map(f => `
     <div class="fac-card">
       <div class="fac-card__photo">
-        ${f.photoUrl
-          ? `<img src="${f.photoUrl}" alt="${f.name}" />`
+        ${f.profilePhotoUrl
+          ? `<img src="${f.profilePhotoUrl}" alt="${f.name}" />`
           : `<div class="fac-card__initials">${f.initials || f.name.slice(0,2).toUpperCase()}</div>`}
       </div>
       <div class="fac-card__body">
         <div class="fac-card__name">${f.name}</div>
-        <div class="fac-card__role">${f.role} · ${f.experience}</div>
+        <div class="fac-card__role">${f.role}${f.experience ? ` · ${f.experience}` : ''}</div>
         <div class="fac-card__tags">${(f.tags||[]).map(t=>`<span class="fac-card__tag">${t}</span>`).join('')}</div>
       </div>
       <div class="fac-card__footer">
-        ${statusBadge(f.active ? 'active' : 'inactive')}
+        ${statusBadge(f.isActive ? 'active' : 'inactive')}
         <div class="btn-group">
           <button class="btn btn--ghost btn--sm btn--icon" onclick="editFaculty(${f.id})"><i data-lucide="pencil"></i></button>
           <button class="btn btn--ghost-red btn--sm btn--icon" onclick="deleteFaculty(${f.id})"><i data-lucide="trash-2"></i></button>
@@ -187,16 +205,16 @@ function renderGrid(data) {
   lucide.createIcons();
 }
 
-// Tag input
 const tagInput = document.getElementById('tagInput');
 tagInput.addEventListener('keydown', e => {
   if (e.key === 'Enter' || e.key === ',') {
     e.preventDefault();
-    const val = tagInput.value.trim().replace(',','');
+    const val = tagInput.value.trim().replace(',', '');
     if (val && !currentTags.includes(val)) { currentTags.push(val); renderTags(); }
     tagInput.value = '';
   }
 });
+
 function renderTags() {
   document.querySelectorAll('.tag-chip').forEach(c => c.remove());
   const wrap = document.getElementById('tagInputWrap');
@@ -207,20 +225,23 @@ function renderTags() {
     wrap.insertBefore(chip, tagInput);
   });
 }
-window.removeTag = (i) => { currentTags.splice(i,1); renderTags(); };
+window.removeTag = (i) => { currentTags.splice(i, 1); renderTags(); };
 
-// Photo preview
-document.getElementById('photoInput').addEventListener('change', e => {
+document.getElementById('photoInput').addEventListener('change', async e => {
   const file = e.target.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = r => {
-    uploadedPhotoUrl = r.target.result;
+  try {
+    const uploaded = await API.uploadFacultyPhoto(file);
+    uploadedPhotoUrl = uploaded.relative_url || uploaded.url || '';
     document.getElementById('photoPreviewImg').src = uploadedPhotoUrl;
     document.getElementById('photoPreviewImg').style.display = '';
     document.getElementById('cameraIcon').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
+    showToast('Faculty photo uploaded', 'success');
+  } catch (error) {
+    showToast(error.message || 'Photo upload failed', 'error');
+  } finally {
+    e.target.value = '';
+  }
 });
 
 function openAddModal() {
@@ -236,16 +257,22 @@ function openAddModal() {
 function editFaculty(id) {
   const f = allFaculty.find(x => x.id === id);
   if (!f) return;
-  editingId = id; currentTags = [...(f.tags||[])]; uploadedPhotoUrl = f.photoUrl || '';
+  editingId = id; currentTags = [...(f.tags || [])]; uploadedPhotoUrl = f.profilePhotoUrl || '';
   document.getElementById('facultyModalTitle').textContent = 'Edit Faculty';
   document.getElementById('facultyName').value = f.name;
   document.getElementById('facultyInitials').value = f.initials || '';
-  document.getElementById('facultyRole').value = f.role;
+  document.getElementById('facultyRole').value = f.role || '';
   document.getElementById('facultySpeciality').value = f.speciality || '';
   document.getElementById('facultyExperience').value = f.experience || '';
-  document.getElementById('facultyActive').checked = f.active;
-  if (f.photoUrl) { document.getElementById('photoPreviewImg').src = f.photoUrl; document.getElementById('photoPreviewImg').style.display=''; document.getElementById('cameraIcon').style.display='none'; }
-  else { document.getElementById('photoPreviewImg').style.display='none'; document.getElementById('cameraIcon').style.display=''; }
+  document.getElementById('facultyActive').checked = !!f.isActive;
+  if (f.profilePhotoUrl) {
+    document.getElementById('photoPreviewImg').src = f.profilePhotoUrl;
+    document.getElementById('photoPreviewImg').style.display = '';
+    document.getElementById('cameraIcon').style.display = 'none';
+  } else {
+    document.getElementById('photoPreviewImg').style.display = 'none';
+    document.getElementById('cameraIcon').style.display = '';
+  }
   renderTags(); openModal('facultyModal');
 }
 
@@ -261,26 +288,31 @@ async function deleteFaculty(id) {
 
 document.getElementById('saveFacultyBtn').addEventListener('click', async () => {
   const name = document.getElementById('facultyName').value.trim();
-  if (!name) { showToast('Name is required','error'); return; }
-  const data = {
-    name, initials: document.getElementById('facultyInitials').value || name.slice(0,2).toUpperCase(),
-    role: document.getElementById('facultyRole').value,
+  const role = document.getElementById('facultyRole').value.trim();
+  if (!name || !role) { showToast('Name and role are required', 'error'); return; }
+
+  const frontendData = {
+    name,
+    initials: (document.getElementById('facultyInitials').value || name.slice(0, 2).toUpperCase()).toUpperCase(),
+    role,
     speciality: document.getElementById('facultySpeciality').value,
     experience: document.getElementById('facultyExperience').value,
-    tags: currentTags, photoUrl: uploadedPhotoUrl,
-    active: document.getElementById('facultyActive').checked
+    tags: currentTags,
+    profilePhotoUrl: uploadedPhotoUrl,
+    isActive: document.getElementById('facultyActive').checked,
+    sortOrder: editingId ? (allFaculty.find(x => x.id === editingId)?.sortOrder || 0) : allFaculty.length,
   };
+  const backendData = transformKeys(frontendData, toSnake);
+
   if (editingId) {
-    await API.updateFaculty(editingId, data);
-    const idx = allFaculty.findIndex(x => x.id === editingId);
-    if (idx > -1) allFaculty[idx] = { ...allFaculty[idx], ...data };
-    showToast('Faculty updated!','success');
+    await API.updateFaculty(editingId, backendData);
+    showToast('Faculty updated!', 'success');
   } else {
-    const nf = await API.createFaculty(data);
-    allFaculty.push(nf);
-    showToast('Faculty added!','success');
+    await API.createFaculty(backendData);
+    showToast('Faculty added!', 'success');
   }
-  closeModal('facultyModal'); renderGrid(allFaculty);
+  closeModal('facultyModal');
+  await loadFaculty();
 });
 
 document.getElementById('addFacultyBtn').addEventListener('click', openAddModal);

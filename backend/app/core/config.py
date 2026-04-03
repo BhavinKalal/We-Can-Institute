@@ -12,6 +12,8 @@ DEFAULT_SQLITE_PATH = (BASE_DIR / "data" / "wecan.db").resolve()
 DEFAULT_CORS_ORIGINS = [
     "http://localhost:5500",
     "http://127.0.0.1:5500",
+    "http://localhost:5501",
+    "http://127.0.0.1:5501",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "null",
@@ -26,6 +28,8 @@ class Settings(BaseSettings):
     secret_key: str = "change-me"
     database_url: str = f"sqlite:///{DEFAULT_SQLITE_PATH.as_posix()}"
     db_echo: bool = False
+    media_root: str = str((BASE_DIR / "media").resolve())
+    media_url_path: str = "/media"
     backend_cors_origins: list[str] = Field(default_factory=lambda: DEFAULT_CORS_ORIGINS.copy())
 
     model_config = SettingsConfigDict(

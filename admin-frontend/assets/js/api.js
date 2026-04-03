@@ -10,6 +10,7 @@
 
 const USE_MOCK = false;
 const BASE_URL = 'http://localhost:8000/api/v1';
+const ADMIN_TOKEN = "super-secret-admin-token";
 
 /* ── MOCK DATA STORE ── */
 const MOCK = {
@@ -116,11 +117,24 @@ async function apiFetch(endpoint, options = {}) {
     console.log(`[MOCK API] ${options.method || 'GET'} ${endpoint}`);
     return null; // mock mode: data comes from MOCK object directly
   }
+  const isFormData = options.body instanceof FormData;
+  const defaultHeaders = isFormData
+    ? { 'X-Admin-Token': ADMIN_TOKEN }
+    : { 'Content-Type': 'application/json', 'X-Admin-Token': ADMIN_TOKEN };
+
   const res = await fetch(`${BASE_URL}${endpoint}`, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
+    headers: { ...defaultHeaders, ...options.headers },
     ...options
   });
-  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  if (!res.ok) {
+    let message = `API error: ${res.status}`;
+    try {
+      const body = await res.json();
+      message = body?.detail || message;
+    } catch (_) {}
+    throw new Error(message);
+  }
+  if (res.status === 204) return null;
   return res.json();
 }
 
@@ -133,6 +147,39 @@ const API = {
   /* Hero */
   getHero:         () => USE_MOCK ? Promise.resolve(MOCK.hero)         : apiFetch('/admin/hero'),
   updateHero: (data) => USE_MOCK ? Promise.resolve({...MOCK.hero,...data}) : apiFetch('/admin/hero', {method:'PUT', body:JSON.stringify(data)}),
+  uploadHeroMedia: (file, kind) => {
+    if (USE_MOCK) {
+      const fallback = kind === 'hero_video' ? 'assets/videos/hero-section-video.mp4' : 'assets/images/hero-poster.jpg';
+      return Promise.resolve({ kind, url: fallback, relative_url: fallback, filename: file?.name || '' });
+    }
+    const form = new FormData();
+    form.append('file', file);
+    return apiFetch(`/admin/media/upload?kind=${encodeURIComponent(kind)}`, { method: 'POST', body: form });
+  },
+  uploadFacultyPhoto: (file) => {
+    if (USE_MOCK) return Promise.resolve({ url: '', relative_url: '' });
+    const form = new FormData();
+    form.append('file', file);
+    return apiFetch('/admin/media/upload?kind=faculty_profile', { method: 'POST', body: form });
+  },
+  uploadGalleryImage: (file) => {
+    if (USE_MOCK) return Promise.resolve({ url: '', relative_url: '' });
+    const form = new FormData();
+    form.append('file', file);
+    return apiFetch('/admin/media/upload?kind=gallery_image', { method: 'POST', body: form });
+  },
+  uploadGalleryVideo: (file) => {
+    if (USE_MOCK) return Promise.resolve({ url: '', relative_url: '' });
+    const form = new FormData();
+    form.append('file', file);
+    return apiFetch('/admin/media/upload?kind=gallery_video', { method: 'POST', body: form });
+  },
+  uploadBlogCover: (file) => {
+    if (USE_MOCK) return Promise.resolve({ url: '', relative_url: '' });
+    const form = new FormData();
+    form.append('file', file);
+    return apiFetch('/admin/media/upload?kind=blog_cover', { method: 'POST', body: form });
+  },
 
   /* Batches */
   getBatches:      ()     => USE_MOCK ? Promise.resolve([...MOCK.batches])          : apiFetch('/admin/batches'),
@@ -141,22 +188,22 @@ const API = {
   deleteBatch: (id)       => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/admin/batches/${id}`, {method:'DELETE'}),
 
   /* Faculty */
-  getFaculty:      ()     => USE_MOCK ? Promise.resolve([...MOCK.faculty])          : apiFetch('/faculty'),
-  createFaculty: (data)   => USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/faculty', {method:'POST',body:JSON.stringify(data)}),
-  updateFaculty: (id,data)=> USE_MOCK ? Promise.resolve({id,...data})               : apiFetch(`/faculty/${id}`, {method:'PUT',body:JSON.stringify(data)}),
-  deleteFaculty: (id)     => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/faculty/${id}`, {method:'DELETE'}),
+  getFaculty:      ()     => USE_MOCK ? Promise.resolve([...MOCK.faculty])          : apiFetch('/admin/faculty'),
+  createFaculty: (data)   => USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/faculty', {method:'POST',body:JSON.stringify(data)}),
+  updateFaculty: (id,data)=> USE_MOCK ? Promise.resolve({id,...data})               : apiFetch(`/admin/faculty/${id}`, {method:'PUT',body:JSON.stringify(data)}),
+  deleteFaculty: (id)     => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/admin/faculty/${id}`, {method:'DELETE'}),
 
   /* Gallery */
-  getGallery:      ()     => USE_MOCK ? Promise.resolve([...MOCK.gallery])          : apiFetch('/gallery'),
-  createGalleryItem:(data)=> USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/gallery', {method:'POST',body:JSON.stringify(data)}),
-  updateGalleryItem:(id,data)=> USE_MOCK ? Promise.resolve({id,...data})            : apiFetch(`/gallery/${id}`, {method:'PUT',body:JSON.stringify(data)}),
-  deleteGalleryItem:(id)  => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/gallery/${id}`, {method:'DELETE'}),
+  getGallery:      ()     => USE_MOCK ? Promise.resolve([...MOCK.gallery])          : apiFetch('/admin/gallery'),
+  createGalleryItem:(data)=> USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/gallery', {method:'POST',body:JSON.stringify(data)}),
+  updateGalleryItem:(id,data)=> USE_MOCK ? Promise.resolve({id,...data})            : apiFetch(`/admin/gallery/${id}`, {method:'PUT',body:JSON.stringify(data)}),
+  deleteGalleryItem:(id)  => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/admin/gallery/${id}`, {method:'DELETE'}),
 
   /* Blog */
-  getPosts:        ()     => USE_MOCK ? Promise.resolve([...MOCK.blog])             : apiFetch('/blog'),
-  createPost: (data)      => USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/blog', {method:'POST',body:JSON.stringify(data)}),
-  updatePost: (id,data)   => USE_MOCK ? Promise.resolve({id,...data})               : apiFetch(`/blog/${id}`, {method:'PUT',body:JSON.stringify(data)}),
-  deletePost: (id)        => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/blog/${id}`, {method:'DELETE'}),
+  getPosts:        ()     => USE_MOCK ? Promise.resolve([...MOCK.blog])             : apiFetch('/admin/blog'),
+  createPost: (data)      => USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/blog', {method:'POST',body:JSON.stringify(data)}),
+  updatePost: (id,data)   => USE_MOCK ? Promise.resolve({id,...data})               : apiFetch(`/admin/blog/${id}`, {method:'PUT',body:JSON.stringify(data)}),
+  deletePost: (id)        => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/admin/blog/${id}`, {method:'DELETE'}),
 
   /* Testimonials */
   getTestimonials: ()     => USE_MOCK ? Promise.resolve([...MOCK.testimonials])     : apiFetch('/testimonials'),

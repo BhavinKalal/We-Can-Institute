@@ -13,16 +13,32 @@ def get_settings(db: Session) -> SiteSettings | None:
     return db.query(SiteSettings).filter(SiteSettings.site_key == "default").first()
 
 
-def update_settings(db: Session, settings_in: SettingsUpdate) -> SiteSettings | None:
+def get_or_create_settings(db: Session) -> SiteSettings:
+    settings = get_settings(db)
+    if settings:
+        return settings
+
+    settings = SiteSettings(site_key="default", site_name="WE CAN Institute of English")
+    db.add(settings)
+    db.commit()
+    db.refresh(settings)
+    return settings
+
+
+def update_settings(db: Session, settings_in: SettingsUpdate) -> SiteSettings:
     """
     Update the site settings.
     """
-    settings = get_settings(db)
-    if settings:
-        update_data = settings_in.model_dump(exclude_unset=True)
-        for field, value in update_data.items():
-            setattr(settings, field, value)
-        db.add(settings)
-        db.commit()
-        db.refresh(settings)
+    settings = get_or_create_settings(db)
+
+    update_data = settings_in.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(settings, field, value)
+
+    if not settings.site_name:
+        settings.site_name = "WE CAN Institute of English"
+
+    db.add(settings)
+    db.commit()
+    db.refresh(settings)
     return settings

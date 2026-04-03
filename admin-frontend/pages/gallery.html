@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gallery — WE CAN Admin</title>
+  <title>Gallery â€” WE CAN Admin</title>
   <link rel="stylesheet" href="../assets/css/admin-base.css" />
   <link rel="stylesheet" href="../assets/css/admin-layout.css" />
   <link rel="stylesheet" href="../assets/css/admin-components.css" />
@@ -77,7 +77,7 @@
         <button class="cat-filter-btn" data-cat="grand-finale">Grand Finale</button>
         <button class="cat-filter-btn" data-cat="awards">Awards</button>
         <button class="cat-filter-btn" data-cat="students">Students</button>
-        <button class="cat-filter-btn" data-cat="videos">Videos</button>
+        <button class="cat-filter-btn" data-cat="video">Videos</button>
       </div>
 
       <div class="gallery-admin-grid" id="galleryGrid">
@@ -108,7 +108,7 @@
         <div class="upload-area">
           <div class="upload-area__icon"><i data-lucide="image-plus" class="upload-icon-lg"></i></div>
           <div class="upload-area__text">Click to upload or drag & drop</div>
-          <div class="upload-area__hint">JPG, PNG, WebP · Max 2MB</div>
+          <div class="upload-area__hint">JPG, PNG, WebP Â· Max 2MB</div>
           <input type="file" id="galFileInput" accept="image/*" />
         </div>
         <div id="imgPreviewWrap" class="img-preview-wrap js-hidden">
@@ -116,8 +116,17 @@
         </div>
       </div>
       <div class="form-group js-hidden" id="videoSection">
-        <label class="form-label">Video URL / File Path</label>
-        <input type="text" class="form-input" id="galVideoUrl" placeholder="assets/videos/filename.mp4 or YouTube URL" />
+        <label class="form-label">Upload Video File</label>
+        <div class="upload-area">
+          <div class="upload-area__icon"><i data-lucide="video" class="upload-icon-lg"></i></div>
+          <div class="upload-area__text">Click to upload video</div>
+          <div class="upload-area__hint">MP4, WebM, OGG, MOV Â· Max 50MB</div>
+          <input type="file" id="galVideoFileInput" accept="video/mp4,video/webm,video/ogg,video/quicktime" />
+        </div>
+      </div>
+      <div class="form-group js-hidden" id="videoUrlSection">
+        <label class="form-label">Or External Video URL (YouTube/any embed URL)</label>
+        <input type="text" class="form-input" id="galVideoUrl" placeholder="https://youtube.com/... or any video URL" />
       </div>
       <div class="form-group">
         <label class="form-label">Caption</label>
@@ -131,7 +140,7 @@
             <option value="grand-finale">Grand Finale</option>
             <option value="awards">Awards</option>
             <option value="students">Students</option>
-            <option value="videos">Videos</option>
+            <option value="video">Videos</option>
           </select>
         </div>
         <div class="form-group">
@@ -139,38 +148,62 @@
           <input type="date" class="form-input" id="galDate" />
         </div>
       </div>
-    </div>
-    <div class="modal__footer">
-      <button class="btn btn--ghost" onclick="closeModal('galleryModal')">Cancel</button>
-      <button class="btn btn--primary" id="saveGalBtn"><i data-lucide="save"></i> Save</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast-container" id="toastContainer"></div>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/admin.js"></script>
 <script>
-let allGallery = [], editingId = null, uploadedUrl = '', activeCat = '';
+let allGallery = [], editingId = null, uploadedImageUrl = '', uploadedVideoUrl = '', activeCat = '';
 
-const catLabels = {'activities':'Activities','grand-finale':'Grand Finale','awards':'Awards','students':'Students','videos':'Videos'};
-const catColors = {'activities':'var(--blue)','grand-finale':'var(--purple)','awards':'var(--yellow)','students':'var(--green)','videos':'var(--red)'};
+function toCamel(s) { return s.replace(/([-_][a-z])/ig, p => p.toUpperCase().replace('-', '').replace('_', '')); }
+function toSnake(s) { return s.replace(/[A-Z]/g, l => `_${l.toLowerCase()}`); }
+function transformKeys(obj, transformer) {
+  if (Array.isArray(obj)) return obj.map(v => transformKeys(v, transformer));
+  if (obj !== null && typeof obj === 'object') {
+    return Object.keys(obj).reduce((acc, key) => {
+      acc[transformer(key)] = transformKeys(obj[key], transformer);
+      return acc;
+    }, {});
+  }
+  return obj;
+}
 
-document.getElementById('galType').addEventListener('change', e => {
-  const isVideo = e.target.value === 'video';
+const catLabels = {'activities':'Activities','grand-finale':'Grand Finale','awards':'Awards','students':'Students','video':'Video'};
+const catColors = {'activities':'var(--blue)','grand-finale':'var(--purple)','awards':'var(--yellow)','students':'var(--green)','video':'var(--red)'};
+
+function syncMediaMode() {
+  const isVideo = document.getElementById('galType').value === 'video';
   document.getElementById('uploadSection').style.display = isVideo ? 'none' : '';
   document.getElementById('videoSection').style.display = isVideo ? '' : 'none';
+  document.getElementById('videoUrlSection').style.display = isVideo ? '' : 'none';
+}
+
+document.getElementById('galType').addEventListener('change', syncMediaMode);
+
+document.getElementById('galFileInput').addEventListener('change', async e => {
+  const file = e.target.files[0]; if (!file) return;
+  try {
+    const uploaded = await API.uploadGalleryImage(file);
+    uploadedImageUrl = uploaded.relative_url || uploaded.url || '';
+    document.getElementById('imgPreview').src = uploadedImageUrl;
+    document.getElementById('imgPreviewWrap').style.display = '';
+    showToast('Image uploaded', 'success');
+  } catch (error) {
+    showToast(error.message || 'Image upload failed', 'error');
+  } finally {
+    e.target.value = '';
+  }
 });
 
-document.getElementById('galFileInput').addEventListener('change', e => {
+document.getElementById('galVideoFileInput').addEventListener('change', async e => {
   const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = r => {
-    uploadedUrl = r.target.result;
-    document.getElementById('imgPreview').src = uploadedUrl;
-    document.getElementById('imgPreviewWrap').style.display = '';
-  };
-  reader.readAsDataURL(file);
+  try {
+    const uploaded = await API.uploadGalleryVideo(file);
+    uploadedVideoUrl = uploaded.relative_url || uploaded.url || '';
+    showToast('Video uploaded', 'success');
+  } catch (error) {
+    showToast(error.message || 'Video upload failed', 'error');
+  } finally {
+    e.target.value = '';
+  }
 });
 
 document.querySelectorAll('.cat-filter-btn').forEach(btn => {
@@ -183,8 +216,9 @@ document.querySelectorAll('.cat-filter-btn').forEach(btn => {
 });
 
 async function loadGallery() {
-  allGallery = await API.getGallery();
-  renderGrid(allGallery);
+  const rawData = await API.getGallery();
+  allGallery = transformKeys(rawData, toCamel);
+  renderGrid(filterGallery());
 }
 
 function filterGallery() {
@@ -197,92 +231,114 @@ function renderGrid(data) {
     grid.innerHTML = `<div class="grid-full"><div class="empty-state"><i data-lucide="image"></i><div class="empty-state__title">No items in this category</div></div></div>`;
     lucide.createIcons(); return;
   }
-  grid.innerHTML = data.map(g => `
+  grid.innerHTML = data.map(g => {
+    const thumb = g.mediaType === 'image'
+      ? (g.mediaUrl ? `<img src="${g.mediaUrl}" alt="${g.caption || 'Gallery image'}" />` : `<div class="gal-item__thumb-placeholder"><i data-lucide="image"></i></div>`)
+      : `<div class="gal-video-thumb"><i data-lucide="play-circle" class="gal-play-icon"></i></div>`;
+    return `
     <div class="gal-item">
       <div class="gal-item__thumb">
-        ${g.url
-          ? (g.mediaType === 'video'
-              ? `<div class="gal-video-thumb"><i data-lucide="play-circle" class="gal-play-icon"></i></div>`
-              : `<img src="${g.url}" alt="${g.caption}" />`)
-          : `<div class="gal-item__thumb-placeholder"><i data-lucide="${g.mediaType === 'video' ? 'video' : 'image'}"></i><div style="font-size:11px;">${g.mediaType === 'video' ? 'Video' : 'No image'}</div></div>`}
-        <span class="gal-item__cat"><span class="badge" style="background:${catColors[g.category]}22;color:${catColors[g.category]}">${catLabels[g.category]||g.category}</span></span>
+        ${thumb}
+        <span class="gal-item__cat"><span class="badge" style="background:${catColors[g.category] || 'var(--blue)'}22;color:${catColors[g.category] || 'var(--blue)'}">${catLabels[g.category] || g.category}</span></span>
       </div>
       <div class="gal-item__body">
         <div class="gal-item__caption">${g.caption || 'Untitled'}</div>
-        <div class="gal-item__meta">${fmtDate(g.date)}</div>
+        <div class="gal-item__meta">${g.itemDate ? fmtDate(g.itemDate) : '-'}</div>
       </div>
       <div class="gal-item__footer">
-        <span class="badge badge--${g.mediaType === 'video' ? 'red' : 'blue'}">${g.mediaType}</span>
+        <span>${statusBadge(g.isVisible ? 'active' : 'inactive')}</span>
         <div class="btn-group">
           <button class="btn btn--ghost btn--sm btn--icon" onclick="editGal(${g.id})"><i data-lucide="pencil"></i></button>
           <button class="btn btn--ghost-red btn--sm btn--icon" onclick="deleteGal(${g.id})"><i data-lucide="trash-2"></i></button>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   lucide.createIcons();
 }
 
 function openAddModal() {
-  editingId = null; uploadedUrl = '';
+  editingId = null;
+  uploadedImageUrl = '';
+  uploadedVideoUrl = '';
   document.getElementById('galleryModalTitle').textContent = 'Add Gallery Item';
-  document.getElementById('galId').value = '';
   document.getElementById('galType').value = 'image';
   document.getElementById('galCaption').value = '';
   document.getElementById('galVideoUrl').value = '';
-  document.getElementById('galDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('galDate').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('galVisible').checked = true;
   document.getElementById('imgPreviewWrap').style.display = 'none';
-  document.getElementById('uploadSection').style.display = '';
-  document.getElementById('videoSection').style.display = 'none';
-  if (activeCat) document.getElementById('galCategory').value = activeCat;
+  document.getElementById('galCategory').value = activeCat || 'activities';
+  syncMediaMode();
   openModal('galleryModal');
 }
 
 function editGal(id) {
   const g = allGallery.find(x => x.id === id);
   if (!g) return;
-  editingId = id; uploadedUrl = g.url || '';
+  editingId = id;
+  uploadedImageUrl = g.mediaType === 'image' ? (g.mediaUrl || '') : '';
+  uploadedVideoUrl = g.mediaType === 'video' ? (g.mediaUrl || '') : '';
   document.getElementById('galleryModalTitle').textContent = 'Edit Gallery Item';
   document.getElementById('galType').value = g.mediaType || 'image';
   document.getElementById('galCaption').value = g.caption || '';
-  document.getElementById('galCategory').value = g.category;
-  document.getElementById('galDate').value = g.date || '';
-  document.getElementById('galVideoUrl').value = g.mediaType === 'video' ? (g.url || '') : '';
-  const isVideo = g.mediaType === 'video';
-  document.getElementById('uploadSection').style.display = isVideo ? 'none' : '';
-  document.getElementById('videoSection').style.display = isVideo ? '' : 'none';
-  if (g.url && !isVideo) { document.getElementById('imgPreview').src = g.url; document.getElementById('imgPreviewWrap').style.display = ''; }
-  else { document.getElementById('imgPreviewWrap').style.display = 'none'; }
+  document.getElementById('galCategory').value = g.category || 'activities';
+  document.getElementById('galDate').value = g.itemDate || '';
+  document.getElementById('galVideoUrl').value = g.externalVideoUrl || '';
+  document.getElementById('galVisible').checked = !!g.isVisible;
+  if (g.mediaType === 'image' && g.mediaUrl) {
+    document.getElementById('imgPreview').src = g.mediaUrl;
+    document.getElementById('imgPreviewWrap').style.display = '';
+  } else {
+    document.getElementById('imgPreviewWrap').style.display = 'none';
+  }
+  syncMediaMode();
   openModal('galleryModal');
 }
 
 async function deleteGal(id) {
   confirmAction('Remove this gallery item?', async () => {
     await API.deleteGalleryItem(id);
-    allGallery = allGallery.filter(x => x.id !== id);
-    renderGrid(filterGallery());
+    await loadGallery();
     showToast('Item removed', 'success');
   });
 }
 
 document.getElementById('saveGalBtn').addEventListener('click', async () => {
   const mediaType = document.getElementById('galType').value;
-  const url = mediaType === 'video' ? document.getElementById('galVideoUrl').value : uploadedUrl;
-  const data = {
+  const externalVideoUrl = document.getElementById('galVideoUrl').value.trim();
+  const mediaUrl = mediaType === 'image' ? uploadedImageUrl : uploadedVideoUrl;
+
+  if (mediaType === 'image' && !mediaUrl) {
+    showToast('Please upload an image.', 'error');
+    return;
+  }
+  if (mediaType === 'video' && !mediaUrl && !externalVideoUrl) {
+    showToast('Upload a video file or provide video URL.', 'error');
+    return;
+  }
+
+  const frontendData = {
     caption: document.getElementById('galCaption').value,
     category: document.getElementById('galCategory').value,
-    mediaType, url, date: document.getElementById('galDate').value
+    mediaType,
+    mediaUrl: mediaUrl || null,
+    externalVideoUrl: externalVideoUrl || null,
+    itemDate: document.getElementById('galDate').value || null,
+    isVisible: document.getElementById('galVisible').checked,
+    sortOrder: editingId ? (allGallery.find(x => x.id === editingId)?.sortOrder || 0) : allGallery.length,
   };
+  const backendData = transformKeys(frontendData, toSnake);
+
   if (editingId) {
-    await API.updateGalleryItem(editingId, data);
-    const idx = allGallery.findIndex(x => x.id === editingId);
-    if (idx > -1) allGallery[idx] = { ...allGallery[idx], ...data };
+    await API.updateGalleryItem(editingId, backendData);
     showToast('Item updated!', 'success');
   } else {
-    const ni = await API.createGalleryItem(data);
-    allGallery.push(ni);
+    await API.createGalleryItem(backendData);
     showToast('Item added!', 'success');
   }
-  closeModal('galleryModal'); renderGrid(filterGallery());
+  closeModal('galleryModal');
+  await loadGallery();
 });
 
 document.getElementById('addItemBtn').addEventListener('click', openAddModal);

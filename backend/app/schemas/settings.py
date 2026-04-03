@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, field_validator
 
 
 class SettingsBase(BaseModel):
@@ -17,6 +17,13 @@ class SettingsBase(BaseModel):
     map_embed: str | None = None
     meta_title: str | None = None
     meta_description: str | None = None
+
+    @field_validator("instagram", "facebook", "youtube", mode="before")
+    @classmethod
+    def empty_string_to_none(cls, value):
+        if isinstance(value, str) and not value.strip():
+            return None
+        return value
 
 
 class Settings(SettingsBase):
