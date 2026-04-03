@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.models.gallery_item import GalleryItem
 from app.schemas.gallery import GalleryItemCreate, GalleryItemUpdate
+from app.services.media_file_service import delete_media_file
 
 
 def get_gallery_item(db: Session, item_id: int) -> GalleryItem | None:
@@ -37,6 +38,7 @@ def update_gallery_item(db: Session, item_id: int, item_in: GalleryItemUpdate) -
     if not item:
         return None
 
+    old_media_url = item.media_url
     update_data = item_in.model_dump(exclude_unset=True)
     if update_data.get("external_video_url") is not None:
         update_data["external_video_url"] = str(update_data["external_video_url"])
@@ -46,6 +48,8 @@ def update_gallery_item(db: Session, item_id: int, item_in: GalleryItemUpdate) -
     db.add(item)
     db.commit()
     db.refresh(item)
+    if old_media_url and old_media_url != item.media_url:
+        delete_media_file(old_media_url)
     return item
 
 
@@ -53,6 +57,9 @@ def delete_gallery_item(db: Session, item_id: int) -> GalleryItem | None:
     item = get_gallery_item(db, item_id)
     if not item:
         return None
+    old_media_url = item.media_url
     db.delete(item)
     db.commit()
+    if old_media_url:
+        delete_media_file(old_media_url)
     return item

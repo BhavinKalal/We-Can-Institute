@@ -31,7 +31,9 @@ def update_settings(db: Session, settings_in: SettingsUpdate) -> SiteSettings:
     """
     settings = get_or_create_settings(db)
 
-    update_data = settings_in.model_dump(exclude_unset=True)
+    # Use JSON mode so Pydantic HttpUrl values are converted to plain strings
+    # before persisting to SQLAlchemy/SQLite.
+    update_data = settings_in.model_dump(exclude_unset=True, mode="json")
     for field, value in update_data.items():
         setattr(settings, field, value)
 

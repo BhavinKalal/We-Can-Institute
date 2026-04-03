@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 from datetime import date, datetime
+from typing import Literal
 
 from pydantic import BaseModel, Field
+
+BlogStatus = Literal["draft", "published"]
 
 
 class BlogPostBase(BaseModel):
@@ -12,7 +15,7 @@ class BlogPostBase(BaseModel):
     category: str | None = Field(None, max_length=100)
     author: str | None = Field(None, max_length=120)
     read_time: str | None = Field(None, max_length=30)
-    status: str = Field("draft", max_length=20)
+    status: BlogStatus = "draft"
     featured: bool = False
     cover_image_url: str | None = Field(None, max_length=500)
     published_date: date | None = None
@@ -31,7 +34,7 @@ class BlogPostUpdate(BaseModel):
     category: str | None = Field(None, max_length=100)
     author: str | None = Field(None, max_length=120)
     read_time: str | None = Field(None, max_length=30)
-    status: str | None = Field(None, max_length=20)
+    status: BlogStatus | None = None
     featured: bool | None = None
     cover_image_url: str | None = Field(None, max_length=500)
     published_date: date | None = None

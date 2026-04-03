@@ -105,6 +105,48 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
   });
 
+  /* —— DEMO FORM SUBMIT —— */
+  const demoForm = document.getElementById('demoForm');
+  demoForm?.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const submitBtn = demoForm.querySelector('button[type="submit"]');
+    const nameInput = demoForm.querySelector('input[type="text"]');
+    const phoneInput = demoForm.querySelector('input[type="tel"]');
+    const batchSelect = demoForm.querySelector('select');
+    if (!nameInput || !phoneInput || !batchSelect) return;
+
+    const name = nameInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const batchName = batchSelect.options[batchSelect.selectedIndex]?.text || '';
+
+    if (!name || !phone || !batchName) return;
+
+    try {
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+      }
+      await API.submitEnquiry({
+        name,
+        phone,
+        batch_name: batchName,
+      });
+      demoForm.reset();
+      alert('Demo enquiry submitted successfully. We will contact you soon.');
+    } catch (error) {
+      alert(error?.message || 'Could not submit enquiry. Please try again.');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `
+          <span class="btn__icon" aria-hidden="true"><i data-lucide="target"></i></span>
+          Book My Free Demo Class
+        `;
+        if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [submitBtn] });
+      }
+    }
+  });
+
   /* ── PROGRAM CARD HOVER ── */
   document.querySelectorAll('.program-card').forEach(card => {
     card.addEventListener('mouseenter', () => {

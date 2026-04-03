@@ -11,6 +11,7 @@ from app.models.faculty_member import FacultyMember
 from app.models.gallery_item import GalleryItem
 from app.models.hero_section import HeroSection
 from app.models.site_settings import SiteSettings
+from app.models.testimonial import Testimonial
 from app.schemas.homepage import HomepagePayload
 
 
@@ -24,6 +25,7 @@ def _homepage_schema_ready(db: Session) -> bool:
         "faculty_members",
         "gallery_items",
         "blog_posts",
+        "testimonials",
     }
     existing_tables = set(inspector.get_table_names())
     return required_tables.issubset(existing_tables)
@@ -38,6 +40,7 @@ def build_homepage_payload(db: Session) -> HomepagePayload:
             faculty=[],
             gallery=[],
             blog_posts=[],
+            testimonials=[],
             generated_at=datetime.now(timezone.utc),
         )
 
@@ -87,6 +90,15 @@ def build_homepage_payload(db: Session) -> HomepagePayload:
         )
     )
 
+    testimonials = list(
+        db.scalars(
+            select(Testimonial)
+            .where(Testimonial.is_active.is_(True))
+            .order_by(Testimonial.sort_order.asc(), Testimonial.id.asc())
+            .limit(8)
+        )
+    )
+
     return HomepagePayload(
         hero=hero,
         settings=settings,
@@ -94,5 +106,6 @@ def build_homepage_payload(db: Session) -> HomepagePayload:
         faculty=faculty,
         gallery=gallery,
         blog_posts=blog_posts,
+        testimonials=testimonials,
         generated_at=datetime.now(timezone.utc),
     )

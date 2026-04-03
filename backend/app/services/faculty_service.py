@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.models.faculty_member import FacultyMember
 from app.schemas.faculty import FacultyCreate, FacultyUpdate
+from app.services.media_file_service import delete_media_file
 
 
 def get_faculty_member(db: Session, faculty_id: int) -> FacultyMember | None:
@@ -34,6 +35,7 @@ def update_faculty_member(db: Session, faculty_id: int, faculty_in: FacultyUpdat
     if not member:
         return None
 
+    old_photo = member.profile_photo_url
     update_data = faculty_in.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(member, field, value)
@@ -41,6 +43,8 @@ def update_faculty_member(db: Session, faculty_id: int, faculty_in: FacultyUpdat
     db.add(member)
     db.commit()
     db.refresh(member)
+    if old_photo and old_photo != member.profile_photo_url:
+        delete_media_file(old_photo)
     return member
 
 
@@ -48,6 +52,9 @@ def delete_faculty_member(db: Session, faculty_id: int) -> FacultyMember | None:
     member = get_faculty_member(db, faculty_id)
     if not member:
         return None
+    old_photo = member.profile_photo_url
     db.delete(member)
     db.commit()
+    if old_photo:
+        delete_media_file(old_photo)
     return member

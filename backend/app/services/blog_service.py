@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.models.blog_post import BlogPost
 from app.schemas.blog import BlogPostCreate, BlogPostUpdate
+from app.services.media_file_service import delete_media_file
 
 
 def get_blog_post(db: Session, post_id: int) -> BlogPost | None:
@@ -43,6 +44,7 @@ def update_blog_post(db: Session, post_id: int, post_in: BlogPostUpdate) -> Blog
     if not post:
         return None
 
+    old_cover = post.cover_image_url
     update_data = _normalize_post_data(post_in.model_dump(exclude_unset=True))
     for field, value in update_data.items():
         setattr(post, field, value)
@@ -50,6 +52,8 @@ def update_blog_post(db: Session, post_id: int, post_in: BlogPostUpdate) -> Blog
     db.add(post)
     db.commit()
     db.refresh(post)
+    if old_cover and old_cover != post.cover_image_url:
+        delete_media_file(old_cover)
     return post
 
 
@@ -57,6 +61,9 @@ def delete_blog_post(db: Session, post_id: int) -> BlogPost | None:
     post = get_blog_post(db, post_id)
     if not post:
         return None
+    old_cover = post.cover_image_url
     db.delete(post)
     db.commit()
+    if old_cover:
+        delete_media_file(old_cover)
     return post

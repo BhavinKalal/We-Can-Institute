@@ -16,6 +16,10 @@
     .enq-stat__label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);}
     .notes-input{width:100%;padding:6px 10px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;}
     .notes-input:focus{border-color:var(--border-focus);}
+    .table thead th:last-child,
+    .table tbody td:last-child{min-width:118px;width:118px;}
+    .table .td-actions{justify-content:flex-end;flex-wrap:nowrap;gap:4px;}
+    .table .td-actions .btn{flex-shrink:0;}
     @media(max-width:768px){.enq-stats{grid-template-columns:repeat(2,1fr);}}
   </style>
 </head>
@@ -221,14 +225,24 @@ function filterData() {
   document.getElementById(id).addEventListener('input', () => renderTable(filterData()));
 });
 
-document.getElementById('exportBtn').addEventListener('click', () => {
-  const data = filterData();
-  const csv = ['Name,Phone,Batch,Date,Status,Notes', ...data.map(e => `${e.name},${e.phone},${e.batch},${e.date},${e.status},"${e.notes}"`)].join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv,' + encodeURIComponent(csv);
-  a.download = 'enquiries.csv';
-  a.click();
-  showToast('Exported successfully!', 'success');
+document.getElementById('exportBtn').addEventListener('click', async () => {
+  try {
+    const filters = {
+      q: document.getElementById('searchInput').value.trim(),
+      batch_name: document.getElementById('batchFilter').value,
+      status_filter: document.getElementById('statusFilter').value,
+    };
+    const blob = await API.exportEnquiriesCsv(filters);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'enquiries.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Exported successfully!', 'success');
+  } catch (error) {
+    showToast(error.message || 'Export failed', 'error');
+  }
 });
 
 loadEnquiries();

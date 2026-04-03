@@ -16,4 +16,8 @@ async function apiFetch(endpoint, options = {}) {
 
 const API = {
   getHomepageData: () => apiFetch('/public/homepage'),
+  submitEnquiry: (data) => apiFetch('/public/enquiries', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
 };

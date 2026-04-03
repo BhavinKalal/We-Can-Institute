@@ -148,10 +148,30 @@
           <input type="date" class="form-input" id="galDate" />
         </div>
       </div>
+      <div class="form-group">
+        <div class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" id="galVisible" checked />
+            <div class="toggle__track"></div>
+            <div class="toggle__thumb"></div>
+          </label>
+          <span class="toggle-label">Visible on website</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--ghost" onclick="closeModal('galleryModal')">Cancel</button>
+      <button class="btn btn--primary" id="saveGalBtn"><i data-lucide="save"></i> Save Item</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/admin.js"></script>
 <script>
 let allGallery = [], editingId = null, uploadedImageUrl = '', uploadedVideoUrl = '', activeCat = '';
+let pendingImageFile = null, pendingVideoFile = null, pendingImagePreviewUrl = '';
 
 function toCamel(s) { return s.replace(/([-_][a-z])/ig, p => p.toUpperCase().replace('-', '').replace('_', '')); }
 function toSnake(s) { return s.replace(/[A-Z]/g, l => `_${l.toLowerCase()}`); }
@@ -178,32 +198,29 @@ function syncMediaMode() {
 
 document.getElementById('galType').addEventListener('change', syncMediaMode);
 
+function clearPendingImagePreview() {
+  if (pendingImagePreviewUrl) {
+    URL.revokeObjectURL(pendingImagePreviewUrl);
+    pendingImagePreviewUrl = '';
+  }
+}
+
 document.getElementById('galFileInput').addEventListener('change', async e => {
   const file = e.target.files[0]; if (!file) return;
-  try {
-    const uploaded = await API.uploadGalleryImage(file);
-    uploadedImageUrl = uploaded.relative_url || uploaded.url || '';
-    document.getElementById('imgPreview').src = uploadedImageUrl;
-    document.getElementById('imgPreviewWrap').style.display = '';
-    showToast('Image uploaded', 'success');
-  } catch (error) {
-    showToast(error.message || 'Image upload failed', 'error');
-  } finally {
-    e.target.value = '';
-  }
+  pendingImageFile = file;
+  clearPendingImagePreview();
+  pendingImagePreviewUrl = URL.createObjectURL(file);
+  document.getElementById('imgPreview').src = pendingImagePreviewUrl;
+  document.getElementById('imgPreviewWrap').style.display = '';
+  showToast('Image selected. It will upload when you save.', 'info');
+  e.target.value = '';
 });
 
 document.getElementById('galVideoFileInput').addEventListener('change', async e => {
   const file = e.target.files[0]; if (!file) return;
-  try {
-    const uploaded = await API.uploadGalleryVideo(file);
-    uploadedVideoUrl = uploaded.relative_url || uploaded.url || '';
-    showToast('Video uploaded', 'success');
-  } catch (error) {
-    showToast(error.message || 'Video upload failed', 'error');
-  } finally {
-    e.target.value = '';
-  }
+  pendingVideoFile = file;
+  showToast('Video selected. It will upload when you save.', 'info');
+  e.target.value = '';
 });
 
 document.querySelectorAll('.cat-filter-btn').forEach(btn => {
@@ -233,7 +250,7 @@ function renderGrid(data) {
   }
   grid.innerHTML = data.map(g => {
     const thumb = g.mediaType === 'image'
-      ? (g.mediaUrl ? `<img src="${g.mediaUrl}" alt="${g.caption || 'Gallery image'}" />` : `<div class="gal-item__thumb-placeholder"><i data-lucide="image"></i></div>`)
+      ? (g.mediaUrl ? `<img src="${resolveAdminMediaUrl(g.mediaUrl)}" alt="${g.caption || 'Gallery image'}" />` : `<div class="gal-item__thumb-placeholder"><i data-lucide="image"></i></div>`)
       : `<div class="gal-video-thumb"><i data-lucide="play-circle" class="gal-play-icon"></i></div>`;
     return `
     <div class="gal-item">
@@ -261,6 +278,9 @@ function openAddModal() {
   editingId = null;
   uploadedImageUrl = '';
   uploadedVideoUrl = '';
+  pendingImageFile = null;
+  pendingVideoFile = null;
+  clearPendingImagePreview();
   document.getElementById('galleryModalTitle').textContent = 'Add Gallery Item';
   document.getElementById('galType').value = 'image';
   document.getElementById('galCaption').value = '';
@@ -277,6 +297,9 @@ function editGal(id) {
   const g = allGallery.find(x => x.id === id);
   if (!g) return;
   editingId = id;
+  pendingImageFile = null;
+  pendingVideoFile = null;
+  clearPendingImagePreview();
   uploadedImageUrl = g.mediaType === 'image' ? (g.mediaUrl || '') : '';
   uploadedVideoUrl = g.mediaType === 'video' ? (g.mediaUrl || '') : '';
   document.getElementById('galleryModalTitle').textContent = 'Edit Gallery Item';
@@ -287,7 +310,7 @@ function editGal(id) {
   document.getElementById('galVideoUrl').value = g.externalVideoUrl || '';
   document.getElementById('galVisible').checked = !!g.isVisible;
   if (g.mediaType === 'image' && g.mediaUrl) {
-    document.getElementById('imgPreview').src = g.mediaUrl;
+    document.getElementById('imgPreview').src = resolveAdminMediaUrl(g.mediaUrl);
     document.getElementById('imgPreviewWrap').style.display = '';
   } else {
     document.getElementById('imgPreviewWrap').style.display = 'none';
@@ -305,40 +328,56 @@ async function deleteGal(id) {
 }
 
 document.getElementById('saveGalBtn').addEventListener('click', async () => {
-  const mediaType = document.getElementById('galType').value;
-  const externalVideoUrl = document.getElementById('galVideoUrl').value.trim();
-  const mediaUrl = mediaType === 'image' ? uploadedImageUrl : uploadedVideoUrl;
+  try {
+    const mediaType = document.getElementById('galType').value;
+    const externalVideoUrl = document.getElementById('galVideoUrl').value.trim();
 
-  if (mediaType === 'image' && !mediaUrl) {
-    showToast('Please upload an image.', 'error');
-    return;
-  }
-  if (mediaType === 'video' && !mediaUrl && !externalVideoUrl) {
-    showToast('Upload a video file or provide video URL.', 'error');
-    return;
-  }
+    if (mediaType === 'image' && pendingImageFile) {
+      const uploaded = await API.uploadGalleryImage(pendingImageFile);
+      uploadedImageUrl = uploaded.relative_url || uploaded.url || '';
+    }
+    if (mediaType === 'video' && pendingVideoFile) {
+      const uploaded = await API.uploadGalleryVideo(pendingVideoFile);
+      uploadedVideoUrl = uploaded.relative_url || uploaded.url || '';
+    }
 
-  const frontendData = {
-    caption: document.getElementById('galCaption').value,
-    category: document.getElementById('galCategory').value,
-    mediaType,
-    mediaUrl: mediaUrl || null,
-    externalVideoUrl: externalVideoUrl || null,
-    itemDate: document.getElementById('galDate').value || null,
-    isVisible: document.getElementById('galVisible').checked,
-    sortOrder: editingId ? (allGallery.find(x => x.id === editingId)?.sortOrder || 0) : allGallery.length,
-  };
-  const backendData = transformKeys(frontendData, toSnake);
+    const mediaUrl = mediaType === 'image' ? uploadedImageUrl : uploadedVideoUrl;
+    if (mediaType === 'image' && !mediaUrl) {
+      showToast('Please upload an image.', 'error');
+      return;
+    }
+    if (mediaType === 'video' && !mediaUrl && !externalVideoUrl) {
+      showToast('Upload a video file or provide video URL.', 'error');
+      return;
+    }
 
-  if (editingId) {
-    await API.updateGalleryItem(editingId, backendData);
-    showToast('Item updated!', 'success');
-  } else {
-    await API.createGalleryItem(backendData);
-    showToast('Item added!', 'success');
+    const frontendData = {
+      caption: document.getElementById('galCaption').value,
+      category: document.getElementById('galCategory').value,
+      mediaType,
+      mediaUrl: mediaUrl || null,
+      externalVideoUrl: externalVideoUrl || null,
+      itemDate: document.getElementById('galDate').value || null,
+      isVisible: document.getElementById('galVisible').checked,
+      sortOrder: editingId ? (allGallery.find(x => x.id === editingId)?.sortOrder || 0) : allGallery.length,
+    };
+    const backendData = transformKeys(frontendData, toSnake);
+
+    if (editingId) {
+      await API.updateGalleryItem(editingId, backendData);
+      showToast('Item updated!', 'success');
+    } else {
+      await API.createGalleryItem(backendData);
+      showToast('Item added!', 'success');
+    }
+    pendingImageFile = null;
+    pendingVideoFile = null;
+    clearPendingImagePreview();
+    closeModal('galleryModal');
+    await loadGallery();
+  } catch (error) {
+    showToast(error.message || 'Failed to save gallery item', 'error');
   }
-  closeModal('galleryModal');
-  await loadGallery();
 });
 
 document.getElementById('addItemBtn').addEventListener('click', openAddModal);
@@ -346,3 +385,4 @@ loadGallery();
 </script>
 </body>
 </html>
+

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from urllib.parse import urlparse
 from uuid import uuid4
 
 from fastapi import APIRouter, File, HTTPException, Request, UploadFile, status
@@ -9,6 +8,7 @@ from fastapi import APIRouter, File, HTTPException, Request, UploadFile, status
 from app.api.deps import AdminDep, SessionDep
 from app.core.config import settings
 from app.services import hero_service
+from app.services.media_file_service import delete_media_file
 
 
 router = APIRouter(prefix="/media", tags=["Media"], dependencies=[AdminDep])
@@ -21,41 +21,19 @@ ALLOWED_MEDIA_KINDS: dict[str, set[str]] = {
     "gallery_video": {".mp4", ".webm", ".ogg", ".mov"},
     "blog_cover": {".jpg", ".jpeg", ".png", ".webp"},
 }
-MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024  # 50 MB
+MAX_FILE_SIZE_BY_KIND: dict[str, int] = {
+    "hero_video": 50 * 1024 * 1024,
+    "gallery_video": 50 * 1024 * 1024,
+    "hero_poster": 5 * 1024 * 1024,
+    "faculty_profile": 3 * 1024 * 1024,
+    "gallery_image": 5 * 1024 * 1024,
+    "blog_cover": 5 * 1024 * 1024,
+}
 HOMEPAGE_HERO_KEY = "homepage"
 HERO_KIND_TO_FIELD = {
     "hero_video": "video_url",
     "hero_poster": "poster_url",
 }
-
-
-def _extract_media_relative_path(stored_value: str | None) -> Path | None:
-    if not stored_value:
-        return None
-
-    parsed = urlparse(stored_value)
-    path = parsed.path if parsed.scheme else stored_value
-    media_prefix = settings.media_url_path.rstrip("/") + "/"
-    if not path.startswith(media_prefix):
-        return None
-
-    relative = path[len(media_prefix) :].lstrip("/")
-    if not relative:
-        return None
-    return Path(relative)
-
-
-def _delete_old_media_file(stored_value: str | None) -> None:
-    relative_path = _extract_media_relative_path(stored_value)
-    if not relative_path:
-        return
-
-    media_root = Path(settings.media_root).resolve()
-    candidate = (media_root / relative_path).resolve()
-    if media_root not in candidate.parents:
-        return
-
-    candidate.unlink(missing_ok=True)
 
 
 @router.post("/upload")
@@ -84,6 +62,7 @@ async def upload_media(
     generated_name = f"{uuid4().hex}{extension}"
     target_path = target_dir / generated_name
 
+    max_file_size = MAX_FILE_SIZE_BY_KIND.get(kind, 5 * 1024 * 1024)
     file_size = 0
     try:
         with target_path.open("wb") as output:
@@ -92,10 +71,10 @@ async def upload_media(
                 if not chunk:
                     break
                 file_size += len(chunk)
-                if file_size > MAX_FILE_SIZE_BYTES:
+                if file_size > max_file_size:
                     raise HTTPException(
                         status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-                        detail="File exceeds 50MB limit",
+                        detail=f"File exceeds {max_file_size // (1024 * 1024)}MB limit for {kind}",
                     )
                 output.write(chunk)
     except HTTPException:
@@ -117,7 +96,7 @@ async def upload_media(
             media_path=relative_url,
         )
         if previous_path and previous_path != relative_url:
-            _delete_old_media_file(previous_path)
+            delete_media_file(previous_path)
 
     return {
         "kind": kind,

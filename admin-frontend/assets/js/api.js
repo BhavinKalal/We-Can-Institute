@@ -10,7 +10,45 @@
 
 const USE_MOCK = false;
 const BASE_URL = 'http://localhost:8000/api/v1';
-const ADMIN_TOKEN = "super-secret-admin-token";
+const ADMIN_TOKEN_KEY = 'wecan_admin_token';
+const ADMIN_USER_KEY = 'wecan_admin_user';
+
+function getAdminToken() {
+  return localStorage.getItem(ADMIN_TOKEN_KEY) || '';
+}
+
+function setAdminToken(token) {
+  if (!token) {
+    localStorage.removeItem(ADMIN_TOKEN_KEY);
+    return;
+  }
+  localStorage.setItem(ADMIN_TOKEN_KEY, token);
+}
+
+function clearAdminToken() {
+  localStorage.removeItem(ADMIN_TOKEN_KEY);
+}
+
+function getAdminUser() {
+  try {
+    return JSON.parse(localStorage.getItem(ADMIN_USER_KEY) || 'null');
+  } catch (_) {
+    return null;
+  }
+}
+
+function setAdminUser(user) {
+  if (!user) {
+    localStorage.removeItem(ADMIN_USER_KEY);
+    return;
+  }
+  localStorage.setItem(ADMIN_USER_KEY, JSON.stringify(user));
+}
+
+function clearAdminAuth() {
+  clearAdminToken();
+  setAdminUser(null);
+}
 
 /* ── MOCK DATA STORE ── */
 const MOCK = {
@@ -27,7 +65,7 @@ const MOCK = {
 
   hero: {
     videoUrl: 'assets/videos/hero-section-video.mp4',
-    posterUrl: 'assets/images/hero-poster.jpg',
+    posterUrl: 'assets/images/hero/hero.png',
     eyebrow: 'Speak · Impress · Lead',
     titleLine1: 'Speak With',
     titleLine2: 'Confidence.',
@@ -112,21 +150,37 @@ const MOCK = {
 };
 
 /* ── FETCH WRAPPER ── */
-async function apiFetch(endpoint, options = {}) {
+function authRedirectPath() {
+  return window.location.pathname.includes('/pages/') ? '../login.html' : 'login.html';
+}
+
+async function apiFetch(endpoint, options = {}, requiresAuth = true) {
   if (USE_MOCK) {
     console.log(`[MOCK API] ${options.method || 'GET'} ${endpoint}`);
     return null; // mock mode: data comes from MOCK object directly
   }
   const isFormData = options.body instanceof FormData;
+  const token = getAdminToken();
   const defaultHeaders = isFormData
-    ? { 'X-Admin-Token': ADMIN_TOKEN }
-    : { 'Content-Type': 'application/json', 'X-Admin-Token': ADMIN_TOKEN };
+    ? {}
+    : { 'Content-Type': 'application/json' };
+
+  if (requiresAuth && token) {
+    defaultHeaders['X-Admin-Token'] = token;
+    defaultHeaders['Authorization'] = `Bearer ${token}`;
+  }
 
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     headers: { ...defaultHeaders, ...options.headers },
     ...options
   });
   if (!res.ok) {
+    if (res.status === 401 && requiresAuth) {
+      clearAdminAuth();
+      if (!window.location.pathname.endsWith('/login.html')) {
+        window.location.href = authRedirectPath();
+      }
+    }
     let message = `API error: ${res.status}`;
     try {
       const body = await res.json();
@@ -138,8 +192,106 @@ async function apiFetch(endpoint, options = {}) {
   return res.json();
 }
 
+function mapEnquiryFromBackend(enquiry) {
+  return {
+    id: enquiry.id,
+    name: enquiry.name || '',
+    phone: enquiry.phone || '',
+    batch: enquiry.batch_name || '',
+    date: enquiry.submitted_at || enquiry.created_at || new Date().toISOString(),
+    status: enquiry.status || 'new',
+    notes: enquiry.notes || '',
+    source: enquiry.source || 'website',
+  };
+}
+
+function mapEnquiryUpdateToBackend(data = {}) {
+  const payload = {};
+  if (Object.prototype.hasOwnProperty.call(data, 'status')) payload.status = data.status;
+  if (Object.prototype.hasOwnProperty.call(data, 'notes')) payload.notes = data.notes;
+  if (Object.prototype.hasOwnProperty.call(data, 'batch')) payload.batch_name = data.batch;
+  return payload;
+}
+
+function buildQuery(params = {}) {
+  const search = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== '') {
+      search.set(key, String(value));
+    }
+  });
+  const q = search.toString();
+  return q ? `?${q}` : '';
+}
+
+async function apiFetchBlob(endpoint, options = {}, requiresAuth = true) {
+  if (USE_MOCK) return null;
+  const token = getAdminToken();
+  const headers = { ...(options.headers || {}) };
+  if (requiresAuth && token) {
+    headers['X-Admin-Token'] = token;
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  const res = await fetch(`${BASE_URL}${endpoint}`, { ...options, headers });
+  if (!res.ok) {
+    if (res.status === 401 && requiresAuth) {
+      clearAdminAuth();
+      if (!window.location.pathname.endsWith('/login.html')) {
+        window.location.href = authRedirectPath();
+      }
+    }
+    let message = `API error: ${res.status}`;
+    try {
+      message = await res.text();
+    } catch (_) {}
+    throw new Error(message || `API error: ${res.status}`);
+  }
+  return res.blob();
+}
+
 /* ── API METHODS ── */
 const API = {
+  getAdminToken,
+  setAdminToken,
+  clearAdminToken,
+  getAdminUser,
+  setAdminUser,
+  clearAdminAuth,
+
+  login: async (email, password) => {
+    const result = await apiFetch(
+      '/auth/login',
+      { method: 'POST', body: JSON.stringify({ email, password }) },
+      false
+    );
+    if (result?.access_token) {
+      setAdminToken(result.access_token);
+      setAdminUser({
+        email: result.email,
+        full_name: result.full_name,
+        role: result.role,
+      });
+    }
+    return result;
+  },
+  logout: () => {
+    clearAdminAuth();
+  },
+  me: async () => {
+    const me = await apiFetch('/auth/me');
+    setAdminUser(me);
+    return me;
+  },
+  changeMyPassword: (currentPassword, newPassword) =>
+    apiFetch('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+    }),
+
+  getAdminUsers: () => apiFetch('/admin/users'),
+  createAdminUser: (data) => apiFetch('/admin/users', { method: 'POST', body: JSON.stringify(data) }),
+  updateAdminUser: (id, data) => apiFetch(`/admin/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteAdminUser: (id) => apiFetch(`/admin/users/${id}`, { method: 'DELETE' }),
 
   /* Stats */
   getStats:        () => USE_MOCK ? Promise.resolve(MOCK.stats)        : apiFetch('/stats'),
@@ -149,7 +301,7 @@ const API = {
   updateHero: (data) => USE_MOCK ? Promise.resolve({...MOCK.hero,...data}) : apiFetch('/admin/hero', {method:'PUT', body:JSON.stringify(data)}),
   uploadHeroMedia: (file, kind) => {
     if (USE_MOCK) {
-      const fallback = kind === 'hero_video' ? 'assets/videos/hero-section-video.mp4' : 'assets/images/hero-poster.jpg';
+      const fallback = kind === 'hero_video' ? 'assets/videos/hero-section-video.mp4' : 'assets/images/hero/hero.png';
       return Promise.resolve({ kind, url: fallback, relative_url: fallback, filename: file?.name || '' });
     }
     const form = new FormData();
@@ -206,15 +358,41 @@ const API = {
   deletePost: (id)        => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/admin/blog/${id}`, {method:'DELETE'}),
 
   /* Testimonials */
-  getTestimonials: ()     => USE_MOCK ? Promise.resolve([...MOCK.testimonials])     : apiFetch('/testimonials'),
-  createTestimonial:(data)=> USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/testimonials', {method:'POST',body:JSON.stringify(data)}),
-  updateTestimonial:(id,data)=>USE_MOCK? Promise.resolve({id,...data})              : apiFetch(`/testimonials/${id}`, {method:'PUT',body:JSON.stringify(data)}),
-  deleteTestimonial:(id)  => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/testimonials/${id}`, {method:'DELETE'}),
+  getTestimonials: ()     => USE_MOCK ? Promise.resolve([...MOCK.testimonials])     : apiFetch('/admin/testimonials'),
+  createTestimonial:(data)=> USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/testimonials', {method:'POST',body:JSON.stringify(data)}),
+  updateTestimonial:(id,data)=>USE_MOCK? Promise.resolve({id,...data})              : apiFetch(`/admin/testimonials/${id}`, {method:'PUT',body:JSON.stringify(data)}),
+  deleteTestimonial:(id)  => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/admin/testimonials/${id}`, {method:'DELETE'}),
 
   /* Enquiries */
-  getEnquiries:    ()     => USE_MOCK ? Promise.resolve([...MOCK.enquiries])        : apiFetch('/enquiries'),
-  updateEnquiry: (id,data)=> USE_MOCK ? Promise.resolve({id,...data})               : apiFetch(`/enquiries/${id}`, {method:'PUT',body:JSON.stringify(data)}),
-  deleteEnquiry: (id)     => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/enquiries/${id}`, {method:'DELETE'}),
+  getEnquiries: async () => {
+    if (USE_MOCK) return Promise.resolve([...MOCK.enquiries]);
+    const rows = await apiFetch('/admin/enquiries');
+    return rows.map(mapEnquiryFromBackend);
+  },
+  updateEnquiry: async (id, data) => {
+    if (USE_MOCK) return Promise.resolve({ id, ...data });
+    const updated = await apiFetch(`/admin/enquiries/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(mapEnquiryUpdateToBackend(data)),
+    });
+    return mapEnquiryFromBackend(updated);
+  },
+  deleteEnquiry: (id) => USE_MOCK ? Promise.resolve({ success: true }) : apiFetch(`/admin/enquiries/${id}`, { method: 'DELETE' }),
+  exportEnquiriesCsv: async (filters = {}) => {
+    if (USE_MOCK) {
+      const rows = [...MOCK.enquiries].filter((e) =>
+        (!filters.q || e.name.toLowerCase().includes(filters.q.toLowerCase()) || e.phone.includes(filters.q)) &&
+        (!filters.batch_name || e.batch === filters.batch_name) &&
+        (!filters.status_filter || e.status === filters.status_filter)
+      );
+      const csv = ['ID,Name,Phone,Batch,Status,Notes,Source,Submitted At'];
+      rows.forEach((e) => {
+        csv.push([e.id, e.name, e.phone, e.batch, e.status, `"${(e.notes || '').replaceAll('"', '""')}"`, 'website', e.date].join(','));
+      });
+      return new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8' });
+    }
+    return apiFetchBlob(`/admin/enquiries/export.csv${buildQuery(filters)}`);
+  },
 
   /* Settings */
   getSettings:     ()     => USE_MOCK ? Promise.resolve({...MOCK.settings})         : apiFetch('/admin/settings'),

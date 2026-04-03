@@ -82,7 +82,7 @@
               <div class="form-group">
                 <label class="form-label">Video Path (auto-managed)</label>
                 <input type="text" class="form-input" id="videoUrl" placeholder="/media/hero_video/..." readonly />
-                <div class="form-hint">Path is generated automatically after upload and saved immediately.</div>
+                <div class="form-hint">Path is generated automatically when you save changes.</div>
               </div>
               <div class="form-group">
                 <label class="form-label">Upload Hero Video</label>
@@ -195,35 +195,8 @@
 <script src="../assets/js/admin.js"></script>
 <script>
 let heroData = null;
-
-async function uploadHeroMedia(fileInputId, kind, targetInputId, buttonId) {
-  const input = document.getElementById(fileInputId);
-  const button = document.getElementById(buttonId);
-  const file = input?.files?.[0];
-  if (!file) {
-    showToast('Please select a file first.', 'warning');
-    return;
-  }
-
-  button.disabled = true;
-  button.innerHTML = '<i data-lucide="loader-2"></i> Uploading...';
-  if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [button] });
-
-  try {
-    const result = await API.uploadHeroMedia(file, kind);
-    document.getElementById(targetInputId).value = result.url || result.relative_url || '';
-    await loadHero();
-    showToast('Upload successful and published.', 'success');
-    input.value = '';
-  } catch (error) {
-    console.error('Hero media upload failed:', error);
-    showToast(error.message || 'Upload failed.', 'error');
-  } finally {
-    button.disabled = false;
-    button.innerHTML = '<i data-lucide="upload"></i> ' + (kind === 'hero_video' ? 'Upload Video' : 'Upload Poster');
-    if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [button] });
-  }
-}
+let pendingHeroVideoFile = null;
+let pendingHeroPosterFile = null;
 
 // --- Data Transformation ---
 function transformHeroDataForFrontend(backendData) {
@@ -272,6 +245,8 @@ async function loadHero() {
 }
 
 function populateFields(d) {
+  pendingHeroVideoFile = null;
+  pendingHeroPosterFile = null;
   document.getElementById('videoUrl').value = d.video_url || '';
   document.getElementById('posterUrl').value = d.poster_url || '';
   document.getElementById('videoMode').checked = d.video_mode;
@@ -353,15 +328,37 @@ document.querySelectorAll('.form-input, .form-textarea, #videoMode').forEach(el 
 });
 
 document.getElementById('uploadVideoBtn').addEventListener('click', () => {
-  uploadHeroMedia('videoFile', 'hero_video', 'videoUrl', 'uploadVideoBtn');
+  document.getElementById('videoFile').click();
 });
 document.getElementById('uploadPosterBtn').addEventListener('click', () => {
-  uploadHeroMedia('posterFile', 'hero_poster', 'posterUrl', 'uploadPosterBtn');
+  document.getElementById('posterFile').click();
+});
+document.getElementById('videoFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  pendingHeroVideoFile = file;
+  document.getElementById('videoUrl').value = `Pending upload: ${file.name}`;
+  showToast('Hero video selected. It will upload when you save.', 'info');
+});
+document.getElementById('posterFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  pendingHeroPosterFile = file;
+  document.getElementById('posterUrl').value = `Pending upload: ${file.name}`;
+  showToast('Poster selected. It will upload when you save.', 'info');
 });
 
 document.getElementById('saveBtn').addEventListener('click', async () => {
   try {
     const frontendData = gatherDataFromFields();
+    if (pendingHeroVideoFile) {
+      const uploadedVideo = await API.uploadHeroMedia(pendingHeroVideoFile, 'hero_video');
+      frontendData.video_url = uploadedVideo.url || uploadedVideo.relative_url || frontendData.video_url;
+    }
+    if (pendingHeroPosterFile) {
+      const uploadedPoster = await API.uploadHeroMedia(pendingHeroPosterFile, 'hero_poster');
+      frontendData.poster_url = uploadedPoster.url || uploadedPoster.relative_url || frontendData.poster_url;
+    }
     const backendData = transformHeroDataForBackend(frontendData);
     await API.updateHero(backendData);
     // Reload data to get fresh state from server

@@ -7,3 +7,4 @@ venv/
 backend/.env
 backend/data/*.db
 backend/.env.example
+backend/media/

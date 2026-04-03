@@ -1,4 +1,4 @@
-// frontend/assets/js/dynamic-content.js
+﻿// frontend/assets/js/dynamic-content.js
 
 document.addEventListener('DOMContentLoaded', () => {
     loadHomepageData();
@@ -28,6 +28,7 @@ async function loadHomepageData() {
         if (data.hero) populateHero(data.hero);
         if (data.batches) populateBatches(data.batches);
         if (data.faculty) populateFaculty(data.faculty);
+        if (data.testimonials) populateTestimonials(data.testimonials);
         if (data.gallery) populateGallery(data.gallery);
         if (data.blog_posts) populateBlog(data.blog_posts);
 
@@ -36,6 +37,47 @@ async function loadHomepageData() {
     } catch (error) {
         console.error('Failed to load homepage data:', error);
     }
+}
+
+function populateTestimonials(testimonials) {
+    const section = document.getElementById('testimonials');
+    if (!section) return;
+    const active = testimonials
+        .filter(t => t.is_active !== false)
+        .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+    if (!active.length) return;
+
+    const featured = active[0];
+    const rest = active.slice(1, 4);
+
+    const bigQuote = section.querySelector('.testimonials__big-text');
+    if (bigQuote) bigQuote.textContent = `"${featured.quote || ''}"`;
+
+    const heroAvatar = section.querySelector('.testimonials__author-avatar');
+    if (heroAvatar) heroAvatar.textContent = (featured.initials || (featured.name || '').slice(0, 2)).toUpperCase();
+
+    const heroName = section.querySelector('.testimonials__author-name');
+    if (heroName) heroName.textContent = featured.name || '';
+
+    const heroRole = section.querySelector('.testimonials__author-role');
+    if (heroRole) heroRole.textContent = featured.role || '';
+
+    const grid = section.querySelector('.testimonials__grid');
+    if (!grid || !rest.length) return;
+
+    grid.innerHTML = rest.map((t) => `
+      <article class="testimonial-card" role="listitem">
+        <div class="testimonial-card__stars" aria-label="${t.stars || 5} stars">${'★'.repeat(Math.max(1, Math.min(5, t.stars || 5)))}</div>
+        <p class="testimonial-card__quote">"${t.quote || ''}"</p>
+        <div class="testimonial-card__author">
+          <div class="testimonial-card__avatar" aria-hidden="true">${(t.initials || (t.name || '').slice(0, 2)).toUpperCase()}</div>
+          <div>
+            <p class="testimonial-card__name">${t.name || ''}</p>
+            <p class="testimonial-card__role">${t.role || ''}</p>
+          </div>
+        </div>
+      </article>
+    `).join('');
 }
 
 function populateSettings(settings) {
@@ -178,7 +220,7 @@ function populateFaculty(faculty) {
     if (!active.length) return;
 
     grid.innerHTML = active.map((f, idx) => `
-      <article class="faculty-card reveal ${idx ? `reveal-delay-${Math.min(idx, 3)}` : ''}" aria-label="Faculty member">
+      <article class="faculty-card" aria-label="Faculty member">
         <div class="faculty-card__photo">
           ${f.profile_photo_url
             ? `<img src="${resolveMediaUrl(f.profile_photo_url)}" alt="${f.name}" style="width:100%;height:100%;object-fit:cover;object-position:top;" />`
@@ -334,3 +376,4 @@ function reinitCounters() {
 
     document.querySelectorAll('[data-counter]').forEach(el => cntObs.observe(el));
 }
+

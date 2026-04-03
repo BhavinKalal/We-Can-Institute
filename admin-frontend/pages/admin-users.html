@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Users - WE CAN Admin</title>
+  <link rel="stylesheet" href="../assets/css/admin-base.css" />
+  <link rel="stylesheet" href="../assets/css/admin-layout.css" />
+  <link rel="stylesheet" href="../assets/css/admin-components.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
+    .sidebar-overlay.show{display:block;}
+    .users-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+    .user-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:16px;}
+    .user-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+    .user-name{font-size:15px;font-weight:700;color:var(--text);}
+    .user-email{font-size:12px;color:var(--text-3);margin-top:2px;}
+    .user-meta{font-size:12px;color:var(--text-2);margin-top:10px;}
+    .user-actions{display:flex;gap:8px;margin-top:12px;}
+  </style>
+</head>
+<body data-requires-super-admin="true">
+<div class="admin-app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__logo">
+      <img src="../assets/images/wecan-log.png" alt="WE CAN" onerror="this.style.display='none'" />
+      <div class="sidebar__logo-text"><span class="sidebar__logo-name">WE CAN</span><span class="sidebar__logo-sub">Admin Panel</span></div>
+    </div>
+    <nav class="sidebar__nav">
+      <span class="sidebar__section-label">Overview</span>
+      <a href="../index.html" class="sidebar__link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+      <span class="sidebar__section-label">Content</span>
+      <a href="hero.html" class="sidebar__link"><i data-lucide="monitor-play"></i> Hero Section</a>
+      <a href="batches.html" class="sidebar__link"><i data-lucide="book-open"></i> Batches</a>
+      <a href="faculty.html" class="sidebar__link"><i data-lucide="users"></i> Faculty</a>
+      <a href="gallery.html" class="sidebar__link"><i data-lucide="image"></i> Gallery</a>
+      <a href="blog.html" class="sidebar__link"><i data-lucide="pen-line"></i> Blog</a>
+      <a href="testimonials.html" class="sidebar__link"><i data-lucide="message-square-quote"></i> Testimonials</a>
+      <span class="sidebar__section-label">System</span>
+      <a href="admin-users.html" class="sidebar__link active"><i data-lucide="shield-check"></i> Admin Users</a>
+      <a href="settings.html" class="sidebar__link"><i data-lucide="settings"></i> Settings</a>
+    </nav>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <main class="admin-main">
+    <div class="topbar">
+      <div class="topbar__left">
+        <button class="topbar__hamburger btn btn--ghost btn--icon" id="sidebarToggle"><i data-lucide="menu"></i></button>
+        <div class="topbar__left-text"><div class="t-page">Admin Users</div><div class="topbar__breadcrumb"><a href="../index.html">Dashboard</a> <i data-lucide="chevron-right"></i> <span>Admin Users</span></div></div>
+      </div>
+      <div class="topbar__right">
+        <button class="btn btn--primary" id="addUserBtn"><i data-lucide="user-plus"></i> Add Admin User</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="users-grid" id="usersGrid"><div class="grid-loading">Loading...</div></div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="userModal">
+  <div class="modal">
+    <div class="modal__header">
+      <span class="modal__title" id="userModalTitle">Add Admin User</span>
+      <button class="modal__close" onclick="closeModal('userModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <div class="form-group"><label class="form-label">Email</label><input id="uEmail" class="form-input" type="email" /></div>
+      <div class="form-group"><label class="form-label">Full Name</label><input id="uFullName" class="form-input" /></div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Role</label>
+          <select id="uRole" class="form-select"><option value="admin">Admin</option><option value="super_admin">Super Admin</option></select>
+        </div>
+        <div class="form-group">
+          <div class="toggle-wrap">
+            <label class="toggle"><input type="checkbox" id="uActive" checked /><div class="toggle__track"></div><div class="toggle__thumb"></div></label>
+            <span class="toggle-label">Active</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Password</label><input id="uPassword" class="form-input" type="password" placeholder="Min 6 chars" /></div>
+      <input type="hidden" id="uId" />
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--ghost" onclick="closeModal('userModal')">Cancel</button>
+      <button class="btn btn--primary" id="saveUserBtn"><i data-lucide="save"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pwdModal">
+  <div class="modal">
+    <div class="modal__header">
+      <span class="modal__title">Change My Password</span>
+      <button class="modal__close" onclick="closeModal('pwdModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal__body">
+      <div class="form-group"><label class="form-label">Current Password</label><input id="curPwd" class="form-input" type="password" /></div>
+      <div class="form-group"><label class="form-label">New Password</label><input id="newPwd" class="form-input" type="password" /></div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--ghost" onclick="closeModal('pwdModal')">Cancel</button>
+      <button class="btn btn--primary" id="changePwdBtn"><i data-lucide="key-round"></i> Update Password</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+let users = [];
+let editingId = null;
+
+async function loadUsers() {
+  try {
+    users = await API.getAdminUsers();
+    renderUsers();
+  } catch (error) {
+    console.error('Failed to load admin users:', error);
+    showToast(error.message || 'Failed to load admin users', 'error');
+  }
+}
+
+function renderUsers() {
+  const grid = document.getElementById('usersGrid');
+  if (!users.length) {
+    grid.innerHTML = '<div class="grid-full"><div class="empty-state"><i data-lucide="shield-check"></i><div class="empty-state__title">No admin users found</div></div></div>';
+    lucide.createIcons();
+    return;
+  }
+  grid.innerHTML = users.map(u => {
+    const isProtected = u.email === 'admin@wecan.local' && u.role === 'super_admin';
+    return `
+      <div class="user-card">
+        <div class="user-row">
+          <div>
+            <div class="user-name">${u.full_name || 'Unnamed User'}</div>
+            <div class="user-email">${u.email}</div>
+          </div>
+          <div>${statusBadge(u.is_active ? 'active' : 'inactive')}</div>
+        </div>
+        <div class="user-meta">
+          <span class="badge ${u.role === 'super_admin' ? 'badge--yellow' : 'badge--blue'}">${u.role === 'super_admin' ? 'Super Admin' : 'Admin'}</span>
+          ${isProtected ? '<span class="badge badge--green">Protected</span>' : ''}
+        </div>
+        <div class="user-actions">
+          <button class="btn btn--ghost btn--sm" onclick="editUser(${u.id})"><i data-lucide="pencil"></i> Edit</button>
+          <button class="btn btn--ghost-red btn--sm" ${isProtected ? 'disabled' : ''} onclick="removeUser(${u.id}, '${u.email}')"><i data-lucide="trash-2"></i> Delete</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  lucide.createIcons();
+}
+
+function openAddUser() {
+  editingId = null;
+  document.getElementById('userModalTitle').textContent = 'Add Admin User';
+  document.getElementById('uId').value = '';
+  document.getElementById('uEmail').value = '';
+  document.getElementById('uFullName').value = '';
+  document.getElementById('uRole').value = 'admin';
+  document.getElementById('uActive').checked = true;
+  document.getElementById('uPassword').value = '';
+  openModal('userModal');
+}
+
+function editUser(id) {
+  const u = users.find(x => x.id === id);
+  if (!u) return;
+  editingId = id;
+  document.getElementById('userModalTitle').textContent = 'Edit Admin User';
+  document.getElementById('uId').value = id;
+  document.getElementById('uEmail').value = u.email || '';
+  document.getElementById('uFullName').value = u.full_name || '';
+  document.getElementById('uRole').value = u.role || 'admin';
+  document.getElementById('uActive').checked = !!u.is_active;
+  document.getElementById('uPassword').value = '';
+  openModal('userModal');
+}
+
+async function removeUser(id, email) {
+  confirmAction(`Delete admin user "${email}"?`, async () => {
+    try {
+      await API.deleteAdminUser(id);
+      showToast('Admin user deleted', 'success');
+      await loadUsers();
+    } catch (error) {
+      console.error('Delete failed:', error);
+      showToast(error.message || 'Delete failed', 'error');
+    }
+  });
+}
+
+document.getElementById('saveUserBtn').addEventListener('click', async () => {
+  const payload = {
+    email: document.getElementById('uEmail').value.trim().toLowerCase(),
+    full_name: document.getElementById('uFullName').value.trim() || null,
+    role: document.getElementById('uRole').value,
+    is_active: document.getElementById('uActive').checked,
+  };
+  const pwd = document.getElementById('uPassword').value;
+  if (!payload.email) {
+    showToast('Email is required', 'error');
+    return;
+  }
+
+  try {
+    if (editingId) {
+      if (pwd) payload.password = pwd;
+      await API.updateAdminUser(editingId, payload);
+      showToast('Admin user updated', 'success');
+    } else {
+      if (!pwd || pwd.length < 6) {
+        showToast('Password must be at least 6 characters', 'error');
+        return;
+      }
+      payload.password = pwd;
+      await API.createAdminUser(payload);
+      showToast('Admin user created', 'success');
+    }
+    closeModal('userModal');
+    await loadUsers();
+  } catch (error) {
+    console.error('Save failed:', error);
+    showToast(error.message || 'Save failed', 'error');
+  }
+});
+
+document.getElementById('changePwdBtn').addEventListener('click', async () => {
+  const currentPassword = document.getElementById('curPwd').value;
+  const newPassword = document.getElementById('newPwd').value;
+  if (!currentPassword || !newPassword || newPassword.length < 6) {
+    showToast('Enter current password and valid new password', 'error');
+    return;
+  }
+  try {
+    await API.changeMyPassword(currentPassword, newPassword);
+    showToast('Password updated successfully', 'success');
+    closeModal('pwdModal');
+    document.getElementById('curPwd').value = '';
+    document.getElementById('newPwd').value = '';
+  } catch (error) {
+    console.error('Password update failed:', error);
+    showToast(error.message || 'Password update failed', 'error');
+  }
+});
+
+document.getElementById('addUserBtn').addEventListener('click', openAddUser);
+document.querySelector('.topbar__right').insertAdjacentHTML('beforeend', '<button class="btn btn--ghost btn--sm" id="myPwdBtn"><i data-lucide="key-round"></i> Change My Password</button>');
+document.getElementById('myPwdBtn').addEventListener('click', () => openModal('pwdModal'));
+loadUsers();
+</script>
+</body>
+</html>

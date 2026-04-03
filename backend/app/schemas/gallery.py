@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 from datetime import date, datetime
+from typing import Literal
 
 from pydantic import BaseModel, Field, HttpUrl, model_validator
+
+GalleryMediaType = Literal["image", "video"]
 
 
 class GalleryItemBase(BaseModel):
     category: str = Field(..., max_length=50)
-    media_type: str = Field(..., max_length=20)  # image | video
+    media_type: GalleryMediaType
     caption: str | None = Field(None, max_length=255)
     media_url: str | None = Field(None, max_length=500)
     external_video_url: HttpUrl | None = None
@@ -30,7 +33,7 @@ class GalleryItemCreate(GalleryItemBase):
 
 class GalleryItemUpdate(BaseModel):
     category: str | None = Field(None, max_length=50)
-    media_type: str | None = Field(None, max_length=20)
+    media_type: GalleryMediaType | None = None
     caption: str | None = Field(None, max_length=255)
     media_url: str | None = Field(None, max_length=500)
     external_video_url: HttpUrl | None = None

@@ -124,6 +124,19 @@ class BlogPostPublic(BaseModel):
     updated_at: datetime
 
 
+class TestimonialPublic(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    role: str | None = None
+    quote: str
+    initials: str | None = None
+    stars: int
+    sort_order: int
+    updated_at: datetime
+
+
 class HomepagePayload(BaseModel):
     hero: HeroSectionPublic | None = None
     settings: SiteSettingsPublic | None = None
@@ -131,4 +144,5 @@ class HomepagePayload(BaseModel):
     faculty: list[FacultyPublic] = Field(default_factory=list)
     gallery: list[GalleryItemPublic] = Field(default_factory=list)
     blog_posts: list[BlogPostPublic] = Field(default_factory=list)
+    testimonials: list[TestimonialPublic] = Field(default_factory=list)
     generated_at: datetime
