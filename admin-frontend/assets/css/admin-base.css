@@ -45,7 +45,7 @@
   --purple-ghost: rgba(139,92,246,0.1);
 
   /* Layout */
-  --topbar-h:   64px;
+  --topbar-h:   75px;
 
   /* Radii */
   --r-sm:   6px;
@@ -110,3 +110,4 @@ input, select, textarea { font-family: inherit; font-size: 14px; }
 .text-blue  { color:var(--blue); }
 .text-muted { color:var(--text-3); }
 .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0); }
+.display-none { display: none !important; }

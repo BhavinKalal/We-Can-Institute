@@ -151,7 +151,11 @@ function renderUsers() {
         </div>
         <div class="user-actions">
           <button class="btn btn--ghost btn--sm" onclick="editUser(${u.id})"><i data-lucide="pencil"></i> Edit</button>
-          <button class="btn btn--ghost-red btn--sm" ${isProtected ? 'disabled' : ''} onclick="removeUser(${u.id}, '${u.email}')"><i data-lucide="trash-2"></i> Delete</button>
+          <button class="btn btn--ghost-red btn--sm ${isProtected ? 'display-none' : ''}" 
+            ${isProtected ? 'disabled' : ''} onclick="removeUser(${u.id}, '${u.email}')">
+            <i data-lucide="trash-2"></i> 
+            Delete
+          </button>
         </div>
       </div>
     `;
