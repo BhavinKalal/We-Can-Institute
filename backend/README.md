@@ -65,3 +65,13 @@ From the `backend` directory:
 ```powershell
 python -m pytest -q
 ```
+
+## Seed Mock Admin Data
+
+To preload the database with the mock content that originally lived in [api.js](../admin-frontend/assets/js/api.js), run this from the `backend` directory:
+
+```powershell
+python scripts/seed_admin_api_mock_data.py
+```
+
+This loads the checked-in fixture at `app/fixtures/admin_api_mock.json`, upserts hero/settings/content rows, and copies referenced local media into `backend/media/fixtures/` so the backend can serve them via `/media/...`.
