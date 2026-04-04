@@ -351,7 +351,7 @@ function populateFaculty(faculty) {
           ${f.profile_photo_url
             ? `<img src="${resolveMediaUrl(f.profile_photo_url)}" alt="${f.name}" style="width:100%;height:100%;object-fit:cover;object-position:top;" />`
             : `<div class="faculty-card__avatar-placeholder"><div class="faculty-card__avatar-circle">${(f.initials || f.name.slice(0, 2)).toUpperCase()}</div></div>`}
-          <div class="faculty-card__photo-overlay" aria-hidden="true"></div>
+          <!-- <div class="faculty-card__photo-overlay" aria-hidden="true"></div> -->
         </div>
         <div class="faculty-card__info">
           <span class="faculty-card__role-badge">${f.role || ''}</span>
