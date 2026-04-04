@@ -8,12 +8,12 @@ from pydantic import BaseModel, Field, field_validator
 
 
 EnquiryStatus = Literal["new", "contacted", "enrolled", "closed"]
-PHONE_PATTERN = re.compile(r"^[+\d][\d\s\-()]{5,29}$")
+INDIAN_PHONE_PATTERN = re.compile(r"^[6-9]\d{9}$")
 
 
 class EnquiryPublicCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=150)
-    phone: str = Field(..., min_length=6, max_length=30)
+    phone: str = Field(..., min_length=10, max_length=20)
     batch_name: str | None = Field(None, max_length=120)
     notes: str | None = None
 
@@ -28,10 +28,15 @@ class EnquiryPublicCreate(BaseModel):
     @field_validator("phone")
     @classmethod
     def validate_phone(cls, value: str) -> str:
-        cleaned = value.strip()
-        if not PHONE_PATTERN.fullmatch(cleaned):
-            raise ValueError("phone must contain only digits and + - ( ) separators")
-        return cleaned
+        raw = value.strip()
+        digits = "".join(ch for ch in raw if ch.isdigit())
+        if len(digits) == 12 and digits.startswith("91"):
+            digits = digits[2:]
+        elif len(digits) == 11 and digits.startswith("0"):
+            digits = digits[1:]
+        if not INDIAN_PHONE_PATTERN.fullmatch(digits):
+            raise ValueError("phone must be a valid Indian 10-digit mobile number")
+        return digits
 
     @field_validator("batch_name")
     @classmethod

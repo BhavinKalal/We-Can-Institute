@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Enquiries — WE CAN Admin</title>
+  <link rel="icon" type="image/png" href="../assets/images/wecan-log.png" />
   <link rel="stylesheet" href="../assets/css/admin-base.css" />
   <link rel="stylesheet" href="../assets/css/admin-layout.css" />
   <link rel="stylesheet" href="../assets/css/admin-components.css" />
@@ -139,13 +140,21 @@
 let allEnquiries = [];
 
 async function loadEnquiries() {
-  allEnquiries = await API.getEnquiries();
-  // Populate batch filter
-  const batches = [...new Set(allEnquiries.map(e => e.batch))];
-  const bf = document.getElementById('batchFilter');
-  batches.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bf.appendChild(o); });
-  renderTable(allEnquiries);
-  updateStats(allEnquiries);
+  try {
+    allEnquiries = await API.getEnquiries();
+    // Populate batch filter
+    const batches = [...new Set(allEnquiries.map(e => e.batch))];
+    const bf = document.getElementById('batchFilter');
+    bf.innerHTML = '<option value="">All Batches</option>';
+    batches.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bf.appendChild(o); });
+    renderTable(allEnquiries);
+    updateStats(allEnquiries);
+  } catch (error) {
+    console.error('Failed to load enquiries', error);
+    const tbody = document.getElementById('enquiriesBody');
+    tbody.innerHTML = '<tr><td colspan="8" class="td-empty"><div class="empty-state"><div class="empty-state__title">Could not load enquiries.</div></div></td></tr>';
+    showToast(error.message || 'Failed to load enquiries', 'error');
+  }
 }
 
 function updateStats(data) {
@@ -192,22 +201,34 @@ function editEnquiry(id) {
 
 async function deleteEnquiry(id) {
   confirmAction('Delete this enquiry? This cannot be undone.', async () => {
-    await API.deleteEnquiry(id);
-    allEnquiries = allEnquiries.filter(e => e.id !== id);
-    renderTable(allEnquiries); updateStats(allEnquiries);
-    showToast('Enquiry deleted', 'success');
+    try {
+      await API.deleteEnquiry(id);
+      allEnquiries = allEnquiries.filter(e => e.id !== id);
+      renderTable(allEnquiries); updateStats(allEnquiries);
+      showToast('Enquiry deleted', 'success');
+    } catch (error) {
+      showToast(error.message || 'Failed to delete enquiry', 'error');
+    }
   });
 }
 
 document.getElementById('saveEnquiryBtn').addEventListener('click', async () => {
-  const id = parseInt(document.getElementById('editId').value);
+  const id = parseInt(document.getElementById('editId').value, 10);
+  const saveBtn = document.getElementById('saveEnquiryBtn');
   const data = { status: document.getElementById('editStatus').value, notes: document.getElementById('editNotes').value };
-  await API.updateEnquiry(id, data);
-  const idx = allEnquiries.findIndex(e => e.id === id);
-  if (idx > -1) allEnquiries[idx] = { ...allEnquiries[idx], ...data };
-  closeModal('editModal');
-  renderTable(filterData()); updateStats(filterData());
-  showToast('Enquiry updated!', 'success');
+  try {
+    saveBtn.disabled = true;
+    await API.updateEnquiry(id, data);
+    const idx = allEnquiries.findIndex(e => e.id === id);
+    if (idx > -1) allEnquiries[idx] = { ...allEnquiries[idx], ...data };
+    closeModal('editModal');
+    renderTable(filterData()); updateStats(filterData());
+    showToast('Enquiry updated!', 'success');
+  } catch (error) {
+    showToast(error.message || 'Failed to update enquiry', 'error');
+  } finally {
+    saveBtn.disabled = false;
+  }
 });
 
 function filterData() {
@@ -249,3 +270,4 @@ loadEnquiries();
 </script>
 </body>
 </html>
+

@@ -4,6 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
     loadHomepageData();
 });
 
+const DEFAULT_HERO_STATS = [
+    { value: 5200, suffix: '+', label: 'Students Trained', sort_order: 0 },
+    { value: 14, suffix: ' yrs', label: 'Years of Excellence', sort_order: 1 },
+    { value: 98, suffix: '%', label: 'Success Rate', sort_order: 2 },
+    { value: 4.9, suffix: '★', label: 'Average Rating', sort_order: 3 },
+];
+const BLOG_POST_MAP = new Map();
+
 function resolveMediaUrl(pathOrUrl) {
     if (!pathOrUrl) return '';
     if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) return pathOrUrl;
@@ -21,21 +29,92 @@ function fmtDate(dateStr) {
     return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+function clampText(value, max = 160) {
+    const text = String(value || '').trim();
+    if (text.length <= max) return text;
+    return `${text.slice(0, max - 1).trimEnd()}…`;
+}
+
+function setBlogPostCache(posts) {
+    BLOG_POST_MAP.clear();
+    (posts || []).forEach((post) => {
+        if (post && typeof post.id !== 'undefined') {
+            BLOG_POST_MAP.set(String(post.id), post);
+        }
+    });
+}
+
+function renderBlogLightbox(post) {
+    const content = document.getElementById('blogLightboxContent');
+    const modal = document.getElementById('blogLightbox');
+    if (!content || !modal || !post) return;
+
+    const cover = post.cover_image_url
+        ? `<img src="${resolveMediaUrl(post.cover_image_url)}" alt="${post.title || 'Blog cover'}" class="gallery-lightbox__img" />`
+        : '';
+    const bodyHtml = (post.content || '').trim()
+        ? post.content
+        : `<p>${post.excerpt || ''}</p>`;
+
+    content.innerHTML = `
+      <article class="blog-reader">
+        ${cover ? `<div class="gallery-lightbox__media">${cover}</div>` : ''}
+        <div class="gallery-lightbox__meta">
+          <span class="gallery-lightbox__cat">${post.category || 'Blog'}</span>
+          <p class="gallery-lightbox__caption"><strong>${post.title || ''}</strong></p>
+          <p class="gallery-lightbox__caption">${fmtDate(post.published_date)}${post.read_time ? ` · ${post.read_time}` : ''}</p>
+        </div>
+        <div class="blog-reader__content">${bodyHtml}</div>
+      </article>
+    `;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+window.openBlogLightboxById = (postId) => {
+    const post = BLOG_POST_MAP.get(String(postId));
+    if (!post) return;
+    renderBlogLightbox(post);
+};
+
+window.closeBlogLightbox = (event) => {
+    const modal = document.getElementById('blogLightbox');
+    if (!modal) return;
+    if (!event || event.target === modal || event.currentTarget?.classList?.contains('gallery-lightbox__close')) {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+};
+
 async function loadHomepageData() {
+    const heroSection = document.getElementById('hero');
+    const heroStatsStrip = document.querySelector('.hero-stats-strip');
+    const loadingSections = document.querySelectorAll('.content-loading');
     try {
         const data = await API.getHomepageData();
         if (data.settings) populateSettings(data.settings);
-        if (data.hero) populateHero(data.hero);
-        if (data.batches) populateBatches(data.batches);
-        if (data.faculty) populateFaculty(data.faculty);
-        if (data.testimonials) populateTestimonials(data.testimonials);
-        if (data.gallery) populateGallery(data.gallery);
-        if (data.blog_posts) populateBlog(data.blog_posts);
+        if (data.hero) {
+            populateHero(data.hero);
+        }
+        populateBatches(Array.isArray(data.batches) ? data.batches : []);
+        populateFaculty(Array.isArray(data.faculty) ? data.faculty : []);
+        populateTestimonials(Array.isArray(data.testimonials) ? data.testimonials : []);
+        populateGallery(Array.isArray(data.gallery) ? data.gallery : []);
+        populateBlog(Array.isArray(data.blog_posts) ? data.blog_posts : []);
 
         if (typeof lucide !== 'undefined') lucide.createIcons();
         reinitCounters();
     } catch (error) {
         console.error('Failed to load homepage data:', error);
+        populateBatches([]);
+        populateFaculty([]);
+        populateTestimonials([]);
+        populateGallery([]);
+        populateBlog([]);
+    } finally {
+        if (heroSection) heroSection.classList.remove('hero--loading');
+        if (heroStatsStrip) heroStatsStrip.classList.remove('hero-stats-strip--loading');
+        loadingSections.forEach(section => section.classList.remove('content-loading'));
     }
 }
 
@@ -45,7 +124,11 @@ function populateTestimonials(testimonials) {
     const active = testimonials
         .filter(t => t.is_active !== false)
         .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-    if (!active.length) return;
+    if (!active.length) {
+        section.style.display = 'none';
+        return;
+    }
+    section.style.display = '';
 
     const featured = active[0];
     const rest = active.slice(1, 4);
@@ -113,6 +196,7 @@ function populateSettings(settings) {
         socialWrap.innerHTML = `
             ${settings.instagram ? `<a href="${settings.instagram}" class="footer__social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>` : ''}
             ${settings.facebook ? `<a href="${settings.facebook}" class="footer__social-btn" aria-label="Facebook"><i class="fab fa-facebook"></i></a>` : ''}
+            ${settings.linkedin ? `<a href="${settings.linkedin}" class="footer__social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>` : ''}
             ${settings.youtube ? `<a href="${settings.youtube}" class="footer__social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>` : ''}
         `;
     }
@@ -122,15 +206,50 @@ function populateHero(hero) {
     const heroSection = document.getElementById('hero');
     if (!heroSection) return;
 
-    heroSection.classList.toggle('hero--video', hero.video_mode);
+    const isVideoMode = !!hero.video_mode;
+    const posterUrl = resolveMediaUrl(hero.poster_url);
+    const videoUrl = resolveMediaUrl(hero.video_url);
+    const fallbackVideoUrl = 'assets/videos/hero-section-video.mp4';
+    const fallbackPosterUrl = 'assets/images/hero/hero.png';
+
+    // Keep the same hero layout in both modes; only media behavior changes.
+    heroSection.classList.add('hero--video');
+    heroSection.classList.toggle('hero--poster', !isVideoMode);
     const video = heroSection.querySelector('.hero__video');
     if (video) {
-        video.poster = resolveMediaUrl(hero.poster_url);
+        video.poster = posterUrl || fallbackPosterUrl;
         const source = video.querySelector('source');
         if (source) {
-            source.src = resolveMediaUrl(hero.video_url);
+            source.src = videoUrl || fallbackVideoUrl;
             video.load();
         }
+        if (isVideoMode) {
+            const playPromise = video.play();
+            if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => {});
+            }
+        } else {
+            video.pause();
+            video.currentTime = 0;
+        }
+    }
+
+    if (isVideoMode) {
+        heroSection.style.backgroundImage = '';
+        heroSection.style.backgroundSize = '';
+        heroSection.style.backgroundPosition = '';
+        heroSection.style.backgroundRepeat = '';
+    } else if (posterUrl || fallbackPosterUrl) {
+        const bgUrl = posterUrl || fallbackPosterUrl;
+        heroSection.style.backgroundImage = `linear-gradient(to top, rgba(15, 23, 42, 0.62), rgba(15, 23, 42, 0.22)), url("${bgUrl}")`;
+        heroSection.style.backgroundSize = '100% 100%, 100% auto';
+        heroSection.style.backgroundPosition = 'center center, center top';
+        heroSection.style.backgroundRepeat = 'no-repeat, no-repeat';
+    } else {
+        heroSection.style.backgroundImage = '';
+        heroSection.style.backgroundSize = '';
+        heroSection.style.backgroundPosition = '';
+        heroSection.style.backgroundRepeat = '';
     }
 
     const eyebrow = heroSection.querySelector('.hero__eyebrow .section-badge');
@@ -173,8 +292,9 @@ function populateHero(hero) {
     if (ctaSubtext) ctaSubtext.textContent = hero.cta_subtext || '';
 
     const statsStrip = document.querySelector('.hero-stats-strip__inner');
-    if (statsStrip && hero.stats) {
-        statsStrip.innerHTML = hero.stats
+    const stats = Array.isArray(hero.stats) && hero.stats.length ? hero.stats : DEFAULT_HERO_STATS;
+    if (statsStrip) {
+        statsStrip.innerHTML = stats
             .sort((a, b) => a.sort_order - b.sort_order)
             .map(stat => `
             <div class="hero-stats-strip__item">
@@ -188,8 +308,11 @@ function populateHero(hero) {
 function populateBatches(batches) {
     const batchList = document.querySelector('.programs__list');
     if (batchList) {
-        batchList.innerHTML = batches
-            .filter(b => b.is_active)
+        const activeBatches = batches.filter(b => b.is_active);
+        if (!activeBatches.length) {
+            batchList.innerHTML = '<div class="empty-state"><div class="empty-state__title">Batches will be announced soon.</div></div>';
+        } else {
+            batchList.innerHTML = activeBatches
             .sort((a, b) => a.sort_order - b.sort_order)
             .map(batch => `
             <article class="program-card" role="listitem">
@@ -201,12 +324,12 @@ function populateBatches(batches) {
                 <span class="program-card__badge">${batch.level}</span>
             </article>
         `).join('');
+        }
 
         const demoFormSelect = document.querySelector('#demoForm select');
         if (demoFormSelect) {
             demoFormSelect.innerHTML = '<option value="" disabled selected>Select a Batch</option>' +
-            batches
-                .filter(b => b.is_active)
+            activeBatches
                 .map(batch => `<option value="${batch.name.toLowerCase().replace(/ /g, '-')}">${batch.name}</option>`)
                 .join('');
         }
@@ -217,7 +340,10 @@ function populateFaculty(faculty) {
     const grid = document.querySelector('.faculty__grid');
     if (!grid) return;
     const active = faculty.filter(f => f.is_active).sort((a, b) => a.sort_order - b.sort_order).slice(0, 8);
-    if (!active.length) return;
+    if (!active.length) {
+        grid.innerHTML = '<div class="empty-state"><div class="empty-state__title">Faculty details will be updated soon.</div></div>';
+        return;
+    }
 
     grid.innerHTML = active.map((f, idx) => `
       <article class="faculty-card" aria-label="Faculty member">
@@ -251,14 +377,37 @@ function embedFromUrl(url) {
     return null;
 }
 
+function normalizeGalleryCategory(value) {
+    const raw = (value || '').toString().trim().toLowerCase();
+    if (!raw) return 'activities';
+    const normalized = raw.replace(/[_\s]+/g, '-');
+    if (normalized.includes('video')) return 'video';
+    if (normalized.includes('award')) return 'awards';
+    if (normalized.includes('student')) return 'students';
+    if (normalized.includes('grand')) return 'grand-finale';
+    if (normalized.includes('activit') || normalized.includes('program')) return 'activities';
+    return normalized;
+}
+
+function categoryLabel(slug) {
+    if (!slug) return '';
+    return slug
+        .split('-')
+        .map(token => token.charAt(0).toUpperCase() + token.slice(1))
+        .join(' ');
+}
+
 function populateGallery(galleryItems) {
     const grid = document.getElementById('galleryGrid');
     if (!grid) return;
     const visible = galleryItems.filter(g => g.is_visible).sort((a, b) => a.sort_order - b.sort_order);
-    if (!visible.length) return;
+    if (!visible.length) {
+        grid.innerHTML = '<div class="empty-state"><div class="empty-state__title">Gallery will be updated soon.</div></div>';
+        return;
+    }
 
     grid.innerHTML = visible.map(item => {
-        const category = item.category || 'activities';
+        const category = normalizeGalleryCategory(item.category);
         let media = '';
         if (item.media_type === 'image') {
             media = `<img src="${resolveMediaUrl(item.media_url)}" class="gallery__item-bg" alt="${item.caption || 'Gallery image'}" />`;
@@ -271,11 +420,11 @@ function populateGallery(galleryItems) {
             media = `<video class="gallery__item-bg" controls><source src="${resolveMediaUrl(item.media_url)}"></video>`;
         }
         return `
-          <div class="gallery__item ${item.media_type === 'video' ? 'gallery__item--video' : ''}" data-category="${category}" onclick="openLightbox(this)">
+          <div class="gallery__item ${item.media_type === 'video' ? 'gallery__item--video' : ''}" data-category="${category}" onclick="openLightbox(this)" aria-label="${item.caption || categoryLabel(category)}">
             ${media}
             <div class="gallery__item-overlay">
               <div>
-                <span class="gallery__item-cat">${category}</span>
+                <span class="gallery__item-cat">${categoryLabel(category)}</span>
                 <p class="gallery__item-caption">${item.caption || ''}</p>
               </div>
             </div>
@@ -288,13 +437,20 @@ function populateBlog(posts) {
     const section = document.getElementById('blog');
     if (!section) return;
     const published = posts.filter(p => p.status === 'published');
-    if (!published.length) return;
+    setBlogPostCache(published);
+    if (!published.length) {
+        section.style.display = 'none';
+        return;
+    }
+    section.style.display = '';
 
     const featured = published.find(p => p.featured) || published[0];
     const rest = published.filter(p => p.id !== featured.id);
 
         const featuredEl = section.querySelector('.blog-featured');
     if (featuredEl) {
+        featuredEl.setAttribute('href', 'javascript:void(0)');
+        featuredEl.setAttribute('onclick', `openBlogLightboxById("${featured.id}")`);
         const cover = featured.cover_image_url
             ? `<img src="${resolveMediaUrl(featured.cover_image_url)}" alt="${featured.title}" style="width:100%;height:100%;object-fit:cover;" />`
             : `<div class="blog-featured__cover-placeholder"><div class="blog-featured__cover-gradient blog-cover--featured"></div></div>`;
@@ -302,8 +458,8 @@ function populateBlog(posts) {
           <div class="blog-featured__cover">${cover}<span class="blog-featured__badge">Featured</span></div>
           <div class="blog-featured__body">
             <div class="blog-featured__meta"><span class="blog-featured__cat">${featured.category || ''}</span><span>·</span><span>${fmtDate(featured.published_date)}</span><span>·</span><span>${featured.read_time || ''}</span></div>
-            <h3 class="blog-featured__title">${featured.title}</h3>
-            <p class="blog-featured__excerpt">${featured.excerpt || ''}</p>
+            <h3 class="blog-featured__title">${clampText(featured.title, 120)}</h3>
+            <p class="blog-featured__excerpt">${clampText(featured.excerpt || '', 280)}</p>
             <div class="blog-featured__author"><div class="blog-featured__author-avatar">${(featured.author || 'A').slice(0, 2).toUpperCase()}</div><div><p class="blog-featured__author-name">${featured.author || ''}</p></div></div>
           </div>
         `;
@@ -312,13 +468,13 @@ function populateBlog(posts) {
     const sidebar = section.querySelector('.blog__sidebar');
     if (sidebar) {
         sidebar.innerHTML = rest.slice(0, 3).map(p => `
-          <a href="#" class="blog-card-sm" aria-label="Blog post">
+          <a href="javascript:void(0)" class="blog-card-sm" aria-label="Blog post" onclick="openBlogLightboxById('${p.id}')">
             <div class="blog-card-sm__cover">
               ${p.cover_image_url ? `<img src="${resolveMediaUrl(p.cover_image_url)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" />` : '<div class="blog-card-sm__cover-placeholder blog-cover--indigo"></div>'}
             </div>
             <div class="blog-card-sm__body">
               <p class="blog-card-sm__cat">${p.category || ''}</p>
-              <h4 class="blog-card-sm__title">${p.title}</h4>
+              <h4 class="blog-card-sm__title">${clampText(p.title, 90)}</h4>
               <p class="blog-card-sm__meta">${fmtDate(p.published_date)} · ${p.read_time || ''}</p>
             </div>
           </a>
@@ -328,14 +484,14 @@ function populateBlog(posts) {
     const gridBottom = section.querySelector('.blog__grid-bottom');
     if (gridBottom) {
         gridBottom.innerHTML = rest.slice(3, 6).map(p => `
-          <a href="#" class="blog-card-grid" aria-label="Blog post">
+          <a href="javascript:void(0)" class="blog-card-grid" aria-label="Blog post" onclick="openBlogLightboxById('${p.id}')">
             <div class="blog-card-grid__cover">
               ${p.cover_image_url ? `<img src="${resolveMediaUrl(p.cover_image_url)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" />` : '<div class="blog-card-grid__cover-placeholder blog-cover--navy"></div>'}
             </div>
             <div class="blog-card-grid__body">
               <p class="blog-card-grid__cat">${p.category || ''}</p>
-              <h4 class="blog-card-grid__title">${p.title}</h4>
-              <p class="blog-card-grid__excerpt">${p.excerpt || ''}</p>
+              <h4 class="blog-card-grid__title">${clampText(p.title, 100)}</h4>
+              <p class="blog-card-grid__excerpt">${clampText(p.excerpt || '', 180)}</p>
               <div class="blog-card-grid__footer">
                 <div class="blog-card-grid__author"><div class="blog-card-grid__avatar">${(p.author || 'A').slice(0, 2).toUpperCase()}</div><span class="blog-card-grid__author-name">${p.author || ''}</span></div>
                 <span class="blog-card-grid__read">${p.read_time || ''}</span>

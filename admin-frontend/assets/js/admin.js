@@ -4,6 +4,7 @@
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
+  const SIDEBAR_COLLAPSED_KEY = 'wecan_sidebar_collapsed';
   const onLoginPage = window.location.pathname.endsWith('/login.html');
   const token = localStorage.getItem('wecan_admin_token');
   const loginPath = window.location.pathname.includes('/pages/') ? '../login.html' : 'login.html';
@@ -57,17 +58,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (typeof lucide !== 'undefined') lucide.createIcons();
 
+  const appShell = document.querySelector('.admin-app');
   const sidebar = document.getElementById('sidebar');
   const hamburger = document.getElementById('sidebarToggle');
   const overlay = document.getElementById('sidebarOverlay');
-
+  const isDesktop = () => window.matchMedia('(min-width: 901px)').matches;
+  if (appShell && isDesktop() && localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === '1') {
+    appShell.classList.add('sidebar-collapsed');
+  }
   hamburger?.addEventListener('click', () => {
+    if (isDesktop()) {
+      appShell?.classList.toggle('sidebar-collapsed');
+      if (appShell?.classList.contains('sidebar-collapsed')) {
+        localStorage.setItem(SIDEBAR_COLLAPSED_KEY, '1');
+      } else {
+        localStorage.removeItem(SIDEBAR_COLLAPSED_KEY);
+      }
+      return;
+    }
     sidebar?.classList.toggle('open');
     overlay?.classList.toggle('show');
   });
   overlay?.addEventListener('click', () => {
     sidebar?.classList.remove('open');
     overlay.classList.remove('show');
+  });
+  window.addEventListener('resize', () => {
+    if (isDesktop()) {
+      sidebar?.classList.remove('open');
+      overlay?.classList.remove('show');
+    }
   });
 
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';

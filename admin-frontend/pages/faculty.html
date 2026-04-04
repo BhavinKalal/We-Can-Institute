@@ -1,8 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Faculty â€” WE CAN Admin</title>
+  <title>Faculty — WE CAN Admin</title>
+  <link rel="icon" type="image/png" href="../assets/images/wecan-log.png" />
   <link rel="stylesheet" href="../assets/css/admin-base.css" />
   <link rel="stylesheet" href="../assets/css/admin-layout.css" />
   <link rel="stylesheet" href="../assets/css/admin-components.css" />
@@ -99,7 +100,7 @@
           <div class="form-label">Profile Photo</div>
           <input type="file" id="photoInput" accept="image/*" class="js-hidden" />
           <button class="btn btn--ghost btn--sm" onclick="document.getElementById('photoInput').click()"><i data-lucide="upload"></i> Upload Photo</button>
-          <div class="form-hint">Recommended: 400Ã—533px, JPG/WebP, under 200KB</div>
+          <div class="form-hint">Recommended: 400×533px, JPG/WebP, under 200KB</div>
         </div>
       </div>
 
@@ -215,7 +216,7 @@ function renderGrid(data) {
       </div>
       <div class="fac-card__body">
         <div class="fac-card__name">${f.name || 'Unnamed Faculty'}</div>
-        <div class="fac-card__role">${f.role}${f.experience ? ` · ${f.experience}` : ''}</div>
+        <div class="fac-card__role">${f.role}${f.experience ? ` � ${f.experience}` : ''}</div>
         <div class="fac-card__tags">${(f.tags||[]).map(t=>`<span class="fac-card__tag">${t}</span>`).join('')}</div>
       </div>
       <div class="fac-card__footer">
@@ -245,7 +246,7 @@ function renderTags() {
   currentTags.forEach((t, i) => {
     const chip = document.createElement('span');
     chip.className = 'tag-chip';
-    chip.innerHTML = `${t}<button onclick="removeTag(${i})">×</button>`;
+    chip.innerHTML = `${t}<button onclick="removeTag(${i})">�</button>`;
     wrap.insertBefore(chip, tagInput);
   });
 }
@@ -370,4 +371,5 @@ loadFaculty();
 </script>
 </body>
 </html>
+
 

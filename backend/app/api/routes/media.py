@@ -24,7 +24,7 @@ ALLOWED_MEDIA_KINDS: dict[str, set[str]] = {
 MAX_FILE_SIZE_BY_KIND: dict[str, int] = {
     "hero_video": 50 * 1024 * 1024,
     "gallery_video": 50 * 1024 * 1024,
-    "hero_poster": 5 * 1024 * 1024,
+    "hero_poster": 15 * 1024 * 1024,
     "faculty_profile": 3 * 1024 * 1024,
     "gallery_image": 5 * 1024 * 1024,
     "blog_cover": 5 * 1024 * 1024,

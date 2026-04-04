@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Settings — WE CAN Admin</title>
+  <link rel="icon" type="image/png" href="../assets/images/wecan-log.png" />
   <link rel="stylesheet" href="../assets/css/admin-base.css" />
   <link rel="stylesheet" href="../assets/css/admin-layout.css" />
   <link rel="stylesheet" href="../assets/css/admin-components.css" />
@@ -110,6 +111,10 @@
             <div class="form-group">
               <label class="form-label"><i data-lucide="facebook" class="label-icon"></i>Facebook</label>
               <input type="url" class="form-input" id="facebook" placeholder="https://facebook.com/wecaninstitute" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i data-lucide="linkedin" class="label-icon"></i>LinkedIn</label>
+              <input type="url" class="form-input" id="linkedin" placeholder="https://linkedin.com/company/wecaninstitute" />
             </div>
             <div class="form-group">
               <label class="form-label"><i data-lucide="youtube" class="label-icon"></i>YouTube</label>
@@ -224,6 +229,7 @@ function populateFields(s) {
   document.getElementById('timings').value = s.timings || '';
   document.getElementById('instagram').value = s.instagram || '';
   document.getElementById('facebook').value = s.facebook || '';
+  document.getElementById('linkedin').value = s.linkedin || '';
   document.getElementById('youtube').value = s.youtube || '';
   document.getElementById('whatsapp').value = s.whatsapp || '';
   document.getElementById('metaTitle').value = s.metaTitle || '';
@@ -245,26 +251,27 @@ function showMapPreview(url) {
 document.getElementById('saveAllBtn').addEventListener('click', async () => {
   try {
     const data = {
-      siteName: document.getElementById('siteName').value,
-      tagline: document.getElementById('tagline').value,
-      phone: document.getElementById('phone').value,
-      email: document.getElementById('email').value,
-      address: document.getElementById('address').value,
-      timings: document.getElementById('timings').value,
-      instagram: document.getElementById('instagram').value,
-      facebook: document.getElementById('facebook').value,
-      youtube: document.getElementById('youtube').value,
-      whatsapp: document.getElementById('whatsapp').value,
-      metaTitle: document.getElementById('metaTitle').value,
-      metaDescription: document.getElementById('metaDescription').value,
-      mapEmbed: document.getElementById('mapEmbed').value,
+      siteName: document.getElementById('siteName').value.trim(),
+      tagline: document.getElementById('tagline').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      address: document.getElementById('address').value.trim(),
+      timings: document.getElementById('timings').value.trim(),
+      instagram: document.getElementById('instagram').value.trim(),
+      facebook: document.getElementById('facebook').value.trim(),
+      linkedin: document.getElementById('linkedin').value.trim(),
+      youtube: document.getElementById('youtube').value.trim(),
+      whatsapp: document.getElementById('whatsapp').value.trim(),
+      metaTitle: document.getElementById('metaTitle').value.trim(),
+      metaDescription: document.getElementById('metaDescription').value.trim(),
+      mapEmbed: document.getElementById('mapEmbed').value.trim(),
     };
     const snakeCaseData = transformKeys(data, toSnake);
     await API.updateSettings(snakeCaseData);
     showToast('Settings saved successfully!', 'success');
   } catch (error) {
     console.error('Error saving settings:', error);
-    showToast('Error saving settings. Check console.', 'error');
+    showToast(error?.message || 'Error saving settings.', 'error');
   }
 });
 

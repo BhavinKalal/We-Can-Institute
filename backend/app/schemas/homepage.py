@@ -48,6 +48,7 @@ class SiteSettingsPublic(BaseModel):
     timings: str | None = None
     instagram: str | None = None
     facebook: str | None = None
+    linkedin: str | None = None
     youtube: str | None = None
     whatsapp: str | None = None
     map_embed: str | None = None

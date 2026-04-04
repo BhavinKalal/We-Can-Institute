@@ -141,6 +141,7 @@ const MOCK = {
     timings: 'Mon-Sat: 8:00 AM - 8:00 PM',
     instagram: 'https://instagram.com/wecaninstitute',
     facebook: 'https://facebook.com/wecaninstitute',
+    linkedin: 'https://linkedin.com/company/wecaninstitute',
     youtube: 'https://youtube.com/wecaninstitute',
     whatsapp: '+919876543210',
     mapEmbed: '',
@@ -152,6 +153,20 @@ const MOCK = {
 /* ── FETCH WRAPPER ── */
 function authRedirectPath() {
   return window.location.pathname.includes('/pages/') ? '../login.html' : 'login.html';
+}
+
+function extractApiErrorMessage(body, fallback) {
+  if (!body) return fallback;
+  if (typeof body === 'string') return body;
+  if (Array.isArray(body?.detail)) {
+    const first = body.detail[0];
+    if (typeof first === 'string') return first;
+    if (first?.msg) return first.msg;
+  }
+  if (typeof body?.detail === 'string') return body.detail;
+  if (body?.detail?.message) return body.detail.message;
+  if (body?.message) return body.message;
+  return fallback;
 }
 
 async function apiFetch(endpoint, options = {}, requiresAuth = true) {
@@ -184,7 +199,7 @@ async function apiFetch(endpoint, options = {}, requiresAuth = true) {
     let message = `API error: ${res.status}`;
     try {
       const body = await res.json();
-      message = body?.detail || message;
+      message = extractApiErrorMessage(body, message);
     } catch (_) {}
     throw new Error(message);
   }

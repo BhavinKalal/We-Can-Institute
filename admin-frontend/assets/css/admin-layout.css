@@ -9,6 +9,14 @@
   min-height: 100vh;
 }
 
+.admin-app.sidebar-collapsed .sidebar {
+  transform: translateX(-255px);
+}
+
+.admin-app.sidebar-collapsed .admin-main {
+  margin-left: 0;
+}
+
 /* ══════════════════════════════════════════
    SIDEBAR
 ══════════════════════════════════════════ */
@@ -266,7 +274,7 @@
 }
 
 .topbar__hamburger {
-  display: none;
+  display: flex;
   width: 36px; height: 36px;
   border-radius: var(--r-md);
   align-items: center; justify-content: center;
@@ -367,7 +375,6 @@
   .sidebar { transform: translateX(-255px); }
   .sidebar.open { transform: translateX(0); --sidebar-width: 255px; }
   .admin-main { margin-left: 0; }
-  .topbar__hamburger { display: flex; }
   .page-content { padding: 20px 16px; }
 }
 
