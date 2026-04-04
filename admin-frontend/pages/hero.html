@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hero Section — WE CAN Admin</title>
+  <link rel="icon" type="image/png" href="../assets/images/wecan-log.png" />
   <link rel="stylesheet" href="../assets/css/admin-base.css" />
   <link rel="stylesheet" href="../assets/css/admin-layout.css" />
   <link rel="stylesheet" href="../assets/css/admin-components.css" />
@@ -24,7 +25,7 @@
     .preview-stats{display:flex;gap:20px;flex-wrap:wrap;}
     .preview-stat__num{font-size:20px;font-weight:800;color:#fff;}
     .preview-stat__label{font-size:10px;color:rgba(255,255,255,0.4);font-weight:500;}
-    .stat-editor-row{display:grid;grid-template-columns:80px 1fr 80px;gap:8px;align-items:end;padding:12px;background:var(--surface-2);border-radius:var(--r-md);border:1px solid var(--border);margin-bottom:8px;}
+    .stat-editor-row{display:grid;grid-template-columns:80px 1fr 80px 40px;gap:8px;align-items:end;padding:12px;background:var(--surface-2);border-radius:var(--r-md);border:1px solid var(--border);margin-bottom:8px;}
     @media(max-width:1024px){.hero-editor{grid-template-columns:1fr;}.preview-panel{position:static;}}
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&display=swap" rel="stylesheet" />
@@ -80,13 +81,29 @@
             <div class="card__header"><span class="card__title"><i data-lucide="video" class="card-icon card-icon--blue"></i>Background Video</span></div>
             <div class="card__body">
               <div class="form-group">
-                <label class="form-label">Video File Path</label>
-                <input type="text" class="form-input" id="videoUrl" placeholder="assets/videos/hero-section-video.mp4" />
-                <div class="form-hint">Relative path from frontend folder. e.g. assets/videos/hero-section-video.mp4</div>
+                <label class="form-label">Video Path (auto-managed)</label>
+                <input type="text" class="form-input" id="videoUrl" placeholder="/media/hero_video/..." readonly />
+                <div class="form-hint">Path is generated automatically when you save changes.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Upload Hero Video</label>
+                <div class="form-grid-2">
+                  <input type="file" class="form-input" id="videoFile" accept="video/mp4,video/webm,video/ogg,video/quicktime" />
+                  <button class="btn btn--ghost btn--sm" id="uploadVideoBtn" type="button"><i data-lucide="upload"></i> Upload Video</button>
+                </div>
+                <div class="form-hint">Supported: MP4, WebM, OGG, MOV (max 50MB).</div>
               </div>
               <div class="form-group">
                 <label class="form-label">Poster Image (shown before video loads)</label>
-                <input type="text" class="form-input" id="posterUrl" placeholder="assets/images/hero-poster.jpg" />
+                <input type="text" class="form-input" id="posterUrl" placeholder="/media/hero_poster/..." readonly />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Upload Poster Image</label>
+                <div class="form-grid-2">
+                  <input type="file" class="form-input" id="posterFile" accept="image/jpeg,image/png,image/webp" />
+                  <button class="btn btn--ghost btn--sm" id="uploadPosterBtn" type="button"><i data-lucide="upload"></i> Upload Poster</button>
+                </div>
+                <div class="form-hint">Supported: JPG, PNG, WebP (max 15MB).</div>
               </div>
               <div class="form-group">
                 <div class="toggle-wrap">
@@ -147,7 +164,13 @@
 
           <!-- Stats -->
           <div class="card">
-            <div class="card__header"><span class="card__title"><i data-lucide="bar-chart-2" class="card-icon card-icon--blue"></i>Stats Row</span><span class="t-small">Shown below video in standard mode</span></div>
+            <div class="card__header">
+              <span class="card__title"><i data-lucide="bar-chart-2" class="card-icon card-icon--blue"></i>Stats Row</span>
+              <div class="btn-group">
+                <span class="t-small">Shown below hero</span>
+                <button class="btn btn--ghost btn--sm" id="addStatBtn" type="button"><i data-lucide="plus"></i> Add Stat</button>
+              </div>
+            </div>
             <div class="card__body">
               <div id="statsEditor"></div>
             </div>
@@ -179,12 +202,21 @@
 <script src="../assets/js/admin.js"></script>
 <script>
 let heroData = null;
+let pendingHeroVideoFile = null;
+let pendingHeroPosterFile = null;
+const DEFAULT_HERO_STATS = [
+  { num: 5200, suffix: '+', label: 'Students Trained', sort_order: 0 },
+  { num: 14, suffix: ' yrs', label: 'Years of Excellence', sort_order: 1 },
+  { num: 98, suffix: '%', label: 'Success Rate', sort_order: 2 },
+  { num: 4.9, suffix: '★', label: 'Average Rating', sort_order: 3 }
+];
 
 // --- Data Transformation ---
 function transformHeroDataForFrontend(backendData) {
+  const stats = Array.isArray(backendData.stats) ? backendData.stats : [];
   return {
     ...backendData,
-    stats: backendData.stats.map(s => ({
+    stats: stats.map(s => ({
       num: s.value,
       label: s.label,
       suffix: s.suffix,
@@ -217,6 +249,9 @@ async function loadHero() {
         return;
     }
     heroData = transformHeroDataForFrontend(rawData);
+    if (!heroData.stats || !heroData.stats.length) {
+      heroData.stats = DEFAULT_HERO_STATS.map(s => ({ ...s }));
+    }
     populateFields(heroData);
     renderStatsEditor(heroData.stats);
     updatePreview();
@@ -227,6 +262,8 @@ async function loadHero() {
 }
 
 function populateFields(d) {
+  pendingHeroVideoFile = null;
+  pendingHeroPosterFile = null;
   document.getElementById('videoUrl').value = d.video_url || '';
   document.getElementById('posterUrl').value = d.poster_url || '';
   document.getElementById('videoMode').checked = d.video_mode;
@@ -241,14 +278,25 @@ function populateFields(d) {
 }
 
 function renderStatsEditor(stats) {
-  document.getElementById('statsEditor').innerHTML = (stats || []).map((s, i) => `
+  const safeStats = Array.isArray(stats) ? stats : [];
+  const container = document.getElementById('statsEditor');
+
+  if (!safeStats.length) {
+    container.innerHTML = `<div class="empty-state"><i data-lucide="bar-chart-2"></i><div class="empty-state__title">No stats yet</div></div>`;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    return;
+  }
+
+  container.innerHTML = safeStats.map((s, i) => `
     <div class="stat-editor-row">
       <div class="form-group form-group--no-margin"><label class="form-label">Number</label><input type="number" class="form-input" id="statNum${i}" value="${s.num}" /></div>
       <div class="form-group form-group--no-margin"><label class="form-label">Label</label><input type="text" class="form-input" id="statLabel${i}" value="${s.label}" /></div>
       <div class="form-group form-group--no-margin"><label class="form-label">Suffix</label><input type="text" class="form-input" id="statSuffix${i}" value="${s.suffix || ''}" /></div>
+      <button class="btn btn--ghost-red btn--sm btn--icon" type="button" onclick="removeStat(${i})" title="Remove stat"><i data-lucide="trash-2"></i></button>
     </div>`).join('');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
   // Attach events
-  (stats || []).forEach((_, i) => {
+  safeStats.forEach((_, i) => {
     ['statNum','statLabel','statSuffix'].forEach(prefix => {
       document.getElementById(`${prefix}${i}`)?.addEventListener('input', updatePreview);
     });
@@ -307,9 +355,44 @@ document.querySelectorAll('.form-input, .form-textarea, #videoMode').forEach(el 
   el.addEventListener('input', updatePreview);
 });
 
+document.getElementById('uploadVideoBtn').addEventListener('click', () => {
+  document.getElementById('videoFile').click();
+});
+document.getElementById('uploadPosterBtn').addEventListener('click', () => {
+  document.getElementById('posterFile').click();
+});
+document.getElementById('videoFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  pendingHeroVideoFile = file;
+  document.getElementById('videoUrl').value = `Pending upload: ${file.name}`;
+  showToast('Hero video selected. It will upload when you save.', 'info');
+});
+document.getElementById('posterFile').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const maxPosterBytes = 15 * 1024 * 1024;
+  if (file.size > maxPosterBytes) {
+    showToast('Poster image is too large. Maximum allowed is 15MB.', 'error');
+    e.target.value = '';
+    return;
+  }
+  pendingHeroPosterFile = file;
+  document.getElementById('posterUrl').value = `Pending upload: ${file.name}`;
+  showToast('Poster selected. It will upload when you save.', 'info');
+});
+
 document.getElementById('saveBtn').addEventListener('click', async () => {
   try {
     const frontendData = gatherDataFromFields();
+    if (pendingHeroVideoFile) {
+      const uploadedVideo = await API.uploadHeroMedia(pendingHeroVideoFile, 'hero_video');
+      frontendData.video_url = uploadedVideo.relative_url || uploadedVideo.url || frontendData.video_url;
+    }
+    if (pendingHeroPosterFile) {
+      const uploadedPoster = await API.uploadHeroMedia(pendingHeroPosterFile, 'hero_poster');
+      frontendData.poster_url = uploadedPoster.relative_url || uploadedPoster.url || frontendData.poster_url;
+    }
     const backendData = transformHeroDataForBackend(frontendData);
     await API.updateHero(backendData);
     // Reload data to get fresh state from server
@@ -317,8 +400,28 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
     showToast('Hero section saved successfully!', 'success');
   } catch (error) {
     console.error('Error saving hero data:', error);
-    showToast('Error saving hero data. Check console.', 'error');
+    const msg = String(error?.message || '');
+    if (msg.includes('413') || msg.toLowerCase().includes('exceeds') || msg.toLowerCase().includes('too large')) {
+      showToast('Please upload image less than 15MB.', 'error');
+      return;
+    }
+    showToast(msg || 'Error saving hero data.', 'error');
   }
+});
+
+window.removeStat = (index) => {
+  if (!heroData || !Array.isArray(heroData.stats)) return;
+  heroData.stats.splice(index, 1);
+  renderStatsEditor(heroData.stats);
+  updatePreview();
+};
+
+document.getElementById('addStatBtn').addEventListener('click', () => {
+  if (!heroData) return;
+  if (!Array.isArray(heroData.stats)) heroData.stats = [];
+  heroData.stats.push({ num: 0, label: 'New Stat', suffix: '', sort_order: heroData.stats.length });
+  renderStatsEditor(heroData.stats);
+  updatePreview();
 });
 
 document.getElementById('resetBtn').addEventListener('click', () => {
@@ -336,3 +439,4 @@ loadHero();
 </script>
 </body>
 </html>
+

@@ -57,3 +57,11 @@ Create future migrations:
 ```powershell
 alembic revision --autogenerate -m "describe change"
 ```
+
+## Run Tests
+
+From the `backend` directory:
+
+```powershell
+python -m pytest -q
+```

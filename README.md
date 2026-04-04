@@ -1,170 +1,154 @@
-# WE CAN Institute of English — Website
+# WE CAN Institute - Project Status and Run Guide
 
-**Version:** 1.0  
-**Built:** 2026  
-**Tech:** Pure HTML · CSS · Vanilla JS (no frameworks, no dependencies)
+Last updated: April 4, 2026
 
----
+## 1) Current State (Clear Summary)
 
-## 📁 Folder Structure
+This project now has 3 parts:
+- `frontend/` - public website
+- `admin-frontend/` - admin panel
+- `backend/` - FastAPI + SQLite + Alembic
 
-```
-wecan-project/
-│
-├── index.html                  ← Main homepage (open this in browser)
-│
-├── assets/
-│   ├── css/
-│   │   ├── base.css            ← Variables, reset, typography, utilities
-│   │   ├── layout.css          ← Containers, grid, section spacing
-│   │   ├── components.css      ← Navbar, buttons, cards, badges
-│   │   ├── sections.css        ← Hero, Why, Programs, Journey, Testimonials, CTA, Footer
-│   │   └── new-sections.css    ← Faculty, Gallery, Blog sections
-│   │
-│   ├── js/
-│   │   ├── main.js             ← Navbar, scroll reveal, counters, smooth scroll
-│   │   └── gallery.js          ← Gallery filter tabs + lightbox
-│   │
-│   └── images/
-│       ├── wecan-logo.png      ← Official logo (PNG, transparent)
-│       └── wecan-logo.jpeg     ← Official logo (JPEG)
-```
+Core content is backend-driven and verified working:
+- Site settings
+- Hero section + hero stats
+- Batches
+- Faculty (one profile photo per faculty)
+- Gallery (image/video upload, visibility toggle, optional external video URL)
+- Blog (single cover image per post)
 
----
+Media upload behavior is working as expected:
+- Admin uploads file
+- Backend stores file under `backend/media/...`
+- Relative path is saved in DB
+- Frontend reads path from DB and renders latest content after refresh
 
-## 🚀 How to Open
+## 2) Phase Progress Snapshot
 
-1. Download and unzip the folder
-2. Open `index.html` in any browser (Chrome, Firefox, Safari, Edge)
-3. That's it — no server needed, no npm install, no build steps
+Based on implementation and verification done so far:
+- [x] Phase 0: Project alignment
+- [x] Phase 1: Backend foundation
+- [x] Phase 2: Database setup
+- [x] Phase 3: Core content schema
+- [x] Phase 4: Public homepage API
+- [x] Phase 5: Admin API for core sections
+- [x] Phase 6: Admin Hero connected
+- [x] Phase 7: Admin Settings connected
+- [x] Phase 8: Admin Batches connected
+- [x] Phase 9: Frontend dynamic core content
+- [x] Phase 10: Faculty module connected
+- [x] Phase 11: Testimonials module connected
+- [x] Phase 12: Gallery module connected
+- [x] Phase 13: Blog module connected
+- [ ] Phase 14+: remaining roadmap items pending
 
-> ⚠️ **Note:** Google Fonts requires an internet connection to load.  
-> The site works offline but will fall back to system fonts.
+Notes:
+- Final hardening/auth/deployment phases are still pending.
 
----
+## 3) What Was Verified in This Stabilization Pass
 
-## ✏️ How to Edit Content
+- Backend API smoke checks passed (health + admin/public paths).
+- Admin pages opened and basic actions verified:
+  - Hero
+  - Settings
+  - Batches
+  - Faculty
+  - Gallery
+  - Blog
+- Public homepage dynamic content load verified.
+- Critical bugs fixed:
+  - Settings URL save crash (`HttpUrl` DB binding)
+  - Gallery modal structure/runtime issue
+  - Blog editor visibility toggle issue
+  - Missing fallback asset references
 
-### Change Institute Name / Contact Info
-Open `index.html` and search for the text you want to change.
+## 4) Local Run Instructions
 
-### Update Phone / Email / Address
-Search for `+91 98765 43210` or `hello@wecaninstitute.com` and replace.
+### Backend
+From repo root:
 
----
-
-## 👨‍🏫 Adding Faculty Photos
-
-Find the faculty section in `index.html`. Each card has a placeholder like:
-
-```html
-<div class="faculty-card__avatar-placeholder">
-  <div class="faculty-card__avatar-circle">MK</div>
-  ...
-</div>
-```
-
-Replace the entire `faculty-card__avatar-placeholder` div with:
-
-```html
-<img src="assets/images/faculty-name.jpg"
-     alt="Faculty Name"
-     style="width:100%;height:100%;object-fit:cover;object-position:top;" />
-```
-
-**Recommended photo specs:**
-- Size: 400×533px (3:4 ratio portrait)
-- Format: JPG or WebP
-- File size: under 200KB for best performance
-
----
-
-## 🖼️ Updating Gallery Images
-
-Each gallery item has a colored placeholder. To replace with a real photo:
-
-**Find this pattern:**
-```html
-<div class="gallery__item" data-category="activities" onclick="openLightbox(this)">
-  <div class="gallery__placeholder" style="background:...">
-    ...
-  </div>
+```powershell
+cd backend
+$env:DEBUG='true'
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
-**Replace `gallery__placeholder` div with:**
-```html
-<img src="assets/images/gallery/your-photo.jpg"
-     class="gallery__item-bg"
-     alt="Description of photo" />
+API base:
+- `http://localhost:8000/api/v1`
+
+### Admin Frontend
+Serve `admin-frontend/` via any static server (example):
+
+```powershell
+cd admin-frontend
+python -m http.server 5501
 ```
 
-**For video items**, replace the placeholder with a YouTube embed:
-```html
-<iframe width="100%" height="100%"
-        src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
-        frameborder="0" allowfullscreen></iframe>
+Open:
+- `http://localhost:5501`
+
+### Public Frontend
+Serve `frontend/` similarly (example):
+
+```powershell
+cd frontend
+python -m http.server 5500
 ```
 
-**Gallery is designed to be updated monthly.**  
-Simply swap image files in `assets/images/gallery/` folder.
+Open:
+- `http://localhost:5500`
 
----
+## 5) Auth (Current)
 
-## 📝 Updating Blog Posts
+Admin now uses login + signed token auth.
 
-Each blog card in `index.html` has:
-- A title (`blog-featured__title` or `blog-card-grid__title`)
-- An excerpt (`blog-featured__excerpt` or `blog-card-grid__excerpt`)
-- Author name and role
-- Date and read time
+### Login endpoint
+- `POST /api/v1/auth/login`
+- Admin token is returned and stored in browser localStorage by admin UI.
 
-Just edit the text directly in `index.html`.
+### Admin UI
+- Login page: `admin-frontend/login.html`
+- Unauthenticated users are redirected to login.
+- Public website does not require login.
 
----
+### Default bootstrap credentials (change in `.env` for production)
+- `SUPER_ADMIN_EMAIL=admin@wecan.local`
+- `SUPER_ADMIN_PASSWORD=admin123`
+- `SUPER_ADMIN_FULL_NAME=Super Admin`
 
-## 🎨 Changing Brand Colors
+### Role-based access
+- `super_admin`:
+  - Can create/update/delete admin users from `admin-frontend/pages/admin-users.html`
+  - Can change own password
+  - Protected bootstrap super admin cannot be deleted/deactivated or downgraded
+- `admin`:
+  - Can manage content modules
+  - Cannot access admin user management page
 
-Open `assets/css/base.css` and update the CSS variables at the top:
+### Protected APIs
+- Admin endpoints require token in header:
+  - `X-Admin-Token: <token>`
+  - `Authorization: Bearer <token>` (also accepted)
 
-```css
-:root {
-  --red:       #e31e24;   /* Primary red */
-  --blue:      #1b9bd7;   /* Primary blue */
-  --navy:      #020617;   /* Dark background */
-  --navy-mid:  #0f172a;   /* Mid background */
-}
-```
+## 6) Media and Storage
 
----
+- Uploaded media is stored under `backend/media/`.
+- Paths are persisted in DB and reused by frontend/admin.
+- `backend/media/` is intentionally git-ignored for local/dev uploads.
 
-## 📱 Responsive Breakpoints
+## 7) Known Remaining Work
 
-| Breakpoint | Target |
-|-----------|--------|
-| 1200px    | Large desktop |
-| 1024px    | Laptop / tablet landscape |
-| 768px     | Tablet portrait |
-| 480px     | Mobile |
+Still pending from roadmap:
+- Testimonials completion/verification
+- Enquiry submission + admin workflow
+- Production auth/authorization
+- Content cleanup pass
+- QA hardening and tests
+- Deployment + backups/logging docs
 
----
+## 8) Recommended Next Step
 
-## 📦 Sections (in order)
-
-1. **Hero** — Main banner with CTA
-2. **Why Choose Us** — 6 feature cards
-3. **Programs / Batches** — Featured + batch list
-4. **Learning Journey** — 4-step timeline
-5. **Faculty** — Team cards with photos
-6. **Testimonials** — Featured quote + 3 cards
-7. **Gallery** — Filterable photo/video grid (updated monthly)
-8. **Blog** — Featured article + grid posts
-9. **CTA** — Enquiry form + book demo
-10. **Footer** — Links, contact, copyright
-
----
-
-## 🛠️ Support
-
-For design changes or new features, contact your web developer.
-
-© 2026 WE CAN Institute of English. All rights reserved.
+Proceed with next roadmap phase from this stable baseline, starting with whichever is highest priority:
+1. Testimonials completion
+2. Enquiry workflow
+3. Admin authentication

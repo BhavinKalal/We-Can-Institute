@@ -4,6 +4,36 @@
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
+  const PHONE_PATTERN = /^[6-9]\d{9}$/;
+  const toastContainer = (() => {
+    let node = document.getElementById('siteToastContainer');
+    if (!node) {
+      node = document.createElement('div');
+      node.id = 'siteToastContainer';
+      node.style.position = 'fixed';
+      node.style.right = '16px';
+      node.style.bottom = '16px';
+      node.style.zIndex = '9999';
+      node.style.display = 'flex';
+      node.style.flexDirection = 'column';
+      node.style.gap = '8px';
+      document.body.appendChild(node);
+    }
+    return node;
+  })();
+  const showSiteToast = (message, type = 'error') => {
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.background = type === 'success' ? 'rgba(16,185,129,0.95)' : 'rgba(239,68,68,0.95)';
+    toast.style.color = '#fff';
+    toast.style.padding = '10px 12px';
+    toast.style.borderRadius = '10px';
+    toast.style.boxShadow = '0 8px 24px rgba(0,0,0,0.25)';
+    toast.style.fontSize = '13px';
+    toast.style.maxWidth = '320px';
+    toastContainer.appendChild(toast);
+    setTimeout(() => toast.remove(), 2600);
+  };
 
   /* ── NAVBAR SCROLL ── */
   const navbar = document.getElementById('navbar');
@@ -103,6 +133,98 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ── DEMO BUTTON ── */
   document.getElementById('bookDemoBtn')?.addEventListener('click', () => {
     document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  /* —— DEMO FORM SUBMIT —— */
+  const demoForm = document.getElementById('demoForm');
+  const getOrCreateFormFeedback = () => {
+    let node = demoForm?.querySelector('.cta-form__feedback');
+    if (!node && demoForm) {
+      node = document.createElement('p');
+      node.className = 'cta-form__feedback t-small';
+      node.style.margin = '10px 4px 0';
+      node.style.minHeight = '1.2em';
+      demoForm.insertAdjacentElement('afterend', node);
+    }
+    return node;
+  };
+  const setFormFeedback = (message, type = 'error') => {
+    const node = getOrCreateFormFeedback();
+    if (!node) return;
+    node.textContent = message || '';
+    node.style.color = type === 'success' ? 'var(--text-red-light)' : 'rgba(255,255,255,0.8)';
+  };
+
+  demoForm?.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const submitBtn = demoForm.querySelector('button[type="submit"]');
+    const nameInput = demoForm.querySelector('input[type="text"]');
+    const phoneInput = demoForm.querySelector('input[type="tel"]');
+    const batchSelect = demoForm.querySelector('select');
+    if (!nameInput || !phoneInput || !batchSelect) return;
+
+    const name = nameInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const batchName = batchSelect.options[batchSelect.selectedIndex]?.text || '';
+
+    if (!name || !phone || !batchName) {
+      setFormFeedback('Please fill name, phone, and batch.');
+      showSiteToast('Please fill name, phone, and batch.');
+      return;
+    }
+    if (name.length < 2) {
+      setFormFeedback('Name must be at least 2 characters.');
+      showSiteToast('Name must be at least 2 characters.');
+      return;
+    }
+    if (!PHONE_PATTERN.test(phone)) {
+      setFormFeedback('Enter valid Indian mobile number (10 digits, starts with 6-9).');
+      showSiteToast('Enter valid Indian mobile number (10 digits, starts with 6-9).');
+      return;
+    }
+
+    try {
+      setFormFeedback('');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+      }
+      await API.submitEnquiry({
+        name,
+        phone,
+        batch_name: batchName,
+      });
+      demoForm.reset();
+      setFormFeedback('Demo enquiry submitted successfully. We will contact you soon.', 'success');
+      showSiteToast('Demo enquiry submitted successfully.', 'success');
+    } catch (error) {
+      setFormFeedback(error?.message || 'Could not submit enquiry. Please try again.');
+      showSiteToast(error?.message || 'Could not submit enquiry. Please try again.');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `
+          <span class="btn__icon" aria-hidden="true"><i data-lucide="target"></i></span>
+          Book My Free Demo Class
+        `;
+        if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [submitBtn] });
+      }
+    }
+  });
+
+  const phoneInput = demoForm?.querySelector('input[type="tel"]');
+  phoneInput?.addEventListener('input', () => {
+    const digits = phoneInput.value.replace(/\D/g, '').slice(0, 10);
+    phoneInput.value = digits;
+  });
+
+  phoneInput?.addEventListener('blur', () => {
+    const value = phoneInput.value.trim();
+    if (!value) return;
+    if (!PHONE_PATTERN.test(value)) {
+      setFormFeedback('Enter valid Indian mobile number (10 digits, starts with 6-9).');
+      showSiteToast('Enter valid Indian mobile number (10 digits, starts with 6-9).');
+    }
   });
 
   /* ── PROGRAM CARD HOVER ── */

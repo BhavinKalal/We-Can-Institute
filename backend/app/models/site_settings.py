@@ -20,6 +20,7 @@ class SiteSettings(TimestampMixin, Base):
     timings: Mapped[str | None] = mapped_column(String(150), nullable=True)
     instagram: Mapped[str | None] = mapped_column(String(500), nullable=True)
     facebook: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    linkedin: Mapped[str | None] = mapped_column(String(500), nullable=True)
     youtube: Mapped[str | None] = mapped_column(String(500), nullable=True)
     whatsapp: Mapped[str | None] = mapped_column(String(30), nullable=True)
     map_embed: Mapped[str | None] = mapped_column(Text, nullable=True)

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Testimonials — WE CAN Admin</title>
+  <link rel="icon" type="image/png" href="../assets/images/wecan-log.png" />
   <link rel="stylesheet" href="../assets/css/admin-base.css" />
   <link rel="stylesheet" href="../assets/css/admin-layout.css" />
   <link rel="stylesheet" href="../assets/css/admin-components.css" />
@@ -128,35 +129,68 @@
 <script>
 let allTest = [], editingId = null, selectedStars = 5;
 
-// Star picker
+function toCamel(s) { return s.replace(/([-_][a-z])/ig, p => p.toUpperCase().replace('-', '').replace('_', '')); }
+function toSnake(s) { return s.replace(/[A-Z]/g, l => `_${l.toLowerCase()}`); }
+function transformKeys(obj, transformer) {
+  if (Array.isArray(obj)) return obj.map(v => transformKeys(v, transformer));
+  if (obj !== null && typeof obj === 'object') {
+    return Object.keys(obj).reduce((acc, key) => {
+      acc[transformer(key)] = transformKeys(obj[key], transformer);
+      return acc;
+    }, {});
+  }
+  return obj;
+}
+
 document.querySelectorAll('.star-pick').forEach(star => {
-  star.addEventListener('click', () => { selectedStars = parseInt(star.dataset.val); updateStars(); document.getElementById('testStars').value = selectedStars; });
-  star.addEventListener('mouseenter', () => { const v = parseInt(star.dataset.val); document.querySelectorAll('.star-pick').forEach(s => s.classList.toggle('hover', parseInt(s.dataset.val) <= v)); });
-  star.addEventListener('mouseleave', () => { document.querySelectorAll('.star-pick').forEach(s => s.classList.remove('hover')); });
+  star.addEventListener('click', () => {
+    selectedStars = parseInt(star.dataset.val, 10);
+    updateStars();
+    document.getElementById('testStars').value = selectedStars;
+  });
+  star.addEventListener('mouseenter', () => {
+    const v = parseInt(star.dataset.val, 10);
+    document.querySelectorAll('.star-pick').forEach(s => s.classList.toggle('hover', parseInt(s.dataset.val, 10) <= v));
+  });
+  star.addEventListener('mouseleave', () => {
+    document.querySelectorAll('.star-pick').forEach(s => s.classList.remove('hover'));
+  });
 });
-function updateStars() { document.querySelectorAll('.star-pick').forEach(s => s.classList.toggle('filled', parseInt(s.dataset.val) <= selectedStars)); }
+
+function updateStars() {
+  document.querySelectorAll('.star-pick').forEach(s => {
+    s.classList.toggle('filled', parseInt(s.dataset.val, 10) <= selectedStars);
+  });
+}
 
 async function loadTest() {
-  allTest = await API.getTestimonials();
-  renderGrid(allTest);
+  try {
+    const rawData = await API.getTestimonials();
+    allTest = transformKeys(rawData, toCamel);
+    renderGrid(allTest);
+  } catch (error) {
+    console.error('Failed to load testimonials:', error);
+    showToast('Failed to load testimonials', 'error');
+  }
 }
 
 function renderGrid(data) {
   const grid = document.getElementById('testGrid');
   if (!data.length) {
     grid.innerHTML = `<div class="grid-full"><div class="empty-state"><i data-lucide="message-square-quote"></i><div class="empty-state__title">No testimonials yet</div><button class="btn btn--primary" onclick="openAddModal()"><i data-lucide="plus"></i> Add First Testimonial</button></div></div>`;
-    lucide.createIcons(); return;
+    lucide.createIcons();
+    return;
   }
   grid.innerHTML = data.map(t => `
     <div class="test-card">
       <div class="stars stars--mb">${starsHtml(t.stars)}</div>
-      <div class="test-card__quote">${t.quote}</div>
+      <div class="test-card__quote">${t.quote || ''}</div>
       <div class="test-card__author">
-        <div class="avatar avatar--md avatar--blue">${t.initials || t.name.slice(0,2)}</div>
-        <div><div class="test-author-name">${t.name}</div><div class="test-author-role">${t.role}</div></div>
+        <div class="avatar avatar--md avatar--blue">${(t.initials || (t.name || '').slice(0,2)).toUpperCase()}</div>
+        <div><div class="test-author-name">${t.name || ''}</div><div class="test-author-role">${t.role || ''}</div></div>
       </div>
       <div class="test-card__footer">
-        ${statusBadge(t.active ? 'active' : 'inactive')}
+        ${statusBadge(t.isActive ? 'active' : 'inactive')}
         <div class="btn-group">
           <button class="btn btn--ghost btn--sm btn--icon" onclick="editTest(${t.id})"><i data-lucide="pencil"></i></button>
           <button class="btn btn--ghost-red btn--sm btn--icon" onclick="deleteTest(${t.id})"><i data-lucide="trash-2"></i></button>
@@ -167,60 +201,89 @@ function renderGrid(data) {
 }
 
 function openAddModal() {
-  editingId = null; selectedStars = 5;
+  editingId = null;
+  selectedStars = 5;
   document.getElementById('testModalTitle').textContent = 'Add Testimonial';
-  ['testQuote','testName','testRole','testInitials'].forEach(id => document.getElementById(id).value = '');
+  ['testQuote', 'testName', 'testRole', 'testInitials'].forEach(id => { document.getElementById(id).value = ''; });
   document.getElementById('testActive').checked = true;
-  updateStars(); openModal('testModal');
+  updateStars();
+  openModal('testModal');
 }
 
 function editTest(id) {
   const t = allTest.find(x => x.id === id);
   if (!t) return;
-  editingId = id; selectedStars = t.stars || 5;
+  editingId = id;
+  selectedStars = t.stars || 5;
   document.getElementById('testModalTitle').textContent = 'Edit Testimonial';
-  document.getElementById('testQuote').value = t.quote;
-  document.getElementById('testName').value = t.name;
+  document.getElementById('testQuote').value = t.quote || '';
+  document.getElementById('testName').value = t.name || '';
   document.getElementById('testRole').value = t.role || '';
   document.getElementById('testInitials').value = t.initials || '';
-  document.getElementById('testActive').checked = t.active;
-  updateStars(); openModal('testModal');
+  document.getElementById('testActive').checked = !!t.isActive;
+  updateStars();
+  openModal('testModal');
 }
 
 async function deleteTest(id) {
   const t = allTest.find(x => x.id === id);
+  if (!t) return;
   confirmAction(`Delete testimonial from "${t.name}"?`, async () => {
-    await API.deleteTestimonial(id);
-    allTest = allTest.filter(x => x.id !== id);
-    renderGrid(allTest);
-    showToast('Testimonial deleted', 'success');
+    try {
+      await API.deleteTestimonial(id);
+      allTest = allTest.filter(x => x.id !== id);
+      renderGrid(allTest);
+      showToast('Testimonial deleted', 'success');
+    } catch (error) {
+      console.error('Delete testimonial failed:', error);
+      showToast('Failed to delete testimonial', 'error');
+    }
   });
 }
 
 document.getElementById('saveTestBtn').addEventListener('click', async () => {
   const quote = document.getElementById('testQuote').value.trim();
-  const name  = document.getElementById('testName').value.trim();
-  if (!quote || !name) { showToast('Quote and name are required', 'error'); return; }
-  const data = {
-    quote, name, role: document.getElementById('testRole').value,
-    initials: document.getElementById('testInitials').value || name.slice(0,2).toUpperCase(),
-    stars: selectedStars, active: document.getElementById('testActive').checked
-  };
-  if (editingId) {
-    await API.updateTestimonial(editingId, data);
-    const idx = allTest.findIndex(x => x.id === editingId);
-    if (idx > -1) allTest[idx] = { ...allTest[idx], ...data };
-    showToast('Testimonial updated!', 'success');
-  } else {
-    const nt = await API.createTestimonial(data);
-    allTest.push(nt);
-    showToast('Testimonial added!', 'success');
+  const name = document.getElementById('testName').value.trim();
+  if (!quote || !name) {
+    showToast('Quote and name are required', 'error');
+    return;
   }
-  closeModal('testModal'); renderGrid(allTest);
+
+  const frontendData = {
+    quote,
+    name,
+    role: document.getElementById('testRole').value.trim() || null,
+    initials: document.getElementById('testInitials').value.trim() || name.slice(0,2).toUpperCase(),
+    stars: selectedStars,
+    isActive: document.getElementById('testActive').checked,
+    sortOrder: editingId ? (allTest.find(x => x.id === editingId)?.sortOrder || 0) : allTest.length,
+  };
+  const data = transformKeys(frontendData, toSnake);
+
+  try {
+    if (editingId) {
+      const updated = await API.updateTestimonial(editingId, data);
+      const updatedCamel = transformKeys(updated, toCamel);
+      const idx = allTest.findIndex(x => x.id === editingId);
+      if (idx > -1) allTest[idx] = updatedCamel;
+      showToast('Testimonial updated!', 'success');
+    } else {
+      const created = await API.createTestimonial(data);
+      allTest.push(transformKeys(created, toCamel));
+      showToast('Testimonial added!', 'success');
+    }
+    closeModal('testModal');
+    renderGrid(allTest);
+  } catch (error) {
+    console.error('Save testimonial failed:', error);
+    showToast('Failed to save testimonial', 'error');
+  }
 });
 
 document.getElementById('addTestBtn').addEventListener('click', openAddModal);
+updateStars();
 loadTest();
 </script>
 </body>
 </html>
+

@@ -1,35 +1,123 @@
 /* ============================================================
-   ADMIN.JS — Sidebar · Toast · Modal · Global Helpers
-   WE CAN Institute — Admin Dashboard
+   ADMIN.JS - Sidebar � Toast � Modal � Global Helpers
+   WE CAN Institute - Admin Dashboard
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
+  const SIDEBAR_COLLAPSED_KEY = 'wecan_sidebar_collapsed';
+  const onLoginPage = window.location.pathname.endsWith('/login.html');
+  const token = localStorage.getItem('wecan_admin_token');
+  const loginPath = window.location.pathname.includes('/pages/') ? '../login.html' : 'login.html';
+  const dashboardPath = window.location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
 
-  /* ── LUCIDE ICONS ── */
+  if (!onLoginPage && !token) {
+    window.location.href = loginPath;
+    return;
+  }
+  if (onLoginPage && token) {
+    window.location.href = dashboardPath;
+    return;
+  }
+
+  const applyRoleUI = (user) => {
+    if (!user || onLoginPage) return;
+    const isSuperAdmin = user.role === 'super_admin';
+    const nav = document.querySelector('.sidebar__nav');
+    const onPagesDir = window.location.pathname.includes('/pages/');
+    const usersHref = onPagesDir ? 'admin-users.html' : 'pages/admin-users.html';
+
+    if (nav && isSuperAdmin && !nav.querySelector('[data-super-admin-link]')) {
+      const settingsLink = nav.querySelector('.sidebar__link[href$="settings.html"]');
+      const sectionLabel = document.createElement('span');
+      sectionLabel.className = 'sidebar__section-label';
+      sectionLabel.textContent = 'Super Admin';
+      sectionLabel.setAttribute('data-super-admin-link', 'true');
+
+      const link = document.createElement('a');
+      link.href = usersHref;
+      link.className = 'sidebar__link';
+      link.setAttribute('data-super-admin-link', 'true');
+      link.innerHTML = '<i data-lucide="shield-check"></i> Admin Users';
+
+      if (settingsLink) {
+        nav.insertBefore(sectionLabel, settingsLink);
+        nav.insertBefore(link, settingsLink);
+      } else {
+        nav.appendChild(sectionLabel);
+        nav.appendChild(link);
+      }
+      if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [link] });
+    }
+
+    const requiresSuperAdmin = document.body?.dataset?.requiresSuperAdmin === 'true';
+    if (requiresSuperAdmin && !isSuperAdmin) {
+      showToast('Super admin access required', 'error');
+      setTimeout(() => { window.location.href = dashboardPath; }, 300);
+    }
+  };
+
   if (typeof lucide !== 'undefined') lucide.createIcons();
 
-  /* ── SIDEBAR TOGGLE (mobile) ── */
-  const sidebar  = document.getElementById('sidebar');
-  const hamburger= document.getElementById('sidebarToggle');
-  const overlay  = document.getElementById('sidebarOverlay');
-
+  const appShell = document.querySelector('.admin-app');
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.getElementById('sidebarToggle');
+  const overlay = document.getElementById('sidebarOverlay');
+  const isDesktop = () => window.matchMedia('(min-width: 901px)').matches;
+  if (appShell && isDesktop() && localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === '1') {
+    appShell.classList.add('sidebar-collapsed');
+  }
   hamburger?.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
+    if (isDesktop()) {
+      appShell?.classList.toggle('sidebar-collapsed');
+      if (appShell?.classList.contains('sidebar-collapsed')) {
+        localStorage.setItem(SIDEBAR_COLLAPSED_KEY, '1');
+      } else {
+        localStorage.removeItem(SIDEBAR_COLLAPSED_KEY);
+      }
+      return;
+    }
+    sidebar?.classList.toggle('open');
     overlay?.classList.toggle('show');
   });
   overlay?.addEventListener('click', () => {
-    sidebar.classList.remove('open');
+    sidebar?.classList.remove('open');
     overlay.classList.remove('show');
   });
+  window.addEventListener('resize', () => {
+    if (isDesktop()) {
+      sidebar?.classList.remove('open');
+      overlay?.classList.remove('show');
+    }
+  });
 
-  /* ── ACTIVE NAV LINK ── */
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.sidebar__link').forEach(link => {
     const href = link.getAttribute('href')?.split('/').pop();
     if (href === currentPage) link.classList.add('active');
   });
 
-  /* ── MODAL HELPERS ── */
+  const logoutHandler = (e) => {
+    e.preventDefault();
+    localStorage.removeItem('wecan_admin_token');
+    localStorage.removeItem('wecan_admin_user');
+    window.location.href = loginPath;
+  };
+
+  document.querySelectorAll('[data-admin-logout]').forEach(btn => btn.addEventListener('click', logoutHandler));
+
+  if (!onLoginPage) {
+    const topbarRight = document.querySelector('.topbar__right');
+    if (topbarRight && !topbarRight.querySelector('[data-admin-logout]')) {
+      const logoutBtn = document.createElement('button');
+      logoutBtn.className = 'btn btn--ghost btn--sm';
+      logoutBtn.setAttribute('data-admin-logout', 'true');
+      logoutBtn.innerHTML = '<i data-lucide="log-out"></i> Logout';
+      topbarRight.appendChild(logoutBtn);
+      logoutBtn.addEventListener('click', logoutHandler);
+      if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [logoutBtn] });
+    }
+  }
+
   window.openModal = (id) => {
     const el = document.getElementById(id);
     if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; }
@@ -39,23 +127,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) { el.classList.remove('open'); document.body.style.overflow = ''; }
   };
 
-  // Close modal on overlay click
-  document.querySelectorAll('.modal-overlay').forEach(overlay => {
-    overlay.addEventListener('click', e => {
-      if (e.target === overlay) closeModal(overlay.id);
+  document.querySelectorAll('.modal-overlay').forEach(modalOverlay => {
+    modalOverlay.addEventListener('click', e => {
+      if (e.target === modalOverlay) closeModal(modalOverlay.id);
     });
   });
 
-  // Close modal on Escape
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
-      document.querySelectorAll('.modal-overlay.open').forEach(m => {
-        closeModal(m.id);
-      });
+      document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
     }
   });
 
-  /* ── TOAST SYSTEM ── */
   window.showToast = (message, type = 'success', duration = 3500) => {
     const container = document.getElementById('toastContainer');
     if (!container) return;
@@ -63,17 +146,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const icons = { success: 'check-circle', error: 'x-circle', warning: 'alert-triangle', info: 'info' };
     const toast = document.createElement('div');
     toast.className = `toast toast--${type}`;
-    toast.innerHTML = `
-      <i data-lucide="${icons[type] || 'info'}" style="width:16px;height:16px;flex-shrink:0;"></i>
-      <span>${message}</span>
-    `;
+    toast.innerHTML = `<i data-lucide="${icons[type] || 'info'}" style="width:16px;height:16px;flex-shrink:0;"></i><span>${message}</span>`;
 
     container.appendChild(toast);
     if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [toast] });
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => toast.classList.add('show'));
-    });
+    requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
 
     setTimeout(() => {
       toast.classList.remove('show');
@@ -81,13 +159,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }, duration);
   };
 
-  /* ── CONFIRM DIALOG ── */
   window.confirmAction = (message, onConfirm) => {
-    const overlay = document.getElementById('confirmModal');
-    const msgEl   = document.getElementById('confirmMessage');
+    const confirmOverlay = document.getElementById('confirmModal');
+    const msgEl = document.getElementById('confirmMessage');
     const confirmBtn = document.getElementById('confirmBtn');
 
-    if (!overlay) {
+    if (!confirmOverlay) {
       if (confirm(message)) onConfirm();
       return;
     }
@@ -103,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
     confirmBtn.addEventListener('click', handler);
   };
 
-  /* ── TAB SYSTEM ── */
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const group = btn.dataset.tabGroup;
@@ -118,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* ── DRAG & DROP UPLOAD ── */
   document.querySelectorAll('.upload-area').forEach(area => {
     area.addEventListener('dragover', e => { e.preventDefault(); area.classList.add('drag-over'); });
     area.addEventListener('dragleave', () => area.classList.remove('drag-over'));
@@ -135,55 +210,69 @@ document.addEventListener('DOMContentLoaded', () => {
     area.addEventListener('click', () => area.querySelector('input[type="file"]')?.click());
   });
 
+  if (!onLoginPage && window.API?.me) {
+    API.me().then(user => applyRoleUI(user)).catch(() => {
+      localStorage.removeItem('wecan_admin_token');
+      localStorage.removeItem('wecan_admin_user');
+      window.location.href = loginPath;
+    });
+  } else {
+    try {
+      const cachedUser = JSON.parse(localStorage.getItem('wecan_admin_user') || 'null');
+      applyRoleUI(cachedUser);
+    } catch (_) {}
+  }
 });
 
-/* ── GLOBAL HELPERS ── */
-
-// Format date
 window.fmtDate = (dateStr) => {
   const d = new Date(dateStr);
-  return d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 };
 
-// Truncate text
 window.truncate = (str, n = 60) => str?.length > n ? str.slice(0, n) + '...' : str;
 
-// Stars HTML
 window.starsHtml = (count, max = 5) => {
-  return Array.from({length: max}, (_, i) =>
-    `<svg class="star ${i < count ? '' : 'star--empty'}" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-    </svg>`
+  return Array.from({ length: max }, (_, i) =>
+    `<svg class="star ${i < count ? '' : 'star--empty'}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`
   ).join('');
 };
 
-// Status badge HTML
 window.statusBadge = (status) => {
   const map = {
-    'new':       ['blue',   'New'],
-    'contacted': ['yellow', 'Contacted'],
-    'enrolled':  ['green',  'Enrolled'],
-    'closed':    ['grey',   'Closed'],
-    'published': ['green',  'Published'],
-    'draft':     ['grey',   'Draft'],
-    'active':    ['green',  'Active'],
-    'inactive':  ['grey',   'Inactive'],
+    new: ['blue', 'New'],
+    contacted: ['yellow', 'Contacted'],
+    enrolled: ['green', 'Enrolled'],
+    closed: ['grey', 'Closed'],
+    published: ['green', 'Published'],
+    draft: ['grey', 'Draft'],
+    active: ['green', 'Active'],
+    inactive: ['grey', 'Inactive'],
   };
   const [color, label] = map[status] || ['grey', status];
   return `<span class="badge badge--${color}">${label}</span>`;
 };
 
-// Level badge
 window.levelBadge = (level) => {
   const map = {
-    'Beginner': 'green', 'Elementary': 'blue',
-    'Intermediate': 'yellow', 'Advanced': 'orange', 'Expert': 'purple'
+    Beginner: 'green', Elementary: 'blue', Intermediate: 'yellow', Advanced: 'orange', Expert: 'purple'
   };
   return `<span class="badge badge--${map[level] || 'grey'}">${level}</span>`;
 };
 
-// Debounce
 window.debounce = (fn, delay = 300) => {
   let t;
   return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
+};
+
+window.resolveAdminMediaUrl = (pathOrUrl) => {
+  if (!pathOrUrl) return '';
+  if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://') || pathOrUrl.startsWith('blob:') || pathOrUrl.startsWith('data:')) {
+    return pathOrUrl;
+  }
+  if (pathOrUrl.startsWith('/media/') || pathOrUrl.startsWith('media/')) {
+    const apiRoot = (typeof BASE_URL === 'string' ? BASE_URL : 'http://localhost:8000/api/v1')
+      .replace(/\/api\/v1\/?$/, '/');
+    return new URL(pathOrUrl, apiRoot).toString();
+  }
+  return pathOrUrl;
 };
