@@ -46,12 +46,12 @@ Based on implementation and verification done so far:
 - [x] Phase 15: Admin enquiry workflow
 - [x] Phase 16: Media strategy
 - [x] Phase 17: Admin authentication
-- [ ] Phase 18: Content cleanup
-- [~] Phase 19: QA and hardening
+- [x] Phase 18: Content cleanup
+- [x] Phase 19: QA and hardening
 - [~] Phase 20: Deployment and documentation
 
 Notes:
-- Final cleanup, broader QA coverage, and deployment polish are still in progress.
+- Deployment polish and operational documentation are the main remaining work.
 
 ## 3) What Was Verified in This Stabilization Pass
 
@@ -67,6 +67,10 @@ Notes:
   - Enquiries
 - Public homepage dynamic content load verified.
 - Public enquiry submission verified.
+- Public homepage fallbacks and empty states tightened:
+  - Demo/enquiry form now has inline validation, loading, and success/error feedback
+  - Blog section no longer shows fake actions and now renders a real empty state when no posts are published
+  - Testimonial/blog sub-layout fallbacks no longer leave stale static content behind
 - Critical bugs fixed:
   - Settings URL save crash (`HttpUrl` DB binding)
   - Gallery modal structure/runtime issue
@@ -156,13 +160,11 @@ Admin now uses login + signed token auth.
 ## 7) Known Remaining Work
 
 Still pending from roadmap:
-- Content cleanup pass
-- QA hardening beyond current backend coverage
 - Deployment polish, backups/logging basics, and production env review
 
 ## 8) Recommended Next Step
 
 Proceed from the current stable baseline with:
-1. Phase 18 content cleanup
-2. Phase 19 UX and API hardening
-3. Phase 20 deployment polish
+1. Phase 20 deployment polish
+2. Production environment review
+3. Backups/logging/documentation cleanup
