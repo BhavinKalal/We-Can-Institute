@@ -44,6 +44,13 @@ Or from the repo root with Docker Compose:
 docker compose up --build
 ```
 
+Production-oriented deployment from repo root:
+
+```powershell
+Copy-Item backend/.env.production.example backend/.env.production
+docker compose -f docker-compose.prod.yml up --build -d
+```
+
 App URLs:
 
 - API root: `http://127.0.0.1:8000/`
@@ -75,6 +82,16 @@ python -m pytest -q
 ```
 
 Current backend test status in this repo: `13 passed`.
+
+## Production Notes
+
+- Frontend and admin can be served behind the bundled Nginx production container in `docker-compose.prod.yml`.
+- In that setup:
+  - `/api/v1/*` stays on the backend container
+  - `/media/*` is proxied to backend media
+  - `/` serves the public site
+  - `/admin/` serves the admin panel
+- Set a strong `SECRET_KEY` and non-default super admin credentials before going live.
 
 ## Seed Mock Admin Data
 

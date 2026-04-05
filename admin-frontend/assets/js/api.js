@@ -4,12 +4,22 @@
    
    HOW TO SWITCH TO REAL BACKEND:
    1. Set USE_MOCK = false
-   2. Set BASE_URL to your FastAPI server URL
+   2. Optionally set window.WECAN_API_BASE_URL before this script loads
    3. All functions will automatically use real API calls
    ============================================================ */
 
 const USE_MOCK = false;
-const BASE_URL = 'http://localhost:8000/api/v1';
+function resolveAdminApiBaseUrl() {
+  const explicit = window.WECAN_API_BASE_URL || document.documentElement?.dataset?.apiBaseUrl;
+  if (explicit) return explicit.replace(/\/$/, '');
+
+  const { protocol, hostname, origin } = window.location;
+  const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
+  if (isLocal) return `${protocol}//localhost:8000/api/v1`;
+  return `${origin}/api/v1`;
+}
+
+const BASE_URL = resolveAdminApiBaseUrl();
 const ADMIN_TOKEN_KEY = 'wecan_admin_token';
 const ADMIN_USER_KEY = 'wecan_admin_user';
 

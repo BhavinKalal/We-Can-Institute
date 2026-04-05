@@ -157,14 +157,61 @@ Admin now uses login + signed token auth.
 - Paths are persisted in DB and reused by frontend/admin.
 - `backend/media/` is intentionally git-ignored for local/dev uploads.
 
-## 7) Known Remaining Work
+## 7) Phase 20 Deployment
+
+The repo now includes a production-oriented Docker deployment path:
+
+- `docker-compose.prod.yml`
+- `deploy/web/Dockerfile`
+- `deploy/nginx/default.conf`
+- `backend/.env.production.example`
+
+This production setup serves:
+
+- `/` -> public website
+- `/admin/` -> admin panel
+- `/api/v1/*` -> backend API
+- `/media/*` -> uploaded media
+
+Because frontend, admin, API, and media are served behind one origin, browser CORS issues are minimized for production.
+
+### Production Setup
+
+1. Create a production backend environment file:
+
+```powershell
+Copy-Item backend/.env.production.example backend/.env.production
+```
+
+2. Edit `backend/.env.production` and set:
+- `SECRET_KEY`
+- `SUPER_ADMIN_EMAIL`
+- `SUPER_ADMIN_PASSWORD`
+- `BACKEND_CORS_ORIGINS`
+- any domain-specific values you need
+
+3. Start the production stack:
+
+```powershell
+docker compose -f docker-compose.prod.yml up --build -d
+```
+
+4. Open:
+- public site: `http://your-server/`
+- admin: `http://your-server/admin/`
+- API health: `http://your-server/api/v1/health`
+
+### Notes
+
+- Production compose uses persistent local mounts for:
+  - `backend/data/`
+  - `backend/media/`
+- SQLite is still used by default. That is acceptable for a small single-server deployment, but if you expect higher write concurrency or multi-instance hosting, move to PostgreSQL later.
+- For HTTPS and custom domains, place this stack behind your server/domain setup or extend the Nginx layer for TLS termination.
+
+## 8) Known Remaining Work
 
 Still pending from roadmap:
-- Deployment polish, backups/logging basics, and production env review
-
-## 8) Recommended Next Step
-
-Proceed from the current stable baseline with:
-1. Phase 20 deployment polish
-2. Production environment review
-3. Backups/logging/documentation cleanup
+- backups/logging basics
+- final production environment review on the target host
+- actual live deployment/domain/HTTPS cutover

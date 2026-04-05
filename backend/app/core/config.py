@@ -50,6 +50,21 @@ class Settings(BaseSettings):
             return False
         return False
 
+    @field_validator("backend_cors_origins", mode="before")
+    @classmethod
+    def normalize_cors_origins(cls, value):
+        if value is None or value == "":
+            return DEFAULT_CORS_ORIGINS.copy()
+        if isinstance(value, str):
+            text = value.strip()
+            if not text:
+                return []
+            if text.startswith("["):
+                import json
+                return json.loads(text)
+            return [item.strip() for item in text.split(",") if item.strip()]
+        return value
+
     model_config = SettingsConfigDict(
         env_file=str(BASE_DIR / ".env"),
         env_file_encoding="utf-8",
