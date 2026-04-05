@@ -313,8 +313,8 @@ const API = {
       body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
     }),
 
-  getAdminUsers: () => apiFetch('/admin/users'),
-  createAdminUser: (data) => apiFetch('/admin/users', { method: 'POST', body: JSON.stringify(data) }),
+  getAdminUsers: () => apiFetch('/admin/users/'),
+  createAdminUser: (data) => apiFetch('/admin/users/', { method: 'POST', body: JSON.stringify(data) }),
   updateAdminUser: (id, data) => apiFetch(`/admin/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteAdminUser: (id) => apiFetch(`/admin/users/${id}`, { method: 'DELETE' }),
 
