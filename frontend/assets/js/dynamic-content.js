@@ -157,7 +157,13 @@ function populateTestimonials(testimonials) {
     if (heroRole) heroRole.textContent = featured.role || '';
 
     const grid = section.querySelector('.testimonials__grid');
-    if (!grid || !rest.length) return;
+    if (!grid) return;
+    if (!rest.length) {
+        grid.innerHTML = '';
+        grid.style.display = 'none';
+        return;
+    }
+    grid.style.display = '';
 
     grid.innerHTML = rest.map((t) => `
       <article class="testimonial-card" role="listitem">
@@ -663,6 +669,8 @@ function populateBlog(posts) {
 
     const featured = published.find(p => p.featured) || published[0];
     const rest = published.filter(p => p.id !== featured.id);
+    const sidebarPosts = rest.slice(0, 3);
+    const gridPosts = rest.slice(3, 6);
 
     if (layout) {
         layout.innerHTML = `
@@ -691,7 +699,7 @@ function populateBlog(posts) {
 
     const sidebar = section.querySelector('.blog__sidebar');
     if (sidebar) {
-        sidebar.innerHTML = rest.slice(0, 3).map(p => `
+        sidebar.innerHTML = sidebarPosts.map(p => `
           <a href="#blog" class="blog-card-sm" aria-label="Blog post" onclick="openBlogLightboxById('${p.id}')">
             <div class="blog-card-sm__cover">
               ${p.cover_image_url ? `<img src="${resolveMediaUrl(p.cover_image_url)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" />` : '<div class="blog-card-sm__cover-placeholder blog-cover--indigo"></div>'}
@@ -708,11 +716,12 @@ function populateBlog(posts) {
             </div>
           </a>
         `).join('');
+        sidebar.style.display = sidebarPosts.length ? '' : 'none';
     }
 
     const gridBottom = section.querySelector('.blog__grid-bottom');
     if (gridBottom) {
-        gridBottom.innerHTML = rest.slice(3, 6).map(p => `
+        gridBottom.innerHTML = gridPosts.map(p => `
           <a href="#blog" class="blog-card-grid" aria-label="Blog post" onclick="openBlogLightboxById('${p.id}')">
             <div class="blog-card-grid__cover">
               ${p.cover_image_url ? `<img src="${resolveMediaUrl(p.cover_image_url)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" />` : '<div class="blog-card-grid__cover-placeholder blog-cover--navy"></div>'}
@@ -728,6 +737,7 @@ function populateBlog(posts) {
             </div>
           </a>
         `).join('');
+        gridBottom.style.display = gridPosts.length ? '' : 'none';
     }
 
     if (viewNote) {
