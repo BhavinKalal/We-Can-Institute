@@ -637,14 +637,39 @@ function populateBlog(posts) {
     if (!section) return;
     const published = posts.filter(p => p.status === 'published');
     setBlogPostCache(published);
+    const layout = section.querySelector('.blog__layout');
+    const bottomGrid = section.querySelector('.blog__grid-bottom');
+    const viewNote = section.querySelector('.blog__view-note');
     if (!published.length) {
-        section.style.display = 'none';
+        section.style.display = '';
+        if (layout) {
+            layout.innerHTML = `
+              <div class="empty-state">
+                <div class="empty-state__title">Fresh articles will appear here soon.</div>
+              </div>
+            `;
+        }
+        if (bottomGrid) bottomGrid.innerHTML = '';
+        if (viewNote) {
+            viewNote.innerHTML = `
+              <p class="blog__view-note-text">
+                The blog section is connected and ready. New posts will show up here as soon as they are published.
+              </p>
+            `;
+        }
         return;
     }
     section.style.display = '';
 
     const featured = published.find(p => p.featured) || published[0];
     const rest = published.filter(p => p.id !== featured.id);
+
+    if (layout) {
+        layout.innerHTML = `
+          <a href="#blog" class="blog-featured" aria-label="Featured blog post"></a>
+          <div class="blog__sidebar"></div>
+        `;
+    }
 
         const featuredEl = section.querySelector('.blog-featured');
     if (featuredEl) {
@@ -703,6 +728,14 @@ function populateBlog(posts) {
             </div>
           </a>
         `).join('');
+    }
+
+    if (viewNote) {
+        viewNote.innerHTML = `
+          <p class="blog__view-note-text">
+            New articles appear here automatically as they are published.
+          </p>
+        `;
     }
 }
 
