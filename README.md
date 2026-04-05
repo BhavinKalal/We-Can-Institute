@@ -212,6 +212,23 @@ docker compose -f docker-compose.prod.yml up --build -d
 ## 8) Known Remaining Work
 
 Still pending from roadmap:
-- backups/logging basics
 - final production environment review on the target host
 - actual live deployment/domain/HTTPS cutover
+
+## 9) Backups and Logs
+
+Basic operational helpers are now included:
+
+- backup script: `deploy/scripts/backup_data.ps1`
+- deployment checklist: `deploy/DEPLOYMENT_CHECKLIST.md`
+- Docker log rotation is enabled in `docker-compose.prod.yml`
+
+Create a backup archive manually with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy/scripts/backup_data.ps1
+```
+
+This creates a timestamped zip under `deploy/backups/` containing:
+- `backend/data/`
+- `backend/media/`

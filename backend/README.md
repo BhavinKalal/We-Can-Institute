@@ -51,6 +51,12 @@ Copy-Item backend/.env.production.example backend/.env.production
 docker compose -f docker-compose.prod.yml up --build -d
 ```
 
+Create a manual backup from repo root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy/scripts/backup_data.ps1
+```
+
 App URLs:
 
 - API root: `http://127.0.0.1:8000/`
@@ -92,6 +98,7 @@ Current backend test status in this repo: `13 passed`.
   - `/` serves the public site
   - `/admin/` serves the admin panel
 - Set a strong `SECRET_KEY` and non-default super admin credentials before going live.
+- Use `deploy/DEPLOYMENT_CHECKLIST.md` as the go-live runbook.
 
 ## Seed Mock Admin Data
 
