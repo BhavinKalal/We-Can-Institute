@@ -322,8 +322,8 @@ const API = {
   getStats:        () => USE_MOCK ? Promise.resolve(MOCK.stats)        : apiFetch('/stats'),
 
   /* Hero */
-  getHero:         () => USE_MOCK ? Promise.resolve(MOCK.hero)         : apiFetch('/admin/hero'),
-  updateHero: (data) => USE_MOCK ? Promise.resolve({...MOCK.hero,...data}) : apiFetch('/admin/hero', {method:'PUT', body:JSON.stringify(data)}),
+  getHero:         () => USE_MOCK ? Promise.resolve(MOCK.hero)         : apiFetch('/admin/hero/'),
+  updateHero: (data) => USE_MOCK ? Promise.resolve({...MOCK.hero,...data}) : apiFetch('/admin/hero/', {method:'PUT', body:JSON.stringify(data)}),
   uploadHeroMedia: (file, kind) => {
     if (USE_MOCK) {
       const fallback = kind === 'hero_video' ? 'assets/videos/hero-section-video.mp4' : 'assets/images/hero/hero.png';
@@ -359,39 +359,39 @@ const API = {
   },
 
   /* Batches */
-  getBatches:      ()     => USE_MOCK ? Promise.resolve([...MOCK.batches])          : apiFetch('/admin/batches'),
-  createBatch: (data)     => USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/batches', {method:'POST',body:JSON.stringify(data)}),
+  getBatches:      ()     => USE_MOCK ? Promise.resolve([...MOCK.batches])          : apiFetch('/admin/batches/'),
+  createBatch: (data)     => USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/batches/', {method:'POST',body:JSON.stringify(data)}),
   updateBatch: (id, data) => USE_MOCK ? Promise.resolve({id,...data})               : apiFetch(`/admin/batches/${id}`, {method:'PUT',body:JSON.stringify(data)}),
   deleteBatch: (id)       => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/admin/batches/${id}`, {method:'DELETE'}),
 
   /* Faculty */
-  getFaculty:      ()     => USE_MOCK ? Promise.resolve([...MOCK.faculty])          : apiFetch('/admin/faculty'),
-  createFaculty: (data)   => USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/faculty', {method:'POST',body:JSON.stringify(data)}),
+  getFaculty:      ()     => USE_MOCK ? Promise.resolve([...MOCK.faculty])          : apiFetch('/admin/faculty/'),
+  createFaculty: (data)   => USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/faculty/', {method:'POST',body:JSON.stringify(data)}),
   updateFaculty: (id,data)=> USE_MOCK ? Promise.resolve({id,...data})               : apiFetch(`/admin/faculty/${id}`, {method:'PUT',body:JSON.stringify(data)}),
   deleteFaculty: (id)     => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/admin/faculty/${id}`, {method:'DELETE'}),
 
   /* Gallery */
-  getGallery:      ()     => USE_MOCK ? Promise.resolve([...MOCK.gallery])          : apiFetch('/admin/gallery'),
-  createGalleryItem:(data)=> USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/gallery', {method:'POST',body:JSON.stringify(data)}),
+  getGallery:      ()     => USE_MOCK ? Promise.resolve([...MOCK.gallery])          : apiFetch('/admin/gallery/'),
+  createGalleryItem:(data)=> USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/gallery/', {method:'POST',body:JSON.stringify(data)}),
   updateGalleryItem:(id,data)=> USE_MOCK ? Promise.resolve({id,...data})            : apiFetch(`/admin/gallery/${id}`, {method:'PUT',body:JSON.stringify(data)}),
   deleteGalleryItem:(id)  => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/admin/gallery/${id}`, {method:'DELETE'}),
 
   /* Blog */
-  getPosts:        ()     => USE_MOCK ? Promise.resolve([...MOCK.blog])             : apiFetch('/admin/blog'),
-  createPost: (data)      => USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/blog', {method:'POST',body:JSON.stringify(data)}),
+  getPosts:        ()     => USE_MOCK ? Promise.resolve([...MOCK.blog])             : apiFetch('/admin/blog/'),
+  createPost: (data)      => USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/blog/', {method:'POST',body:JSON.stringify(data)}),
   updatePost: (id,data)   => USE_MOCK ? Promise.resolve({id,...data})               : apiFetch(`/admin/blog/${id}`, {method:'PUT',body:JSON.stringify(data)}),
   deletePost: (id)        => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/admin/blog/${id}`, {method:'DELETE'}),
 
   /* Testimonials */
-  getTestimonials: ()     => USE_MOCK ? Promise.resolve([...MOCK.testimonials])     : apiFetch('/admin/testimonials'),
-  createTestimonial:(data)=> USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/testimonials', {method:'POST',body:JSON.stringify(data)}),
+  getTestimonials: ()     => USE_MOCK ? Promise.resolve([...MOCK.testimonials])     : apiFetch('/admin/testimonials/'),
+  createTestimonial:(data)=> USE_MOCK ? Promise.resolve({id:Date.now(),...data})    : apiFetch('/admin/testimonials/', {method:'POST',body:JSON.stringify(data)}),
   updateTestimonial:(id,data)=>USE_MOCK? Promise.resolve({id,...data})              : apiFetch(`/admin/testimonials/${id}`, {method:'PUT',body:JSON.stringify(data)}),
   deleteTestimonial:(id)  => USE_MOCK ? Promise.resolve({success:true})             : apiFetch(`/admin/testimonials/${id}`, {method:'DELETE'}),
 
   /* Enquiries */
   getEnquiries: async () => {
     if (USE_MOCK) return Promise.resolve([...MOCK.enquiries]);
-    const rows = await apiFetch('/admin/enquiries');
+    const rows = await apiFetch('/admin/enquiries/');
     return rows.map(mapEnquiryFromBackend);
   },
   updateEnquiry: async (id, data) => {
@@ -420,6 +420,6 @@ const API = {
   },
 
   /* Settings */
-  getSettings:     ()     => USE_MOCK ? Promise.resolve({...MOCK.settings})         : apiFetch('/admin/settings'),
-  updateSettings: (data)  => USE_MOCK ? Promise.resolve({...MOCK.settings,...data}) : apiFetch('/admin/settings', {method:'PUT',body:JSON.stringify(data)}),
+  getSettings:     ()     => USE_MOCK ? Promise.resolve({...MOCK.settings})         : apiFetch('/admin/settings/'),
+  updateSettings: (data)  => USE_MOCK ? Promise.resolve({...MOCK.settings,...data}) : apiFetch('/admin/settings/', {method:'PUT',body:JSON.stringify(data)}),
 };
