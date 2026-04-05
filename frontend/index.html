@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -670,14 +670,10 @@
       <!-- Bottom 3-column grid -->
       <div class="blog__grid-bottom reveal reveal-delay-1"></div>
 
-      <!-- View all -->
-      <div class="blog__view-all reveal">
-        <a href="#blog" class="btn btn--outline btn--inline-flex">
-          View All Articles
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="btn--icon-sm">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-          </svg>
-        </a>
+      <div class="blog__view-note reveal">
+        <p class="blog__view-note-text">
+          New articles appear here automatically as they are published from the admin panel.
+        </p>
       </div>
 
     </div>
@@ -704,7 +700,7 @@
         </p>
 
         <!-- Mini enquiry form -->
-        <form id="demoForm" class="cta-form reveal reveal-delay-1" aria-label="Book a demo form">
+        <form id="demoForm" class="cta-form reveal reveal-delay-1" aria-label="Book a demo form" novalidate>
           <div class="cta-form__full">
             <input type="text" placeholder="Your Full Name" required class="cta-form__input" />
           </div>
@@ -718,12 +714,13 @@
             <option value="intermediate">Intermediate</option>
           </select>
           <div class="cta-form__full">
-            <button type="submit" class="btn btn--primary btn--hero btn--full">
+            <button type="submit" class="btn btn--primary btn--hero btn--full" id="demoSubmitBtn">
               <span class="btn__icon" aria-hidden="true"><i data-lucide="target"></i></span>
               Book My Free Demo Class
             </button>
           </div>
         </form>
+        <p class="cta-form__feedback" id="demoFormStatus" role="status" aria-live="polite"></p>
 
         <p class="cta-section__note">
           * Free session &nbsp; | &nbsp; * No credit card &nbsp; | &nbsp; * We'll call to confirm

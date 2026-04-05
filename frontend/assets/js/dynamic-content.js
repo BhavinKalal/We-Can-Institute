@@ -648,7 +648,7 @@ function populateBlog(posts) {
 
         const featuredEl = section.querySelector('.blog-featured');
     if (featuredEl) {
-        featuredEl.setAttribute('href', 'javascript:void(0)');
+        featuredEl.setAttribute('href', '#blog');
         featuredEl.setAttribute('onclick', `openBlogLightboxById("${featured.id}")`);
         const cover = featured.cover_image_url
             ? `<img src="${resolveMediaUrl(featured.cover_image_url)}" alt="${featured.title}" style="width:100%;height:100%;object-fit:cover;" />`
@@ -667,7 +667,7 @@ function populateBlog(posts) {
     const sidebar = section.querySelector('.blog__sidebar');
     if (sidebar) {
         sidebar.innerHTML = rest.slice(0, 3).map(p => `
-          <a href="javascript:void(0)" class="blog-card-sm" aria-label="Blog post" onclick="openBlogLightboxById('${p.id}')">
+          <a href="#blog" class="blog-card-sm" aria-label="Blog post" onclick="openBlogLightboxById('${p.id}')">
             <div class="blog-card-sm__cover">
               ${p.cover_image_url ? `<img src="${resolveMediaUrl(p.cover_image_url)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" />` : '<div class="blog-card-sm__cover-placeholder blog-cover--indigo"></div>'}
             </div>
@@ -688,7 +688,7 @@ function populateBlog(posts) {
     const gridBottom = section.querySelector('.blog__grid-bottom');
     if (gridBottom) {
         gridBottom.innerHTML = rest.slice(3, 6).map(p => `
-          <a href="javascript:void(0)" class="blog-card-grid" aria-label="Blog post" onclick="openBlogLightboxById('${p.id}')">
+          <a href="#blog" class="blog-card-grid" aria-label="Blog post" onclick="openBlogLightboxById('${p.id}')">
             <div class="blog-card-grid__cover">
               ${p.cover_image_url ? `<img src="${resolveMediaUrl(p.cover_image_url)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" />` : '<div class="blog-card-grid__cover-placeholder blog-cover--navy"></div>'}
             </div>
