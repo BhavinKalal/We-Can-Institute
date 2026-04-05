@@ -4,12 +4,22 @@
    
    HOW TO SWITCH TO REAL BACKEND:
    1. Set USE_MOCK = false
-   2. Set BASE_URL to your FastAPI server URL
+   2. Optionally set window.WECAN_API_BASE_URL before this script loads
    3. All functions will automatically use real API calls
    ============================================================ */
 
 const USE_MOCK = false;
-const BASE_URL = 'http://localhost:8000/api/v1';
+function resolveAdminApiBaseUrl() {
+  const explicit = window.WECAN_API_BASE_URL || document.documentElement?.dataset?.apiBaseUrl;
+  if (explicit) return explicit.replace(/\/$/, '');
+
+  const { protocol, hostname, origin } = window.location;
+  const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
+  if (isLocal) return `${protocol}//localhost:8000/api/v1`;
+  return `${origin}/api/v1`;
+}
+
+const BASE_URL = resolveAdminApiBaseUrl();
 const ADMIN_TOKEN_KEY = 'wecan_admin_token';
 const ADMIN_USER_KEY = 'wecan_admin_user';
 
@@ -102,7 +112,7 @@ const MOCK = {
     { id: 2, category: 'grand-finale',  caption: 'Grand Finale 2025', mediaType: 'image', url: '', date: '2025-12-20' },
     { id: 3, category: 'awards',        caption: 'Best Speaker Award', mediaType: 'image', url: '', date: '2025-12-20' },
     { id: 4, category: 'students',      caption: 'Batch Graduation', mediaType: 'image', url: '', date: '2026-01-15' },
-    { id: 5, category: 'videos',        caption: 'Confidence Challenge', mediaType: 'video', url: '', date: '2026-02-01' },
+    { id: 5, category: 'video',         caption: 'Confidence Challenge', mediaType: 'video', url: '', date: '2026-02-01' },
     { id: 6, category: 'activities',    caption: 'Role Play Session', mediaType: 'image', url: '', date: '2026-03-01' },
   ],
 
@@ -139,10 +149,10 @@ const MOCK = {
     email: 'hello@wecaninstitute.com',
     address: '12, Commerce House, CG Road, Ahmedabad, Gujarat 380009',
     timings: 'Mon-Sat: 8:00 AM - 8:00 PM',
-    instagram: 'https://instagram.com/wecaninstitute',
-    facebook: 'https://facebook.com/wecaninstitute',
-    linkedin: 'https://linkedin.com/company/wecaninstitute',
-    youtube: 'https://youtube.com/wecaninstitute',
+    instagram: '',
+    facebook: '',
+    linkedin: '',
+    youtube: '',
     whatsapp: '+919876543210',
     mapEmbed: '',
     metaTitle: 'WE CAN Institute of English — Spoken English & Public Speaking, Ahmedabad',

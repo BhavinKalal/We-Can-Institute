@@ -31,7 +31,7 @@ def test_blog_rejects_too_long_excerpt():
     with pytest.raises(ValidationError):
         BlogPostCreate(
             title="Valid Blog Title",
-            excerpt="x" * 351,
+            excerpt=" ".join(["word"] * 251),
             content="Valid content",
             category="Tips & Tricks",
             author="Author",
@@ -52,6 +52,22 @@ def test_blog_rejects_invalid_read_time():
             category="Tips & Tricks",
             author="Author",
             read_time="five minutes",
+            status="draft",
+            featured=False,
+            sort_order=0,
+            is_active=True,
+        )
+
+
+def test_blog_rejects_too_long_content_words():
+    with pytest.raises(ValidationError):
+        BlogPostCreate(
+            title="Valid Blog Title",
+            excerpt="Valid excerpt",
+            content="<p>" + " ".join(["word"] * 1001) + "</p>",
+            category="Tips & Tricks",
+            author="Author",
+            read_time="5 min",
             status="draft",
             featured=False,
             sort_order=0,

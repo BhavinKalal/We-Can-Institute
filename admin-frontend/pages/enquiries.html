@@ -65,6 +65,7 @@
     </div>
 
     <div class="page-content">
+      <div class="page-status" id="enquiriesStatus" aria-live="polite"></div>
 
       <!-- Stats -->
       <div class="enq-stats" id="enqStats">
@@ -141,6 +142,7 @@ let allEnquiries = [];
 
 async function loadEnquiries() {
   try {
+    setPageStatus('enquiriesStatus', 'Loading enquiries...', 'info');
     allEnquiries = await API.getEnquiries();
     // Populate batch filter
     const batches = [...new Set(allEnquiries.map(e => e.batch))];
@@ -149,8 +151,10 @@ async function loadEnquiries() {
     batches.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bf.appendChild(o); });
     renderTable(allEnquiries);
     updateStats(allEnquiries);
+    setPageStatus('enquiriesStatus', '');
   } catch (error) {
     console.error('Failed to load enquiries', error);
+    setPageStatus('enquiriesStatus', error.message || 'Failed to load enquiries.', 'error');
     const tbody = document.getElementById('enquiriesBody');
     tbody.innerHTML = '<tr><td colspan="8" class="td-empty"><div class="empty-state"><div class="empty-state__title">Could not load enquiries.</div></div></td></tr>';
     showToast(error.message || 'Failed to load enquiries', 'error');
@@ -217,17 +221,20 @@ document.getElementById('saveEnquiryBtn').addEventListener('click', async () => 
   const saveBtn = document.getElementById('saveEnquiryBtn');
   const data = { status: document.getElementById('editStatus').value, notes: document.getElementById('editNotes').value };
   try {
-    saveBtn.disabled = true;
+    setButtonLoading(saveBtn, true, 'Saving...');
+    setPageStatus('enquiriesStatus', 'Saving enquiry update...', 'info');
     await API.updateEnquiry(id, data);
     const idx = allEnquiries.findIndex(e => e.id === id);
     if (idx > -1) allEnquiries[idx] = { ...allEnquiries[idx], ...data };
     closeModal('editModal');
     renderTable(filterData()); updateStats(filterData());
     showToast('Enquiry updated!', 'success');
+    setPageStatus('enquiriesStatus', 'Enquiry updated successfully.', 'success');
   } catch (error) {
+    setPageStatus('enquiriesStatus', error.message || 'Failed to update enquiry.', 'error');
     showToast(error.message || 'Failed to update enquiry', 'error');
   } finally {
-    saveBtn.disabled = false;
+    setButtonLoading(saveBtn, false);
   }
 });
 
@@ -247,7 +254,10 @@ function filterData() {
 });
 
 document.getElementById('exportBtn').addEventListener('click', async () => {
+  const exportBtn = document.getElementById('exportBtn');
   try {
+    setButtonLoading(exportBtn, true, 'Exporting...');
+    setPageStatus('enquiriesStatus', 'Exporting enquiries...', 'info');
     const filters = {
       q: document.getElementById('searchInput').value.trim(),
       batch_name: document.getElementById('batchFilter').value,
@@ -261,8 +271,12 @@ document.getElementById('exportBtn').addEventListener('click', async () => {
     a.click();
     URL.revokeObjectURL(url);
     showToast('Exported successfully!', 'success');
+    setPageStatus('enquiriesStatus', 'Enquiries exported successfully.', 'success');
   } catch (error) {
+    setPageStatus('enquiriesStatus', error.message || 'Export failed.', 'error');
     showToast(error.message || 'Export failed', 'error');
+  } finally {
+    setButtonLoading(exportBtn, false);
   }
 });
 

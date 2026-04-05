@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -67,6 +67,7 @@
     </div>
 
     <div class="page-content">
+      <div class="page-status" id="batchesStatus" aria-live="polite"></div>
       <div class="toolbar">
         <div class="search-box"><i data-lucide="search"></i><input type="text" id="searchInput" placeholder="Search batches..." /></div>
         <select class="filter-select" id="levelFilter">
@@ -97,7 +98,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Icon (Emoji)</label>
-          <input type="text" class="form-input" id="batchIcon" placeholder="💬" maxlength="4" />
+          <input type="text" class="form-input" id="batchIcon" placeholder="ðŸ’¬" maxlength="4" />
         </div>
       </div>
       <div class="form-grid-2">
@@ -115,7 +116,7 @@
       <div class="form-grid-2">
         <div class="form-group">
           <label class="form-label">Timing / Schedule</label>
-          <input type="text" class="form-input" id="batchTiming" placeholder="e.g. Mon-Wed · 5PM" />
+          <input type="text" class="form-input" id="batchTiming" placeholder="e.g. Mon-Wed Â· 5PM" />
         </div>
         <div class="form-group">
           <label class="form-label">Badge Label (optional)</label>
@@ -176,13 +177,16 @@ function transformKeys(obj, transformer) {
 
 async function loadBatches() {
   const grid = document.getElementById('batchGrid');
+  setPageStatus('batchesStatus', 'Loading batches...', 'info');
   grid.innerHTML = '<div class="grid-loading">Loading...</div>';
   try {
     const rawData = await API.getBatches();
     allBatches = transformKeys(rawData, toCamel);
     renderGrid(filterBatches());
+    setPageStatus('batchesStatus', '');
   } catch (error) {
     console.error('Failed to load batches:', error);
+    setPageStatus('batchesStatus', error.message || 'Failed to load batches.', 'error');
     showToast('Failed to load batches. See console for details.', 'error');
     grid.innerHTML = '<div class="grid-full"><div class="empty-state empty-state--error"><i data-lucide="server-off"></i><div class="empty-state__title">Could not connect to server</div></div></div>';
     lucide.createIcons();
@@ -202,7 +206,7 @@ function renderGrid(data) {
     <div class="batch-card">
       <div class="batch-card__header">
         <div class="batch-card__header-info">
-          <div class="batch-card__icon">${b.icon || '📚'}</div>
+          <div class="batch-card__icon">${b.icon || 'ðŸ“š'}</div>
           <div>
             <div class="batch-card__name">${b.name}</div>
             ${levelBadge(b.level)}
@@ -282,6 +286,7 @@ async function deleteBatch(id) {
 }
 
 document.getElementById('saveBatchBtn').addEventListener('click', async () => {
+  const saveBtn = document.getElementById('saveBatchBtn');
   const name = document.getElementById('batchName').value.trim();
   if (!name) { showToast('Batch name is required', 'error'); return; }
   
@@ -302,6 +307,8 @@ document.getElementById('saveBatchBtn').addEventListener('click', async () => {
   const backendData = transformKeys(frontendData, toSnake);
 
   try {
+    setButtonLoading(saveBtn, true, 'Saving...');
+    setPageStatus('batchesStatus', 'Saving batch...', 'info');
     if (editingId) {
       await API.updateBatch(editingId, backendData);
       showToast('Batch updated!', 'success');
@@ -311,9 +318,13 @@ document.getElementById('saveBatchBtn').addEventListener('click', async () => {
     }
     closeModal('batchModal');
     loadBatches(); // Reload from server
+    setPageStatus('batchesStatus', 'Batch saved successfully.', 'success');
   } catch (error) {
     console.error('Failed to save batch:', error);
+    setPageStatus('batchesStatus', 'Failed to save batch.', 'error');
     showToast('Failed to save batch.', 'error');
+  } finally {
+    setButtonLoading(saveBtn, false);
   }
 });
 
@@ -329,3 +340,9 @@ loadBatches();
 </script>
 </body>
 </html>
+
+
+
+
+
+

@@ -12,6 +12,13 @@ const DEFAULT_HERO_STATS = [
 ];
 const BLOG_POST_MAP = new Map();
 
+function setHomepageStatus(message = '') {
+    const banner = document.getElementById('homepageStatus');
+    if (!banner) return;
+    banner.textContent = message;
+    banner.classList.toggle('is-visible', Boolean(message));
+}
+
 function resolveMediaUrl(pathOrUrl) {
     if (!pathOrUrl) return '';
     if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) return pathOrUrl;
@@ -50,21 +57,23 @@ function renderBlogLightbox(post) {
     if (!content || !modal || !post) return;
 
     const cover = post.cover_image_url
-        ? `<img src="${resolveMediaUrl(post.cover_image_url)}" alt="${post.title || 'Blog cover'}" class="gallery-lightbox__img" />`
-        : '';
+        ? `<img src="${resolveMediaUrl(post.cover_image_url)}" alt="${post.title || 'Blog cover'}" class="blog-reader__cover-image" />`
+        : `<div class="blog-reader__cover-empty">No Cover Image</div>`;
     const bodyHtml = (post.content || '').trim()
         ? post.content
         : `<p>${post.excerpt || ''}</p>`;
 
     content.innerHTML = `
       <article class="blog-reader">
-        ${cover ? `<div class="gallery-lightbox__media">${cover}</div>` : ''}
-        <div class="gallery-lightbox__meta">
-          <span class="gallery-lightbox__cat">${post.category || 'Blog'}</span>
-          <p class="gallery-lightbox__caption"><strong>${post.title || ''}</strong></p>
-          <p class="gallery-lightbox__caption">${fmtDate(post.published_date)}${post.read_time ? ` · ${post.read_time}` : ''}</p>
+        <div class="blog-reader__media">${cover}</div>
+        <div class="blog-reader__body">
+          <div class="blog-reader__meta">
+            <span class="blog-reader__category">${post.category || 'Blog'}</span>
+            <h2 class="blog-reader__title">${post.title || ''}</h2>
+            <p class="blog-reader__meta-line">${fmtDate(post.published_date)}${post.read_time ? ` · ${post.read_time}` : ''}</p>
+          </div>
+          <div class="blog-reader__content">${bodyHtml}</div>
         </div>
-        <div class="blog-reader__content">${bodyHtml}</div>
       </article>
     `;
     modal.classList.add('open');
@@ -91,6 +100,7 @@ async function loadHomepageData() {
     const heroStatsStrip = document.querySelector('.hero-stats-strip');
     const loadingSections = document.querySelectorAll('.content-loading');
     try {
+        setHomepageStatus('');
         const data = await API.getHomepageData();
         if (data.settings) populateSettings(data.settings);
         if (data.hero) {
@@ -106,6 +116,7 @@ async function loadHomepageData() {
         reinitCounters();
     } catch (error) {
         console.error('Failed to load homepage data:', error);
+        setHomepageStatus('Live content could not be loaded right now. Showing fallback content where available.');
         populateBatches([]);
         populateFaculty([]);
         populateTestimonials([]);
@@ -146,7 +157,13 @@ function populateTestimonials(testimonials) {
     if (heroRole) heroRole.textContent = featured.role || '';
 
     const grid = section.querySelector('.testimonials__grid');
-    if (!grid || !rest.length) return;
+    if (!grid) return;
+    if (!rest.length) {
+        grid.innerHTML = '';
+        grid.style.display = 'none';
+        return;
+    }
+    grid.style.display = '';
 
     grid.innerHTML = rest.map((t) => `
       <article class="testimonial-card" role="listitem">
@@ -193,12 +210,14 @@ function populateSettings(settings) {
 
     const socialWrap = document.querySelector('.footer__socials-wrap');
     if (socialWrap) {
-        socialWrap.innerHTML = `
-            ${settings.instagram ? `<a href="${settings.instagram}" class="footer__social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>` : ''}
-            ${settings.facebook ? `<a href="${settings.facebook}" class="footer__social-btn" aria-label="Facebook"><i class="fab fa-facebook"></i></a>` : ''}
-            ${settings.linkedin ? `<a href="${settings.linkedin}" class="footer__social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>` : ''}
-            ${settings.youtube ? `<a href="${settings.youtube}" class="footer__social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>` : ''}
-        `;
+        const links = `
+            ${settings.instagram ? `<a href="${settings.instagram}" class="footer__social-btn" aria-label="Instagram" target="_blank" rel="noreferrer noopener"><i class="fab fa-instagram"></i></a>` : ''}
+            ${settings.facebook ? `<a href="${settings.facebook}" class="footer__social-btn" aria-label="Facebook" target="_blank" rel="noreferrer noopener"><i class="fab fa-facebook"></i></a>` : ''}
+            ${settings.linkedin ? `<a href="${settings.linkedin}" class="footer__social-btn" aria-label="LinkedIn" target="_blank" rel="noreferrer noopener"><i class="fab fa-linkedin"></i></a>` : ''}
+            ${settings.youtube ? `<a href="${settings.youtube}" class="footer__social-btn" aria-label="YouTube" target="_blank" rel="noreferrer noopener"><i class="fab fa-youtube"></i></a>` : ''}
+        `.trim();
+        socialWrap.innerHTML = links;
+        socialWrap.hidden = !links;
     }
 }
 
@@ -337,21 +356,59 @@ function populateBatches(batches) {
 }
 
 function populateFaculty(faculty) {
-    const grid = document.querySelector('.faculty__grid');
+    const grid = document.getElementById('facultyGrid') || document.querySelector('.faculty__grid');
     if (!grid) return;
-    const active = faculty.filter(f => f.is_active).sort((a, b) => a.sort_order - b.sort_order).slice(0, 8);
+    const active = faculty.filter(f => f.is_active).sort((a, b) => a.sort_order - b.sort_order);
     if (!active.length) {
         grid.innerHTML = '<div class="empty-state"><div class="empty-state__title">Faculty details will be updated soon.</div></div>';
+        FACULTY_SLIDER.items = [];
+        FACULTY_SLIDER.count = 0;
+        FACULTY_SLIDER.index = 0;
+        FACULTY_SLIDER.renderIndex = 0;
+        refreshFacultySliderButtons();
         return;
     }
 
-    grid.innerHTML = active.map((f, idx) => `
-      <article class="faculty-card" aria-label="Faculty member">
+    FACULTY_SLIDER.items = active;
+    FACULTY_SLIDER.count = active.length;
+    syncFacultyVisibleCount();
+    renderFacultyTrack();
+    initFacultySlider();
+    updateFacultySlidePosition('auto');
+    refreshFacultySliderButtons();
+}
+
+const FACULTY_SLIDER = {
+    items: [],
+    index: 0,
+    renderIndex: 0,
+    count: 0,
+    visible: 3,
+};
+
+function getFacultySliderElements() {
+    return {
+        viewport: document.getElementById('facultyViewport'),
+        grid: document.getElementById('facultyGrid'),
+        prevBtn: document.getElementById('facultyPrevBtn'),
+        nextBtn: document.getElementById('facultyNextBtn'),
+    };
+}
+
+function getFacultyMaxStartIndex() {
+    return Math.max(0, FACULTY_SLIDER.count - FACULTY_SLIDER.visible);
+}
+
+function renderFacultyCard(f, idx, realIdx) {
+    return `
+      <article class="faculty-card" data-slide-index="${idx}" data-real-index="${realIdx}" aria-label="Faculty member">
         <div class="faculty-card__photo">
           ${f.profile_photo_url
-            ? `<img src="${resolveMediaUrl(f.profile_photo_url)}" alt="${f.name}" style="width:100%;height:100%;object-fit:cover;object-position:top;" />`
+            ? `
+              <img src="${resolveMediaUrl(f.profile_photo_url)}" alt="" aria-hidden="true" class="faculty-card__photo-bg" />
+              <img src="${resolveMediaUrl(f.profile_photo_url)}" alt="${f.name}" class="faculty-card__photo-main" />
+            `
             : `<div class="faculty-card__avatar-placeholder"><div class="faculty-card__avatar-circle">${(f.initials || f.name.slice(0, 2)).toUpperCase()}</div></div>`}
-          <!-- <div class="faculty-card__photo-overlay" aria-hidden="true"></div> -->
         </div>
         <div class="faculty-card__info">
           <span class="faculty-card__role-badge">${f.role || ''}</span>
@@ -361,7 +418,119 @@ function populateFaculty(faculty) {
           <div class="faculty-card__exp"><span class="faculty-card__exp-dot"></span>${f.experience || ''}</div>
         </div>
       </article>
-    `).join('');
+    `;
+}
+
+function renderFacultyTrack() {
+    const { grid } = getFacultySliderElements();
+    if (!grid) return;
+    const real = FACULTY_SLIDER.items || [];
+    const realCount = real.length;
+    if (!realCount) return;
+
+    const cloneCount = Math.min(FACULTY_SLIDER.visible, realCount);
+    const headClones = real.slice(0, cloneCount);
+    const tailClones = real.slice(realCount - cloneCount);
+    const rendered = [...tailClones, ...real, ...headClones];
+
+    grid.innerHTML = rendered.map((item, idx) => {
+        const realIdx = (idx - cloneCount + realCount) % realCount;
+        return renderFacultyCard(item, idx, realIdx);
+    }).join('');
+
+    FACULTY_SLIDER.renderIndex = cloneCount;
+    FACULTY_SLIDER.index = 0;
+}
+
+function refreshFacultySliderButtons() {
+    const { prevBtn, nextBtn } = getFacultySliderElements();
+    if (!prevBtn || !nextBtn) return;
+    const noOverflow = getFacultyMaxStartIndex() <= 0;
+    prevBtn.disabled = noOverflow;
+    nextBtn.disabled = noOverflow;
+    prevBtn.classList.toggle('is-disabled', prevBtn.disabled);
+    nextBtn.classList.toggle('is-disabled', nextBtn.disabled);
+}
+
+function updateFacultySlidePosition(behavior = 'smooth') {
+    const { viewport, grid } = getFacultySliderElements();
+    if (!viewport || !grid) return;
+    const cards = Array.from(grid.querySelectorAll('.faculty-card'));
+    if (!cards.length) return;
+
+    const cloneCount = Math.min(FACULTY_SLIDER.visible, FACULTY_SLIDER.count);
+    const start = FACULTY_SLIDER.renderIndex;
+    const centerIndex = Math.min(cards.length - 1, start + Math.floor((FACULTY_SLIDER.visible - 1) / 2));
+
+    cards.forEach((card, idx) => {
+        const diff = Math.abs(idx - centerIndex);
+        card.classList.toggle('is-active', diff === 0);
+        card.classList.toggle('is-near', diff === 1);
+        card.classList.toggle('is-far', diff >= 2);
+    });
+
+    const firstCard = cards[0];
+    const secondCard = cards[1];
+    const step = secondCard ? (secondCard.offsetLeft - firstCard.offsetLeft) : firstCard.offsetWidth;
+    const target = -(start * step);
+
+    grid.style.transition = behavior === 'auto' ? 'none' : 'transform 420ms cubic-bezier(.22,.61,.36,1)';
+    grid.style.transform = `translate3d(${target}px, 0, 0)`;
+    if (behavior === 'auto') {
+        requestAnimationFrame(() => {
+            grid.style.transition = '';
+        });
+    }
+
+    // Keep logical index in sync with visible real-window start.
+    if (FACULTY_SLIDER.count > 0) {
+        FACULTY_SLIDER.index = (FACULTY_SLIDER.renderIndex - cloneCount + FACULTY_SLIDER.count) % FACULTY_SLIDER.count;
+    } else {
+        FACULTY_SLIDER.index = 0;
+    }
+
+    refreshFacultySliderButtons();
+}
+
+function moveFacultySlide(delta) {
+    if (getFacultyMaxStartIndex() <= 0) return;
+    FACULTY_SLIDER.renderIndex += delta;
+    updateFacultySlidePosition();
+}
+
+function syncFacultyVisibleCount() {
+    const { viewport } = getFacultySliderElements();
+    if (!viewport) return;
+    const width = viewport.clientWidth || window.innerWidth;
+    FACULTY_SLIDER.visible = width <= 768 ? 1 : width <= 1024 ? 2 : 3;
+}
+
+function initFacultySlider() {
+    const { viewport, prevBtn, nextBtn, grid } = getFacultySliderElements();
+    if (!viewport || !prevBtn || !nextBtn || !grid) return;
+    if (viewport.dataset.sliderBound === '1') return;
+
+    prevBtn.addEventListener('click', () => moveFacultySlide(-1));
+    nextBtn.addEventListener('click', () => moveFacultySlide(1));
+    grid.addEventListener('transitionend', () => {
+        const cloneCount = Math.min(FACULTY_SLIDER.visible, FACULTY_SLIDER.count);
+        if (!cloneCount || FACULTY_SLIDER.count <= FACULTY_SLIDER.visible) return;
+        let shouldReset = false;
+        if (FACULTY_SLIDER.renderIndex < cloneCount) {
+            FACULTY_SLIDER.renderIndex += FACULTY_SLIDER.count;
+            shouldReset = true;
+        } else if (FACULTY_SLIDER.renderIndex >= cloneCount + FACULTY_SLIDER.count) {
+            FACULTY_SLIDER.renderIndex -= FACULTY_SLIDER.count;
+            shouldReset = true;
+        }
+        if (shouldReset) updateFacultySlidePosition('auto');
+    });
+    window.addEventListener('resize', () => {
+        syncFacultyVisibleCount();
+        renderFacultyTrack();
+        updateFacultySlidePosition('auto');
+    });
+    viewport.dataset.sliderBound = '1';
 }
 
 function embedFromUrl(url) {
@@ -372,6 +541,19 @@ function embedFromUrl(url) {
         if (host === 'youtube.com' || host === 'youtu.be') {
             const videoId = host === 'youtu.be' ? parsed.pathname.slice(1) : parsed.searchParams.get('v');
             if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+    } catch (_) {}
+    return null;
+}
+
+function youtubeThumbFromUrl(url) {
+    if (!url) return null;
+    try {
+        const parsed = new URL(url);
+        const host = parsed.hostname.replace(/^www\./, '');
+        if (host === 'youtube.com' || host === 'youtu.be') {
+            const videoId = host === 'youtu.be' ? parsed.pathname.slice(1) : parsed.searchParams.get('v');
+            if (videoId) return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
         }
     } catch (_) {}
     return null;
@@ -406,22 +588,45 @@ function populateGallery(galleryItems) {
         return;
     }
 
-    grid.innerHTML = visible.map(item => {
+    const collagePattern = ['normal', 'normal', 'normal', 'wide', 'normal', 'normal', 'normal', 'normal'];
+
+    grid.innerHTML = visible.map((item, idx) => {
         const category = normalizeGalleryCategory(item.category);
+        const pattern = collagePattern[idx % collagePattern.length];
+        const layoutClass = pattern === 'normal' ? '' : `gallery__item--${pattern}`;
         let media = '';
+        const mediaUrl = item.media_url ? resolveMediaUrl(item.media_url) : '';
+        const externalVideoUrl = item.external_video_url || '';
         if (item.media_type === 'image') {
-            media = `<img src="${resolveMediaUrl(item.media_url)}" class="gallery__item-bg" alt="${item.caption || 'Gallery image'}" />`;
-        } else if (item.external_video_url) {
-            const embed = embedFromUrl(item.external_video_url);
-            media = embed
-                ? `<iframe src="${embed}" width="100%" height="100%" frameborder="0" allowfullscreen loading="lazy"></iframe>`
-                : `<iframe src="${item.external_video_url}" width="100%" height="100%" frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+            media = `<img src="${mediaUrl}" class="gallery__item-bg" alt="${item.caption || 'Gallery image'}" />`;
+        } else if (externalVideoUrl) {
+            const thumb = youtubeThumbFromUrl(externalVideoUrl);
+            media = thumb
+                ? `<img src="${thumb}" class="gallery__item-bg" alt="${item.caption || 'Video thumbnail'}" />`
+                : `
+                  <div class="gallery__video-preview" aria-hidden="true">
+                    <span class="gallery__video-icon"><i data-lucide="play"></i></span>
+                    <span class="gallery__video-label">Video URL</span>
+                  </div>
+                `;
         } else {
-            media = `<video class="gallery__item-bg" controls><source src="${resolveMediaUrl(item.media_url)}"></video>`;
+            media = `
+              <video class="gallery__item-bg" muted playsinline preload="metadata">
+                <source src="${mediaUrl}">
+              </video>
+            `;
         }
         return `
-          <div class="gallery__item ${item.media_type === 'video' ? 'gallery__item--video' : ''}" data-category="${category}" onclick="openLightbox(this)" aria-label="${item.caption || categoryLabel(category)}">
+          <div
+            class="gallery__item ${layoutClass} ${item.media_type === 'video' ? 'gallery__item--video' : ''}"
+            data-category="${category}"
+            data-media-type="${item.media_type || ''}"
+            data-media-url="${mediaUrl}"
+            data-external-video-url="${externalVideoUrl}"
+            onclick="openLightbox(this)"
+            aria-label="${item.caption || categoryLabel(category)}">
             ${media}
+            ${item.media_type === 'video' ? '<span class="gallery__play-btn" aria-hidden="true"><i data-lucide="play"></i></span>' : ''}
             <div class="gallery__item-overlay">
               <div>
                 <span class="gallery__item-cat">${categoryLabel(category)}</span>
@@ -438,18 +643,45 @@ function populateBlog(posts) {
     if (!section) return;
     const published = posts.filter(p => p.status === 'published');
     setBlogPostCache(published);
+    const layout = section.querySelector('.blog__layout');
+    const bottomGrid = section.querySelector('.blog__grid-bottom');
+    const viewNote = section.querySelector('.blog__view-note');
     if (!published.length) {
-        section.style.display = 'none';
+        section.style.display = '';
+        if (layout) {
+            layout.innerHTML = `
+              <div class="empty-state">
+                <div class="empty-state__title">Fresh articles will appear here soon.</div>
+              </div>
+            `;
+        }
+        if (bottomGrid) bottomGrid.innerHTML = '';
+        if (viewNote) {
+            viewNote.innerHTML = `
+              <p class="blog__view-note-text">
+                The blog section is connected and ready. New posts will show up here as soon as they are published.
+              </p>
+            `;
+        }
         return;
     }
     section.style.display = '';
 
     const featured = published.find(p => p.featured) || published[0];
     const rest = published.filter(p => p.id !== featured.id);
+    const sidebarPosts = rest.slice(0, 3);
+    const gridPosts = rest.slice(3, 6);
+
+    if (layout) {
+        layout.innerHTML = `
+          <a href="#blog" class="blog-featured" aria-label="Featured blog post"></a>
+          <div class="blog__sidebar"></div>
+        `;
+    }
 
         const featuredEl = section.querySelector('.blog-featured');
     if (featuredEl) {
-        featuredEl.setAttribute('href', 'javascript:void(0)');
+        featuredEl.setAttribute('href', '#blog');
         featuredEl.setAttribute('onclick', `openBlogLightboxById("${featured.id}")`);
         const cover = featured.cover_image_url
             ? `<img src="${resolveMediaUrl(featured.cover_image_url)}" alt="${featured.title}" style="width:100%;height:100%;object-fit:cover;" />`
@@ -459,7 +691,7 @@ function populateBlog(posts) {
           <div class="blog-featured__body">
             <div class="blog-featured__meta"><span class="blog-featured__cat">${featured.category || ''}</span><span>·</span><span>${fmtDate(featured.published_date)}</span><span>·</span><span>${featured.read_time || ''}</span></div>
             <h3 class="blog-featured__title">${clampText(featured.title, 120)}</h3>
-            <p class="blog-featured__excerpt">${clampText(featured.excerpt || '', 280)}</p>
+            <p class="blog-featured__excerpt">${clampText(featured.excerpt || '', 190)}</p>
             <div class="blog-featured__author"><div class="blog-featured__author-avatar">${(featured.author || 'A').slice(0, 2).toUpperCase()}</div><div><p class="blog-featured__author-name">${featured.author || ''}</p></div></div>
           </div>
         `;
@@ -467,38 +699,53 @@ function populateBlog(posts) {
 
     const sidebar = section.querySelector('.blog__sidebar');
     if (sidebar) {
-        sidebar.innerHTML = rest.slice(0, 3).map(p => `
-          <a href="javascript:void(0)" class="blog-card-sm" aria-label="Blog post" onclick="openBlogLightboxById('${p.id}')">
+        sidebar.innerHTML = sidebarPosts.map(p => `
+          <a href="#blog" class="blog-card-sm" aria-label="Blog post" onclick="openBlogLightboxById('${p.id}')">
             <div class="blog-card-sm__cover">
               ${p.cover_image_url ? `<img src="${resolveMediaUrl(p.cover_image_url)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" />` : '<div class="blog-card-sm__cover-placeholder blog-cover--indigo"></div>'}
             </div>
             <div class="blog-card-sm__body">
               <p class="blog-card-sm__cat">${p.category || ''}</p>
-              <h4 class="blog-card-sm__title">${clampText(p.title, 90)}</h4>
+              <h4 class="blog-card-sm__title">${clampText(p.title, 84)}</h4>
+              <p class="blog-card-sm__excerpt">${clampText(p.excerpt || '', 90)}</p>
               <p class="blog-card-sm__meta">${fmtDate(p.published_date)} · ${p.read_time || ''}</p>
+              <div class="blog-card-sm__author">
+                <span class="blog-card-sm__avatar">${(p.author || 'A').slice(0, 2).toUpperCase()}</span>
+                <span class="blog-card-sm__author-name">${p.author || ''}</span>
+              </div>
             </div>
           </a>
         `).join('');
+        sidebar.style.display = sidebarPosts.length ? '' : 'none';
     }
 
     const gridBottom = section.querySelector('.blog__grid-bottom');
     if (gridBottom) {
-        gridBottom.innerHTML = rest.slice(3, 6).map(p => `
-          <a href="javascript:void(0)" class="blog-card-grid" aria-label="Blog post" onclick="openBlogLightboxById('${p.id}')">
+        gridBottom.innerHTML = gridPosts.map(p => `
+          <a href="#blog" class="blog-card-grid" aria-label="Blog post" onclick="openBlogLightboxById('${p.id}')">
             <div class="blog-card-grid__cover">
               ${p.cover_image_url ? `<img src="${resolveMediaUrl(p.cover_image_url)}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;" />` : '<div class="blog-card-grid__cover-placeholder blog-cover--navy"></div>'}
             </div>
             <div class="blog-card-grid__body">
               <p class="blog-card-grid__cat">${p.category || ''}</p>
-              <h4 class="blog-card-grid__title">${clampText(p.title, 100)}</h4>
-              <p class="blog-card-grid__excerpt">${clampText(p.excerpt || '', 180)}</p>
+              <h4 class="blog-card-grid__title">${clampText(p.title, 92)}</h4>
+              <p class="blog-card-grid__excerpt">${clampText(p.excerpt || '', 110)}</p>
+              <p class="blog-card-grid__meta">${fmtDate(p.published_date)} · ${p.read_time || ''}</p>
               <div class="blog-card-grid__footer">
                 <div class="blog-card-grid__author"><div class="blog-card-grid__avatar">${(p.author || 'A').slice(0, 2).toUpperCase()}</div><span class="blog-card-grid__author-name">${p.author || ''}</span></div>
-                <span class="blog-card-grid__read">${p.read_time || ''}</span>
               </div>
             </div>
           </a>
         `).join('');
+        gridBottom.style.display = gridPosts.length ? '' : 'none';
+    }
+
+    if (viewNote) {
+        viewNote.innerHTML = `
+          <p class="blog__view-note-text">
+            New articles appear here automatically as they are published.
+          </p>
+        `;
     }
 }
 

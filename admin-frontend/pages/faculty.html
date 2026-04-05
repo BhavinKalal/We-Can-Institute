@@ -73,6 +73,7 @@
     </div>
 
     <div class="page-content">
+      <div class="page-status" id="facultyStatus" aria-live="polite"></div>
       <div class="faculty-grid" id="facultyGrid">
         <div class="grid-loading">Loading...</div>
       </div>
@@ -100,7 +101,7 @@
           <div class="form-label">Profile Photo</div>
           <input type="file" id="photoInput" accept="image/*" class="js-hidden" />
           <button class="btn btn--ghost btn--sm" onclick="document.getElementById('photoInput').click()"><i data-lucide="upload"></i> Upload Photo</button>
-          <div class="form-hint">Recommended: 400×533px, JPG/WebP, under 200KB</div>
+          <div class="form-hint">Recommended: 400Ã533px, JPG/WebP, under 200KB</div>
         </div>
       </div>
 
@@ -189,14 +190,19 @@ function normalizeFacultyRecord(raw) {
 }
 
 async function loadFaculty() {
+  const grid = document.getElementById('facultyGrid');
   try {
+    setPageStatus('facultyStatus', 'Loading faculty...', 'info');
+    grid.innerHTML = '<div class="grid-loading">Loading...</div>';
     const rawData = await API.getFaculty();
     const parsed = transformKeys(rawData, toCamel);
     allFaculty = (Array.isArray(parsed) ? parsed : []).map(normalizeFacultyRecord);
     renderGrid(allFaculty);
+    setPageStatus('facultyStatus', '');
   } catch (error) {
+    setPageStatus('facultyStatus', error.message || 'Failed to load faculty list.', 'error');
     showToast(error.message || 'Failed to load faculty list', 'error');
-    document.getElementById('facultyGrid').innerHTML = `<div class="grid-full"><div class="empty-state"><i data-lucide="alert-circle"></i><div class="empty-state__title">Could not load faculty list</div><button class="btn btn--primary" onclick="loadFaculty()"><i data-lucide="refresh-cw"></i> Retry</button></div></div>`;
+    grid.innerHTML = `<div class="grid-full"><div class="empty-state"><i data-lucide="alert-circle"></i><div class="empty-state__title">Could not load faculty list</div><button class="btn btn--primary" onclick="loadFaculty()"><i data-lucide="refresh-cw"></i> Retry</button></div></div>`;
     lucide.createIcons();
   }
 }
@@ -216,7 +222,7 @@ function renderGrid(data) {
       </div>
       <div class="fac-card__body">
         <div class="fac-card__name">${f.name || 'Unnamed Faculty'}</div>
-        <div class="fac-card__role">${f.role}${f.experience ? ` � ${f.experience}` : ''}</div>
+        <div class="fac-card__role">${f.role}${f.experience ? ` · ${f.experience}` : ''}</div>
         <div class="fac-card__tags">${(f.tags||[]).map(t=>`<span class="fac-card__tag">${t}</span>`).join('')}</div>
       </div>
       <div class="fac-card__footer">
@@ -246,7 +252,7 @@ function renderTags() {
   currentTags.forEach((t, i) => {
     const chip = document.createElement('span');
     chip.className = 'tag-chip';
-    chip.innerHTML = `${t}<button onclick="removeTag(${i})">�</button>`;
+    chip.innerHTML = `${t}<button onclick="removeTag(${i})">×</button>`;
     wrap.insertBefore(chip, tagInput);
   });
 }
@@ -317,11 +323,13 @@ async function deleteFaculty(id) {
 }
 
 document.getElementById('saveFacultyBtn').addEventListener('click', async () => {
+  const saveBtn = document.getElementById('saveFacultyBtn');
   const name = document.getElementById('facultyName').value.trim();
   const role = document.getElementById('facultyRole').value.trim();
   if (!name || !role) { showToast('Name and role are required', 'error'); return; }
-
   try {
+    setButtonLoading(saveBtn, true, 'Saving...');
+    setPageStatus('facultyStatus', 'Saving faculty profile...', 'info');
     if (pendingPhotoFile) {
       const uploaded = await API.uploadFacultyPhoto(pendingPhotoFile);
       uploadedPhotoUrl = uploaded.relative_url || uploaded.url || '';
@@ -361,8 +369,12 @@ document.getElementById('saveFacultyBtn').addEventListener('click', async () => 
     clearPendingPhotoPreview();
     closeModal('facultyModal');
     await loadFaculty();
+    setPageStatus('facultyStatus', 'Faculty profile saved successfully.', 'success');
   } catch (error) {
+    setPageStatus('facultyStatus', error.message || 'Failed to save faculty profile.', 'error');
     showToast(error.message || 'Failed to save faculty', 'error');
+  } finally {
+    setButtonLoading(saveBtn, false);
   }
 });
 

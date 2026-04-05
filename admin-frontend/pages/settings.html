@@ -57,6 +57,7 @@
     </div>
 
     <div class="page-content">
+      <div class="page-status" id="settingsStatus" aria-live="polite"></div>
       <div class="settings-grid">
 
         <!-- Contact Info -->
@@ -206,17 +207,21 @@ function transformKeys(obj, transformer) {
 
 
 async function loadSettings() {
+  setPageStatus('settingsStatus', 'Loading settings...', 'info');
   try {
     const rawData = await API.getSettings();
     if (!rawData) {
+      setPageStatus('settingsStatus', 'Could not load settings from server.', 'error');
       showToast('Could not load settings from server.', 'error');
       return;
     }
     settings = transformKeys(rawData, toCamel);
     populateFields(settings);
+    setPageStatus('settingsStatus', '');
   } catch (error) {
     console.error('Error loading settings:', error);
-    showToast('Error loading settings. Check console.', 'error');
+    setPageStatus('settingsStatus', error?.message || 'Error loading settings.', 'error');
+    showToast(error?.message || 'Error loading settings.', 'error');
   }
 }
 
@@ -249,7 +254,10 @@ function showMapPreview(url) {
 }
 
 document.getElementById('saveAllBtn').addEventListener('click', async () => {
+  const saveBtn = document.getElementById('saveAllBtn');
   try {
+    setButtonLoading(saveBtn, true, 'Saving...');
+    setPageStatus('settingsStatus', 'Saving settings...', 'info');
     const data = {
       siteName: document.getElementById('siteName').value.trim(),
       tagline: document.getElementById('tagline').value.trim(),
@@ -268,10 +276,14 @@ document.getElementById('saveAllBtn').addEventListener('click', async () => {
     };
     const snakeCaseData = transformKeys(data, toSnake);
     await API.updateSettings(snakeCaseData);
+    setPageStatus('settingsStatus', 'Settings saved successfully.', 'success');
     showToast('Settings saved successfully!', 'success');
   } catch (error) {
     console.error('Error saving settings:', error);
+    setPageStatus('settingsStatus', error?.message || 'Error saving settings.', 'error');
     showToast(error?.message || 'Error saving settings.', 'error');
+  } finally {
+    setButtonLoading(saveBtn, false);
   }
 });
 

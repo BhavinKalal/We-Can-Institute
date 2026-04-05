@@ -7,7 +7,9 @@ This backend now includes:
 - CORS configuration for local frontend/admin development
 - SQLAlchemy database session setup
 - Alembic migration scaffold
-- initial `admin_users` table migration
+- admin authentication and protected admin APIs
+- content modules for hero, settings, batches, faculty, testimonials, gallery, blog, and enquiries
+- media upload handling for hero, faculty, gallery, and blog assets
 - health endpoints
 
 ## Install
@@ -34,6 +36,25 @@ From the `backend` directory:
 
 ```powershell
 uvicorn app.main:app --reload
+```
+
+Or from the repo root with Docker Compose:
+
+```powershell
+docker compose up --build
+```
+
+Production-oriented deployment from repo root:
+
+```powershell
+Copy-Item backend/.env.production.example backend/.env.production
+docker compose -f docker-compose.prod.yml up --build -d
+```
+
+Create a manual backup from repo root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy/scripts/backup_data.ps1
 ```
 
 App URLs:
@@ -65,6 +86,19 @@ From the `backend` directory:
 ```powershell
 python -m pytest -q
 ```
+
+Current backend test status in this repo: `13 passed`.
+
+## Production Notes
+
+- Frontend and admin can be served behind the bundled Nginx production container in `docker-compose.prod.yml`.
+- In that setup:
+  - `/api/v1/*` stays on the backend container
+  - `/media/*` is proxied to backend media
+  - `/` serves the public site
+  - `/admin/` serves the admin panel
+- Set a strong `SECRET_KEY` and non-default super admin credentials before going live.
+- Use `deploy/DEPLOYMENT_CHECKLIST.md` as the go-live runbook.
 
 ## Seed Mock Admin Data
 

@@ -1,6 +1,6 @@
 # WE CAN Institute - Project Status and Run Guide
 
-Last updated: April 4, 2026
+Last updated: April 5, 2026
 
 ## 1) Current State (Clear Summary)
 
@@ -14,8 +14,10 @@ Core content is backend-driven and verified working:
 - Hero section + hero stats
 - Batches
 - Faculty (one profile photo per faculty)
+- Testimonials
 - Gallery (image/video upload, visibility toggle, optional external video URL)
 - Blog (single cover image per post)
+- Public enquiry submission and admin enquiry workflow
 
 Media upload behavior is working as expected:
 - Admin uploads file
@@ -40,10 +42,16 @@ Based on implementation and verification done so far:
 - [x] Phase 11: Testimonials module connected
 - [x] Phase 12: Gallery module connected
 - [x] Phase 13: Blog module connected
-- [ ] Phase 14+: remaining roadmap items pending
+- [x] Phase 14: Public enquiry submission
+- [x] Phase 15: Admin enquiry workflow
+- [x] Phase 16: Media strategy
+- [x] Phase 17: Admin authentication
+- [x] Phase 18: Content cleanup
+- [x] Phase 19: QA and hardening
+- [~] Phase 20: Deployment and documentation
 
 Notes:
-- Final hardening/auth/deployment phases are still pending.
+- Deployment polish and operational documentation are the main remaining work.
 
 ## 3) What Was Verified in This Stabilization Pass
 
@@ -53,9 +61,16 @@ Notes:
   - Settings
   - Batches
   - Faculty
+  - Testimonials
   - Gallery
   - Blog
+  - Enquiries
 - Public homepage dynamic content load verified.
+- Public enquiry submission verified.
+- Public homepage fallbacks and empty states tightened:
+  - Demo/enquiry form now has inline validation, loading, and success/error feedback
+  - Blog section no longer shows fake actions and now renders a real empty state when no posts are published
+  - Testimonial/blog sub-layout fallbacks no longer leave stale static content behind
 - Critical bugs fixed:
   - Settings URL save crash (`HttpUrl` DB binding)
   - Gallery modal structure/runtime issue
@@ -75,6 +90,12 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 API base:
 - `http://localhost:8000/api/v1`
+
+Docker alternative from repo root:
+
+```powershell
+docker compose up --build
+```
 
 ### Admin Frontend
 Serve `admin-frontend/` via any static server (example):
@@ -136,19 +157,78 @@ Admin now uses login + signed token auth.
 - Paths are persisted in DB and reused by frontend/admin.
 - `backend/media/` is intentionally git-ignored for local/dev uploads.
 
-## 7) Known Remaining Work
+## 7) Phase 20 Deployment
+
+The repo now includes a production-oriented Docker deployment path:
+
+- `docker-compose.prod.yml`
+- `deploy/web/Dockerfile`
+- `deploy/nginx/default.conf`
+- `backend/.env.production.example`
+
+This production setup serves:
+
+- `/` -> public website
+- `/admin/` -> admin panel
+- `/api/v1/*` -> backend API
+- `/media/*` -> uploaded media
+
+Because frontend, admin, API, and media are served behind one origin, browser CORS issues are minimized for production.
+
+### Production Setup
+
+1. Create a production backend environment file:
+
+```powershell
+Copy-Item backend/.env.production.example backend/.env.production
+```
+
+2. Edit `backend/.env.production` and set:
+- `SECRET_KEY`
+- `SUPER_ADMIN_EMAIL`
+- `SUPER_ADMIN_PASSWORD`
+- `BACKEND_CORS_ORIGINS`
+- any domain-specific values you need
+
+3. Start the production stack:
+
+```powershell
+docker compose -f docker-compose.prod.yml up --build -d
+```
+
+4. Open:
+- public site: `http://your-server/`
+- admin: `http://your-server/admin/`
+- API health: `http://your-server/api/v1/health`
+
+### Notes
+
+- Production compose uses persistent local mounts for:
+  - `backend/data/`
+  - `backend/media/`
+- SQLite is still used by default. That is acceptable for a small single-server deployment, but if you expect higher write concurrency or multi-instance hosting, move to PostgreSQL later.
+- For HTTPS and custom domains, place this stack behind your server/domain setup or extend the Nginx layer for TLS termination.
+
+## 8) Known Remaining Work
 
 Still pending from roadmap:
-- Testimonials completion/verification
-- Enquiry submission + admin workflow
-- Production auth/authorization
-- Content cleanup pass
-- QA hardening and tests
-- Deployment + backups/logging docs
+- final production environment review on the target host
+- actual live deployment/domain/HTTPS cutover
 
-## 8) Recommended Next Step
+## 9) Backups and Logs
 
-Proceed with next roadmap phase from this stable baseline, starting with whichever is highest priority:
-1. Testimonials completion
-2. Enquiry workflow
-3. Admin authentication
+Basic operational helpers are now included:
+
+- backup script: `deploy/scripts/backup_data.ps1`
+- deployment checklist: `deploy/DEPLOYMENT_CHECKLIST.md`
+- Docker log rotation is enabled in `docker-compose.prod.yml`
+
+Create a backup archive manually with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy/scripts/backup_data.ps1
+```
+
+This creates a timestamped zip under `deploy/backups/` containing:
+- `backend/data/`
+- `backend/media/`

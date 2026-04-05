@@ -3,7 +3,17 @@
    WE CAN Institute of English
    ============================================================ */
 
-const BASE_URL = 'http://localhost:8000/api/v1';
+function resolveFrontendApiBaseUrl() {
+  const explicit = window.WECAN_API_BASE_URL || document.documentElement?.dataset?.apiBaseUrl;
+  if (explicit) return explicit.replace(/\/$/, '');
+
+  const { protocol, hostname, origin } = window.location;
+  const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
+  if (isLocal) return `${protocol}//localhost:8000/api/v1`;
+  return `${origin}/api/v1`;
+}
+
+const BASE_URL = resolveFrontendApiBaseUrl();
 
 function extractApiErrorMessage(body, fallback) {
   if (!body) return fallback;
