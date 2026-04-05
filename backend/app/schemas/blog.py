@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime
+import html
 import re
 from typing import Literal
 
@@ -8,12 +9,24 @@ from pydantic import BaseModel, Field, field_validator
 
 BlogStatus = Literal["draft", "published"]
 READ_TIME_PATTERN = re.compile(r"^\d{1,3}\s*(min|mins|minute|minutes)$", re.IGNORECASE)
+TAG_PATTERN = re.compile(r"<[^>]+>")
+WORD_PATTERN = re.compile(r"\b[\w'-]+\b")
+EXCERPT_MAX_WORDS = 250
+CONTENT_MAX_WORDS = 1000
+
+
+def _strip_html(value: str) -> str:
+    return html.unescape(TAG_PATTERN.sub(" ", value))
+
+
+def _word_count(value: str) -> int:
+    return len(WORD_PATTERN.findall(value))
 
 
 class BlogPostInputBase(BaseModel):
     title: str = Field(..., min_length=3, max_length=120)
-    excerpt: str | None = Field(None, max_length=350)
-    content: str | None = Field(None, max_length=8000)
+    excerpt: str | None = Field(None, max_length=4000)
+    content: str | None = Field(None, max_length=50000)
     category: str | None = Field(None, max_length=100)
     author: str | None = Field(None, max_length=80)
     read_time: str | None = Field(None, max_length=20)
@@ -32,13 +45,40 @@ class BlogPostInputBase(BaseModel):
             raise ValueError("title must be at least 3 characters")
         return cleaned
 
-    @field_validator("excerpt", "content", "category", "author", mode="before")
+    @field_validator("category", "author", mode="before")
     @classmethod
     def normalize_optional_text(cls, value: str | None) -> str | None:
         if value is None:
             return None
         cleaned = str(value).strip()
         return cleaned or None
+
+    @field_validator("excerpt", mode="before")
+    @classmethod
+    def validate_excerpt_words(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        cleaned = str(value).strip()
+        if not cleaned:
+            return None
+        words = _word_count(cleaned)
+        if words > EXCERPT_MAX_WORDS:
+            raise ValueError(f"excerpt must be at most {EXCERPT_MAX_WORDS} words")
+        return cleaned
+
+    @field_validator("content", mode="before")
+    @classmethod
+    def validate_content_words(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        cleaned = str(value).strip()
+        if not cleaned:
+            return None
+        plain_text = _strip_html(cleaned)
+        words = _word_count(plain_text)
+        if words > CONTENT_MAX_WORDS:
+            raise ValueError(f"content must be at most {CONTENT_MAX_WORDS} words")
+        return cleaned
 
     @field_validator("read_time", mode="before")
     @classmethod
@@ -59,8 +99,8 @@ class BlogPostCreate(BlogPostInputBase):
 
 class BlogPostUpdate(BaseModel):
     title: str | None = Field(None, min_length=3, max_length=120)
-    excerpt: str | None = Field(None, max_length=350)
-    content: str | None = Field(None, max_length=8000)
+    excerpt: str | None = Field(None, max_length=4000)
+    content: str | None = Field(None, max_length=50000)
     category: str | None = Field(None, max_length=100)
     author: str | None = Field(None, max_length=80)
     read_time: str | None = Field(None, max_length=20)
@@ -81,13 +121,40 @@ class BlogPostUpdate(BaseModel):
             raise ValueError("title must be at least 3 characters")
         return cleaned
 
-    @field_validator("excerpt", "content", "category", "author", mode="before")
+    @field_validator("category", "author", mode="before")
     @classmethod
     def normalize_optional_text(cls, value: str | None) -> str | None:
         if value is None:
             return None
         cleaned = str(value).strip()
         return cleaned or None
+
+    @field_validator("excerpt", mode="before")
+    @classmethod
+    def validate_excerpt_words(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        cleaned = str(value).strip()
+        if not cleaned:
+            return None
+        words = _word_count(cleaned)
+        if words > EXCERPT_MAX_WORDS:
+            raise ValueError(f"excerpt must be at most {EXCERPT_MAX_WORDS} words")
+        return cleaned
+
+    @field_validator("content", mode="before")
+    @classmethod
+    def validate_content_words(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        cleaned = str(value).strip()
+        if not cleaned:
+            return None
+        plain_text = _strip_html(cleaned)
+        words = _word_count(plain_text)
+        if words > CONTENT_MAX_WORDS:
+            raise ValueError(f"content must be at most {CONTENT_MAX_WORDS} words")
+        return cleaned
 
     @field_validator("read_time", mode="before")
     @classmethod

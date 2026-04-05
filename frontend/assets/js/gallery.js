@@ -49,6 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const cat = el.querySelector('.gallery__item-cat')?.textContent?.trim() || '';
     const lb = document.getElementById('galleryLightbox');
     const content = document.getElementById('lightboxContent');
+    const mediaType = el.dataset.mediaType || '';
+    const mediaUrl = el.dataset.mediaUrl || '';
+    const externalVideoUrl = el.dataset.externalVideoUrl || '';
     const img = el.querySelector('.gallery__item-bg, .gallery__placeholder img, img');
     const video = el.querySelector('video');
     const iframe = el.querySelector('iframe');
@@ -58,7 +61,35 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="lightbox-placeholder-text">No image available for this card yet.</p>
       </div>`;
 
-    if (img?.src) {
+    if (mediaType === 'image' && (mediaUrl || img?.src)) {
+      const src = mediaUrl || img.currentSrc || img.src;
+      mediaHtml = `<img src="${src}" alt="${escapeHtml(img?.alt || caption || cat || 'Gallery image')}" class="gallery-lightbox__img" />`;
+    } else if (mediaType === 'video' && externalVideoUrl) {
+      let iframeSrc = externalVideoUrl;
+      try {
+        const parsed = new URL(externalVideoUrl);
+        const host = parsed.hostname.replace(/^www\./, '');
+        if (host === 'youtube.com' || host === 'youtu.be') {
+          const videoId = host === 'youtu.be' ? parsed.pathname.slice(1) : parsed.searchParams.get('v');
+          if (videoId) iframeSrc = `https://www.youtube.com/embed/${videoId}`;
+        }
+      } catch (_) {}
+      mediaHtml = `
+        <iframe
+          class="gallery-lightbox__iframe"
+          src="${iframeSrc}"
+          title="${escapeHtml(caption || cat || 'Gallery video')}"
+          loading="lazy"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+    } else if (mediaType === 'video' && (mediaUrl || video?.currentSrc || video?.src || video?.querySelector('source')?.src)) {
+      const videoSrc = mediaUrl || video?.currentSrc || video?.src || video?.querySelector('source')?.src || '';
+      mediaHtml = `
+        <video class="gallery-lightbox__video" controls autoplay playsinline>
+          <source src="${videoSrc}">
+        </video>`;
+    } else if (img?.src) {
       mediaHtml = `<img src="${img.currentSrc || img.src}" alt="${escapeHtml(img.alt || caption || cat || 'Gallery image')}" class="gallery-lightbox__img" />`;
     } else if (video?.currentSrc || video?.src || video?.querySelector('source')?.src) {
       const videoSrc = video.currentSrc || video.src || video.querySelector('source')?.src || '';

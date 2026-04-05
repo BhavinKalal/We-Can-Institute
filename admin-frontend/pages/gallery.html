@@ -192,9 +192,9 @@ const catColors = {'activities':'var(--blue)','grand-finale':'var(--purple)','aw
 
 function syncMediaMode() {
   const isVideo = document.getElementById('galType').value === 'video';
-  document.getElementById('uploadSection').style.display = isVideo ? 'none' : '';
-  document.getElementById('videoSection').style.display = isVideo ? '' : 'none';
-  document.getElementById('videoUrlSection').style.display = isVideo ? '' : 'none';
+  document.getElementById('uploadSection').style.display = isVideo ? 'none' : 'block';
+  document.getElementById('videoSection').style.display = isVideo ? 'block' : 'none';
+  document.getElementById('videoUrlSection').style.display = isVideo ? 'block' : 'none';
 }
 
 document.getElementById('galType').addEventListener('change', syncMediaMode);

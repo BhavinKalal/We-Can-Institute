@@ -487,10 +487,20 @@
         </p>
       </header>
 
-      <div class="faculty__grid">
-        <div class="empty-state">
-          <div class="empty-state__title">Loading faculty details...</div>
+      <div class="faculty__carousel">
+        <button class="faculty__nav faculty__nav--prev" id="facultyPrevBtn" type="button" aria-label="Previous faculty">
+          <i data-lucide="chevron-left"></i>
+        </button>
+        <div class="faculty__viewport" id="facultyViewport">
+          <div class="faculty__grid" id="facultyGrid">
+            <div class="empty-state">
+              <div class="empty-state__title">Loading faculty details...</div>
+            </div>
+          </div>
         </div>
+        <button class="faculty__nav faculty__nav--next" id="facultyNextBtn" type="button" aria-label="Next faculty">
+          <i data-lucide="chevron-right"></i>
+        </button>
       </div>
     </div>
   </section>

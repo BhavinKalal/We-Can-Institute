@@ -108,6 +108,7 @@
                 <div class="form-group">
                   <label class="form-label">Excerpt / Summary</label>
                   <textarea class="form-textarea" id="postExcerpt" rows="2" placeholder="Brief summary shown in post cards..."></textarea>
+                  <div class="form-hint">Maximum 250 words.</div>
                 </div>
               </div>
             </div>
@@ -127,6 +128,7 @@
                   <button class="editor-toolbar-btn" onclick="fmt('formatBlock','P')" title="Paragraph">P</button>
                 </div>
                 <div class="editor-content" id="postContent" contenteditable="true" data-placeholder="Start writing your post..."></div>
+                <div class="form-hint" style="padding: 8px 12px 12px;">Maximum 1000 words.</div>
               </div>
             </div>
           </div>
@@ -191,12 +193,18 @@ let allPosts = [], editingId = null, pendingCoverFile = null, currentCoverUrl = 
 const BLOG_LIMITS = {
   titleMin: 3,
   titleMax: 120,
-  excerptMax: 350,
-  contentMax: 8000,
+  excerptMaxWords: 250,
+  contentMaxWords: 1000,
   authorMax: 80,
   readTimeMax: 20,
 };
 const READ_TIME_PATTERN = /^\d{1,3}\s*(min|mins|minute|minutes)$/i;
+const WORD_PATTERN = /\b[\w'-]+\b/g;
+
+function countWords(text = '') {
+  const matches = String(text).trim().match(WORD_PATTERN);
+  return matches ? matches.length : 0;
+}
 
 function toCamel(s) { return s.replace(/([-_][a-z])/ig, p => p.toUpperCase().replace('-', '').replace('_', '')); }
 function toSnake(s) { return s.replace(/[A-Z]/g, l => `_${l.toLowerCase()}`); }
@@ -305,7 +313,9 @@ async function deletePost(id) {
 async function savePost(status) {
   const title = document.getElementById('postTitle').value.trim();
   const excerpt = document.getElementById('postExcerpt').value.trim();
-  const content = document.getElementById('postContent').innerHTML.trim();
+  const contentEl = document.getElementById('postContent');
+  const content = contentEl.innerHTML.trim();
+  const contentText = contentEl.innerText.trim();
   const author = document.getElementById('postAuthor').value.trim();
   const readTime = document.getElementById('postReadTime').value.trim();
   if (!title) { showToast('Title is required', 'error'); return; }
@@ -313,12 +323,14 @@ async function savePost(status) {
     showToast(`Title must be ${BLOG_LIMITS.titleMin}-${BLOG_LIMITS.titleMax} characters.`, 'error');
     return;
   }
-  if (excerpt.length > BLOG_LIMITS.excerptMax) {
-    showToast(`Excerpt cannot exceed ${BLOG_LIMITS.excerptMax} characters.`, 'error');
+  const excerptWords = countWords(excerpt);
+  if (excerptWords > BLOG_LIMITS.excerptMaxWords) {
+    showToast(`Summary cannot exceed ${BLOG_LIMITS.excerptMaxWords} words.`, 'error');
     return;
   }
-  if (content.length > BLOG_LIMITS.contentMax) {
-    showToast(`Content cannot exceed ${BLOG_LIMITS.contentMax} characters.`, 'error');
+  const contentWords = countWords(contentText);
+  if (contentWords > BLOG_LIMITS.contentMaxWords) {
+    showToast(`Content cannot exceed ${BLOG_LIMITS.contentMaxWords} words.`, 'error');
     return;
   }
   if (author.length > BLOG_LIMITS.authorMax) {
