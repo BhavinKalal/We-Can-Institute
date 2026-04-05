@@ -7,7 +7,9 @@ This backend now includes:
 - CORS configuration for local frontend/admin development
 - SQLAlchemy database session setup
 - Alembic migration scaffold
-- initial `admin_users` table migration
+- admin authentication and protected admin APIs
+- content modules for hero, settings, batches, faculty, testimonials, gallery, blog, and enquiries
+- media upload handling for hero, faculty, gallery, and blog assets
 - health endpoints
 
 ## Install
@@ -34,6 +36,12 @@ From the `backend` directory:
 
 ```powershell
 uvicorn app.main:app --reload
+```
+
+Or from the repo root with Docker Compose:
+
+```powershell
+docker compose up --build
 ```
 
 App URLs:
@@ -65,6 +73,8 @@ From the `backend` directory:
 ```powershell
 python -m pytest -q
 ```
+
+Current backend test status in this repo: `13 passed`.
 
 ## Seed Mock Admin Data
 

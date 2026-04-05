@@ -1,6 +1,6 @@
 # WE CAN Institute - Project Status and Run Guide
 
-Last updated: April 4, 2026
+Last updated: April 5, 2026
 
 ## 1) Current State (Clear Summary)
 
@@ -14,8 +14,10 @@ Core content is backend-driven and verified working:
 - Hero section + hero stats
 - Batches
 - Faculty (one profile photo per faculty)
+- Testimonials
 - Gallery (image/video upload, visibility toggle, optional external video URL)
 - Blog (single cover image per post)
+- Public enquiry submission and admin enquiry workflow
 
 Media upload behavior is working as expected:
 - Admin uploads file
@@ -40,10 +42,16 @@ Based on implementation and verification done so far:
 - [x] Phase 11: Testimonials module connected
 - [x] Phase 12: Gallery module connected
 - [x] Phase 13: Blog module connected
-- [ ] Phase 14+: remaining roadmap items pending
+- [x] Phase 14: Public enquiry submission
+- [x] Phase 15: Admin enquiry workflow
+- [x] Phase 16: Media strategy
+- [x] Phase 17: Admin authentication
+- [ ] Phase 18: Content cleanup
+- [~] Phase 19: QA and hardening
+- [~] Phase 20: Deployment and documentation
 
 Notes:
-- Final hardening/auth/deployment phases are still pending.
+- Final cleanup, broader QA coverage, and deployment polish are still in progress.
 
 ## 3) What Was Verified in This Stabilization Pass
 
@@ -53,9 +61,12 @@ Notes:
   - Settings
   - Batches
   - Faculty
+  - Testimonials
   - Gallery
   - Blog
+  - Enquiries
 - Public homepage dynamic content load verified.
+- Public enquiry submission verified.
 - Critical bugs fixed:
   - Settings URL save crash (`HttpUrl` DB binding)
   - Gallery modal structure/runtime issue
@@ -75,6 +86,12 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 API base:
 - `http://localhost:8000/api/v1`
+
+Docker alternative from repo root:
+
+```powershell
+docker compose up --build
+```
 
 ### Admin Frontend
 Serve `admin-frontend/` via any static server (example):
@@ -139,16 +156,13 @@ Admin now uses login + signed token auth.
 ## 7) Known Remaining Work
 
 Still pending from roadmap:
-- Testimonials completion/verification
-- Enquiry submission + admin workflow
-- Production auth/authorization
 - Content cleanup pass
-- QA hardening and tests
-- Deployment + backups/logging docs
+- QA hardening beyond current backend coverage
+- Deployment polish, backups/logging basics, and production env review
 
 ## 8) Recommended Next Step
 
-Proceed with next roadmap phase from this stable baseline, starting with whichever is highest priority:
-1. Testimonials completion
-2. Enquiry workflow
-3. Admin authentication
+Proceed from the current stable baseline with:
+1. Phase 18 content cleanup
+2. Phase 19 UX and API hardening
+3. Phase 20 deployment polish

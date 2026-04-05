@@ -72,6 +72,7 @@
     </div>
 
     <div class="page-content">
+      <div class="page-status" id="heroStatus" aria-live="polite"></div>
       <div class="hero-editor">
 
         <!-- LEFT: Editor -->
@@ -242,9 +243,11 @@ function transformHeroDataForBackend(frontendData) {
 
 
 async function loadHero() {
+  setPageStatus('heroStatus', 'Loading hero content...', 'info');
   try {
     const rawData = await API.getHero();
     if (!rawData) {
+        setPageStatus('heroStatus', 'Could not load hero data from server.', 'error');
         showToast('Could not load hero data from server.', 'error');
         return;
     }
@@ -255,9 +258,11 @@ async function loadHero() {
     populateFields(heroData);
     renderStatsEditor(heroData.stats);
     updatePreview();
+    setPageStatus('heroStatus', '');
   } catch (error) {
     console.error('Error loading hero data:', error);
-    showToast('Error loading hero data. Check console.', 'error');
+    setPageStatus('heroStatus', error?.message || 'Error loading hero data.', 'error');
+    showToast(error?.message || 'Error loading hero data.', 'error');
   }
 }
 
@@ -383,7 +388,10 @@ document.getElementById('posterFile').addEventListener('change', e => {
 });
 
 document.getElementById('saveBtn').addEventListener('click', async () => {
+  const saveBtn = document.getElementById('saveBtn');
   try {
+    setButtonLoading(saveBtn, true, 'Saving...');
+    setPageStatus('heroStatus', 'Saving hero content...', 'info');
     const frontendData = gatherDataFromFields();
     if (pendingHeroVideoFile) {
       const uploadedVideo = await API.uploadHeroMedia(pendingHeroVideoFile, 'hero_video');
@@ -397,15 +405,20 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
     await API.updateHero(backendData);
     // Reload data to get fresh state from server
     await loadHero(); 
+    setPageStatus('heroStatus', 'Hero section saved successfully.', 'success');
     showToast('Hero section saved successfully!', 'success');
   } catch (error) {
     console.error('Error saving hero data:', error);
     const msg = String(error?.message || '');
+    setPageStatus('heroStatus', msg || 'Error saving hero data.', 'error');
     if (msg.includes('413') || msg.toLowerCase().includes('exceeds') || msg.toLowerCase().includes('too large')) {
       showToast('Please upload image less than 15MB.', 'error');
+      setPageStatus('heroStatus', 'Please upload image less than 15MB.', 'error');
       return;
     }
     showToast(msg || 'Error saving hero data.', 'error');
+  } finally {
+    setButtonLoading(saveBtn, false);
   }
 });
 

@@ -65,6 +65,7 @@
     </div>
 
     <div class="page-content">
+      <div class="page-status" id="blogStatus" aria-live="polite"></div>
       <!-- List view -->
       <div id="listView">
         <div class="toolbar">
@@ -232,6 +233,7 @@ document.getElementById('postCoverFile').addEventListener('change', async e => {
 
 async function loadPosts() {
   try {
+    setPageStatus('blogStatus', 'Loading blog posts...', 'info');
     const raw = await API.getPosts();
     allPosts = transformKeys(raw, toCamel);
     const cats = [...new Set(allPosts.map(p => p.category).filter(Boolean))];
@@ -239,8 +241,10 @@ async function loadPosts() {
     cf.innerHTML = '<option value="">All Categories</option>';
     cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; cf.appendChild(o); });
     renderList(allPosts);
+    setPageStatus('blogStatus', '');
   } catch (error) {
     console.error('Failed to load posts', error);
+    setPageStatus('blogStatus', error.message || 'Failed to load blog posts.', 'error');
     document.getElementById('blogList').innerHTML = '<tr><td colspan="6" class="td-empty"><div class="empty-state"><div class="empty-state__title">Could not load posts.</div></div></td></tr>';
     showToast(error.message || 'Failed to load posts', 'error');
   }
@@ -344,8 +348,9 @@ async function savePost(status) {
   const saveDraftBtn = document.getElementById('saveDraftBtn');
   const publishBtn = document.getElementById('publishBtn');
   try {
-    saveDraftBtn.disabled = true;
-    publishBtn.disabled = true;
+    setButtonLoading(saveDraftBtn, true, 'Saving...');
+    setButtonLoading(publishBtn, true, status === 'published' ? 'Publishing...' : 'Saving...');
+    setPageStatus('blogStatus', status === 'published' ? 'Publishing post...' : 'Saving post...', 'info');
     if (pendingCoverFile) {
       const uploaded = await API.uploadBlogCover(pendingCoverFile);
       currentCoverUrl = uploaded.relative_url || uploaded.url || '';
@@ -375,12 +380,14 @@ async function savePost(status) {
       showToast('Post saved!', 'success');
     }
     pendingCoverFile = null;
+    setPageStatus('blogStatus', status === 'published' ? 'Post published successfully.' : 'Post saved successfully.', 'success');
   } catch (error) {
+    setPageStatus('blogStatus', error.message || 'Failed to save post.', 'error');
     showToast(error.message || 'Failed to save post', 'error');
     return;
   } finally {
-    saveDraftBtn.disabled = false;
-    publishBtn.disabled = false;
+    setButtonLoading(saveDraftBtn, false);
+    setButtonLoading(publishBtn, false);
   }
   document.getElementById('listView').style.display = '';
   const editorView = document.getElementById('editorView');

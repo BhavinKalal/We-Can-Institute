@@ -64,6 +64,7 @@
     </div>
 
     <div class="page-content">
+      <div class="page-status" id="testimonialsStatus" aria-live="polite"></div>
       <div class="test-grid" id="testGrid">
         <div class="grid-loading">Loading...</div>
       </div>
@@ -164,13 +165,20 @@ function updateStars() {
 }
 
 async function loadTest() {
+  const grid = document.getElementById('testGrid');
   try {
+    setPageStatus('testimonialsStatus', 'Loading testimonials...', 'info');
+    grid.innerHTML = '<div class="grid-loading">Loading...</div>';
     const rawData = await API.getTestimonials();
     allTest = transformKeys(rawData, toCamel);
     renderGrid(allTest);
+    setPageStatus('testimonialsStatus', '');
   } catch (error) {
     console.error('Failed to load testimonials:', error);
+    setPageStatus('testimonialsStatus', 'Failed to load testimonials.', 'error');
     showToast('Failed to load testimonials', 'error');
+    grid.innerHTML = `<div class="grid-full"><div class="empty-state"><i data-lucide="alert-circle"></i><div class="empty-state__title">Could not load testimonials</div><button class="btn btn--primary" onclick="loadTest()"><i data-lucide="refresh-cw"></i> Retry</button></div></div>`;
+    lucide.createIcons();
   }
 }
 
@@ -242,6 +250,7 @@ async function deleteTest(id) {
 }
 
 document.getElementById('saveTestBtn').addEventListener('click', async () => {
+  const saveBtn = document.getElementById('saveTestBtn');
   const quote = document.getElementById('testQuote').value.trim();
   const name = document.getElementById('testName').value.trim();
   if (!quote || !name) {
@@ -261,6 +270,8 @@ document.getElementById('saveTestBtn').addEventListener('click', async () => {
   const data = transformKeys(frontendData, toSnake);
 
   try {
+    setButtonLoading(saveBtn, true, 'Saving...');
+    setPageStatus('testimonialsStatus', 'Saving testimonial...', 'info');
     if (editingId) {
       const updated = await API.updateTestimonial(editingId, data);
       const updatedCamel = transformKeys(updated, toCamel);
@@ -274,9 +285,13 @@ document.getElementById('saveTestBtn').addEventListener('click', async () => {
     }
     closeModal('testModal');
     renderGrid(allTest);
+    setPageStatus('testimonialsStatus', 'Testimonial saved successfully.', 'success');
   } catch (error) {
     console.error('Save testimonial failed:', error);
+    setPageStatus('testimonialsStatus', 'Failed to save testimonial.', 'error');
     showToast('Failed to save testimonial', 'error');
+  } finally {
+    setButtonLoading(saveBtn, false);
   }
 });
 

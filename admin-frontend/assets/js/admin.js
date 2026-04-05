@@ -1,5 +1,5 @@
-/* ============================================================
-   ADMIN.JS - Sidebar · Toast · Modal · Global Helpers
+ï»¿/* ============================================================
+   ADMIN.JS - Sidebar Â· Toast Â· Modal Â· Global Helpers
    WE CAN Institute - Admin Dashboard
    ============================================================ */
 
@@ -264,6 +264,37 @@ window.debounce = (fn, delay = 300) => {
   return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
 };
 
+window.setButtonLoading = (button, isLoading, loadingText = 'Saving...') => {
+  if (!button) return;
+  if (isLoading) {
+    if (!button.dataset.originalHtml) button.dataset.originalHtml = button.innerHTML;
+    button.disabled = true;
+    button.classList.add('btn--loading');
+    button.innerHTML = `<i data-lucide="loader-circle"></i> ${loadingText}`;
+    if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [button] });
+    return;
+  }
+  button.disabled = false;
+  button.classList.remove('btn--loading');
+  if (button.dataset.originalHtml) {
+    button.innerHTML = button.dataset.originalHtml;
+    if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [button] });
+  }
+};
+
+window.setPageStatus = (elementId, message = '', type = 'info') => {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  if (!message) {
+    el.className = 'page-status';
+    el.innerHTML = '';
+    return;
+  }
+  const icons = { info: 'info', success: 'check-circle', error: 'triangle-alert' };
+  el.className = `page-status page-status--${type} is-visible`;
+  el.innerHTML = `<i data-lucide="${icons[type] || 'info'}"></i><span>${message}</span>`;
+  if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [el] });
+};
 window.resolveAdminMediaUrl = (pathOrUrl) => {
   if (!pathOrUrl) return '';
   if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://') || pathOrUrl.startsWith('blob:') || pathOrUrl.startsWith('data:')) {
@@ -276,3 +307,7 @@ window.resolveAdminMediaUrl = (pathOrUrl) => {
   }
   return pathOrUrl;
 };
+
+
+
+

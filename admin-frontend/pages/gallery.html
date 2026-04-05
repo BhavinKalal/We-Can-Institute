@@ -70,6 +70,7 @@
     </div>
 
     <div class="page-content">
+      <div class="page-status" id="galleryStatus" aria-live="polite"></div>
 
       <!-- Category filters -->
       <div class="cat-filters" id="catFilters">
@@ -234,9 +235,21 @@ document.querySelectorAll('.cat-filter-btn').forEach(btn => {
 });
 
 async function loadGallery() {
-  const rawData = await API.getGallery();
-  allGallery = transformKeys(rawData, toCamel);
-  renderGrid(filterGallery());
+  const grid = document.getElementById('galleryGrid');
+  try {
+    setPageStatus('galleryStatus', 'Loading gallery items...', 'info');
+    grid.innerHTML = '<div class="grid-loading">Loading...</div>';
+    const rawData = await API.getGallery();
+    allGallery = transformKeys(rawData, toCamel);
+    renderGrid(filterGallery());
+    setPageStatus('galleryStatus', '');
+  } catch (error) {
+    console.error('Failed to load gallery:', error);
+    setPageStatus('galleryStatus', error.message || 'Failed to load gallery items.', 'error');
+    showToast(error.message || 'Failed to load gallery items', 'error');
+    grid.innerHTML = `<div class="grid-full"><div class="empty-state"><i data-lucide="alert-circle"></i><div class="empty-state__title">Could not load gallery items</div><button class="btn btn--primary" onclick="loadGallery()"><i data-lucide="refresh-cw"></i> Retry</button></div></div>`;
+    lucide.createIcons();
+  }
 }
 
 function filterGallery() {
@@ -329,7 +342,10 @@ async function deleteGal(id) {
 }
 
 document.getElementById('saveGalBtn').addEventListener('click', async () => {
+  const saveBtn = document.getElementById('saveGalBtn');
   try {
+    setButtonLoading(saveBtn, true, 'Saving...');
+    setPageStatus('galleryStatus', 'Saving gallery item...', 'info');
     const mediaType = document.getElementById('galType').value;
     const externalVideoUrl = document.getElementById('galVideoUrl').value.trim();
 
@@ -344,10 +360,12 @@ document.getElementById('saveGalBtn').addEventListener('click', async () => {
 
     const mediaUrl = mediaType === 'image' ? uploadedImageUrl : uploadedVideoUrl;
     if (mediaType === 'image' && !mediaUrl) {
+      setPageStatus('galleryStatus', 'Please upload an image before saving.', 'error');
       showToast('Please upload an image.', 'error');
       return;
     }
     if (mediaType === 'video' && !mediaUrl && !externalVideoUrl) {
+      setPageStatus('galleryStatus', 'Add a video file or URL before saving.', 'error');
       showToast('Upload a video file or provide video URL.', 'error');
       return;
     }
@@ -376,8 +394,12 @@ document.getElementById('saveGalBtn').addEventListener('click', async () => {
     clearPendingImagePreview();
     closeModal('galleryModal');
     await loadGallery();
+    setPageStatus('galleryStatus', 'Gallery item saved successfully.', 'success');
   } catch (error) {
+    setPageStatus('galleryStatus', error.message || 'Failed to save gallery item.', 'error');
     showToast(error.message || 'Failed to save gallery item', 'error');
+  } finally {
+    setButtonLoading(saveBtn, false);
   }
 });
 

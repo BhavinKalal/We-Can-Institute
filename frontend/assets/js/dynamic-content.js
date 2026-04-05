@@ -12,6 +12,13 @@ const DEFAULT_HERO_STATS = [
 ];
 const BLOG_POST_MAP = new Map();
 
+function setHomepageStatus(message = '') {
+    const banner = document.getElementById('homepageStatus');
+    if (!banner) return;
+    banner.textContent = message;
+    banner.classList.toggle('is-visible', Boolean(message));
+}
+
 function resolveMediaUrl(pathOrUrl) {
     if (!pathOrUrl) return '';
     if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) return pathOrUrl;
@@ -93,6 +100,7 @@ async function loadHomepageData() {
     const heroStatsStrip = document.querySelector('.hero-stats-strip');
     const loadingSections = document.querySelectorAll('.content-loading');
     try {
+        setHomepageStatus('');
         const data = await API.getHomepageData();
         if (data.settings) populateSettings(data.settings);
         if (data.hero) {
@@ -108,6 +116,7 @@ async function loadHomepageData() {
         reinitCounters();
     } catch (error) {
         console.error('Failed to load homepage data:', error);
+        setHomepageStatus('Live content could not be loaded right now. Showing fallback content where available.');
         populateBatches([]);
         populateFaculty([]);
         populateTestimonials([]);
@@ -195,12 +204,14 @@ function populateSettings(settings) {
 
     const socialWrap = document.querySelector('.footer__socials-wrap');
     if (socialWrap) {
-        socialWrap.innerHTML = `
-            ${settings.instagram ? `<a href="${settings.instagram}" class="footer__social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>` : ''}
-            ${settings.facebook ? `<a href="${settings.facebook}" class="footer__social-btn" aria-label="Facebook"><i class="fab fa-facebook"></i></a>` : ''}
-            ${settings.linkedin ? `<a href="${settings.linkedin}" class="footer__social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>` : ''}
-            ${settings.youtube ? `<a href="${settings.youtube}" class="footer__social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>` : ''}
-        `;
+        const links = `
+            ${settings.instagram ? `<a href="${settings.instagram}" class="footer__social-btn" aria-label="Instagram" target="_blank" rel="noreferrer noopener"><i class="fab fa-instagram"></i></a>` : ''}
+            ${settings.facebook ? `<a href="${settings.facebook}" class="footer__social-btn" aria-label="Facebook" target="_blank" rel="noreferrer noopener"><i class="fab fa-facebook"></i></a>` : ''}
+            ${settings.linkedin ? `<a href="${settings.linkedin}" class="footer__social-btn" aria-label="LinkedIn" target="_blank" rel="noreferrer noopener"><i class="fab fa-linkedin"></i></a>` : ''}
+            ${settings.youtube ? `<a href="${settings.youtube}" class="footer__social-btn" aria-label="YouTube" target="_blank" rel="noreferrer noopener"><i class="fab fa-youtube"></i></a>` : ''}
+        `.trim();
+        socialWrap.innerHTML = links;
+        socialWrap.hidden = !links;
     }
 }
 

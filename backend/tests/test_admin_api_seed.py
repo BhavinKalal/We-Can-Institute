@@ -65,7 +65,10 @@ def test_admin_api_seed_populates_all_fixture_tables(tmp_path):
 
         assert settings is not None
         assert settings.site_name == "WE CAN Institute of English"
-        assert settings.linkedin == "https://linkedin.com/company/wecaninstitute"
+        assert settings.instagram is None
+        assert settings.facebook is None
+        assert settings.linkedin is None
+        assert settings.youtube is None
 
         assert [batch.name for batch in batches] == [
             "Phonics Batch",
