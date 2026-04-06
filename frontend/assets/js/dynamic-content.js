@@ -396,6 +396,7 @@ function populateBatches(batches) {
 }
 
 function populateFaculty(faculty) {
+    const carousel = document.querySelector('.faculty__carousel');
     const grid = document.getElementById('facultyGrid') || document.querySelector('.faculty__grid');
     if (!grid) return;
     const active = faculty.filter(f => f.is_active).sort((a, b) => a.sort_order - b.sort_order);
@@ -405,6 +406,7 @@ function populateFaculty(faculty) {
         FACULTY_SLIDER.count = 0;
         FACULTY_SLIDER.index = 0;
         FACULTY_SLIDER.renderIndex = 0;
+        carousel?.classList.remove('is-static');
         refreshFacultySliderButtons();
         return;
     }
@@ -412,6 +414,7 @@ function populateFaculty(faculty) {
     FACULTY_SLIDER.items = active;
     FACULTY_SLIDER.count = active.length;
     syncFacultyVisibleCount();
+    carousel?.classList.toggle('is-static', FACULTY_SLIDER.count <= FACULTY_SLIDER.visible);
     renderFacultyTrack();
     initFacultySlider();
     updateFacultySlidePosition('auto');
@@ -468,6 +471,13 @@ function renderFacultyTrack() {
     const realCount = real.length;
     if (!realCount) return;
 
+    if (realCount <= FACULTY_SLIDER.visible) {
+        grid.innerHTML = real.map((item, idx) => renderFacultyCard(item, idx, idx)).join('');
+        FACULTY_SLIDER.renderIndex = 0;
+        FACULTY_SLIDER.index = 0;
+        return;
+    }
+
     const cloneCount = Math.min(FACULTY_SLIDER.visible, realCount);
     const headClones = real.slice(0, cloneCount);
     const tailClones = real.slice(realCount - cloneCount);
@@ -498,9 +508,12 @@ function updateFacultySlidePosition(behavior = 'smooth') {
     const cards = Array.from(grid.querySelectorAll('.faculty-card'));
     if (!cards.length) return;
 
-    const cloneCount = Math.min(FACULTY_SLIDER.visible, FACULTY_SLIDER.count);
+    const isStatic = FACULTY_SLIDER.count <= FACULTY_SLIDER.visible;
+    const cloneCount = isStatic ? 0 : Math.min(FACULTY_SLIDER.visible, FACULTY_SLIDER.count);
     const start = FACULTY_SLIDER.renderIndex;
-    const centerIndex = Math.min(cards.length - 1, start + Math.floor((FACULTY_SLIDER.visible - 1) / 2));
+    const centerIndex = isStatic
+        ? Math.floor((cards.length - 1) / 2)
+        : Math.min(cards.length - 1, start + Math.floor((FACULTY_SLIDER.visible - 1) / 2));
 
     cards.forEach((card, idx) => {
         const diff = Math.abs(idx - centerIndex);
@@ -512,7 +525,7 @@ function updateFacultySlidePosition(behavior = 'smooth') {
     const firstCard = cards[0];
     const secondCard = cards[1];
     const step = secondCard ? (secondCard.offsetLeft - firstCard.offsetLeft) : firstCard.offsetWidth;
-    const target = -(start * step);
+    const target = isStatic ? 0 : -(start * step);
 
     grid.style.transition = behavior === 'auto' ? 'none' : 'transform 420ms cubic-bezier(.22,.61,.36,1)';
     grid.style.transform = `translate3d(${target}px, 0, 0)`;
