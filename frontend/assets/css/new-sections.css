@@ -1358,14 +1358,21 @@
   }
   .faculty__nav { width: 32px; height: 32px; }
   .gallery__grid { grid-template-columns: 1fr; }
-  .gallery__tabs { gap: 0.4rem; }
+  .gallery__tabs {
+    justify-content: center;
+    overflow-x: visible;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-inline: 0;
+    padding-bottom: 0;
+  }
   .gallery__tab { padding: 7px 14px; font-size: 12px; }
   .faculty-card__info {
     min-height: auto;
     padding: 0.8rem 0.85rem 0.95rem;
   }
   .faculty-card__photo {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 6 / 5;
   }
   .faculty-card__name {
     font-size: 0.96rem;
@@ -1410,10 +1417,13 @@
   .faculty__carousel {
     padding: 0 1.2rem;
   }
+  .faculty__nav--prev { left: -2px; }
+  .faculty__nav--next { right: -2px; }
   .faculty-card__photo-main {
-    width: min(72%, 200px);
+    width: min(62%, 180px);
   }
   .gallery__tabs {
+    justify-content: center;
     gap: 0.35rem;
     margin-bottom: 2rem;
   }

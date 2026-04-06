@@ -180,14 +180,15 @@
   .navbar__inner { height: 64px; gap: 0.6rem; }
   .navbar__actions { gap: 0.35rem; }
   .navbar__cta {
-    padding: 8px 12px;
-    font-size: 10.5px;
-    max-width: 156px;
-    box-shadow: 0 3px 12px rgba(227,30,36,0.28);
+    padding: 7px 11px;
+    font-size: 10px;
+    max-width: 148px;
+    min-height: 38px;
+    box-shadow: 0 3px 10px rgba(227,30,36,0.24);
   }
   .navbar__cta .btn__icon,
   .navbar__cta .icon-inline {
-    transform: scale(0.82);
+    transform: scale(0.76);
   }
   .navbar__logo-wrap img { height: 32px; }
   .navbar__hamburger {
@@ -205,6 +206,44 @@
   .navbar__mobile-link {
     font-size: 1.2rem;
     padding: 0.8rem 1rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .navbar__inner {
+    height: 60px;
+    gap: 0.45rem;
+  }
+
+  .navbar__logo-wrap img {
+    height: 28px;
+  }
+
+  .navbar__actions {
+    gap: 0.25rem;
+  }
+
+  .navbar__cta {
+    padding: 6px 10px;
+    max-width: 138px;
+    min-height: 34px;
+    font-size: 9.5px;
+    gap: 6px;
+    letter-spacing: 0.01em;
+    box-shadow: 0 2px 8px rgba(227,30,36,0.2);
+  }
+
+  .navbar__cta .btn__icon,
+  .navbar__cta .icon-inline {
+    transform: scale(0.72);
+  }
+
+  .navbar__hamburger span {
+    width: 18px;
+  }
+
+  .navbar__mobile {
+    top: 60px;
   }
 }
 
