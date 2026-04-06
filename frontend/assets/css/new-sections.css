@@ -102,29 +102,12 @@
   cursor: not-allowed;
 }
 
-.faculty__carousel.is-static {
-  max-width: 560px;
-  padding-inline: 0;
-}
-
-.faculty__carousel.is-static .faculty__viewport::before,
-.faculty__carousel.is-static .faculty__viewport::after {
-  display: none;
-}
-
-.faculty__carousel.is-static .faculty__grid {
-  justify-content: center;
-}
-
 .faculty__carousel.is-static .faculty__nav {
   display: none;
 }
 
-.faculty__carousel.is-static .faculty-card {
-  flex: 0 1 min(100%, 420px);
-  opacity: 1;
-  transform: none;
-  filter: none;
+.faculty__carousel.is-single .faculty__nav {
+  display: none;
 }
 
 /* Faculty card */

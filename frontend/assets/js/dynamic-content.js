@@ -407,6 +407,7 @@ function populateFaculty(faculty) {
         FACULTY_SLIDER.index = 0;
         FACULTY_SLIDER.renderIndex = 0;
         carousel?.classList.remove('is-static');
+        carousel?.classList.remove('is-single');
         refreshFacultySliderButtons();
         return;
     }
@@ -415,6 +416,7 @@ function populateFaculty(faculty) {
     FACULTY_SLIDER.count = active.length;
     syncFacultyVisibleCount();
     carousel?.classList.toggle('is-static', FACULTY_SLIDER.count <= FACULTY_SLIDER.visible);
+    carousel?.classList.toggle('is-single', FACULTY_SLIDER.count === 1);
     renderFacultyTrack();
     initFacultySlider();
     updateFacultySlidePosition('auto');
@@ -471,6 +473,15 @@ function renderFacultyTrack() {
     const realCount = real.length;
     if (!realCount) return;
 
+    if (realCount === 1) {
+        const item = real[0];
+        const rendered = [item, item, item];
+        grid.innerHTML = rendered.map((entry, idx) => renderFacultyCard(entry, idx, 0)).join('');
+        FACULTY_SLIDER.renderIndex = 1;
+        FACULTY_SLIDER.index = 0;
+        return;
+    }
+
     if (realCount <= FACULTY_SLIDER.visible) {
         grid.innerHTML = real.map((item, idx) => renderFacultyCard(item, idx, idx)).join('');
         FACULTY_SLIDER.renderIndex = 0;
@@ -508,8 +519,9 @@ function updateFacultySlidePosition(behavior = 'smooth') {
     const cards = Array.from(grid.querySelectorAll('.faculty-card'));
     if (!cards.length) return;
 
-    const isStatic = FACULTY_SLIDER.count <= FACULTY_SLIDER.visible;
-    const cloneCount = isStatic ? 0 : Math.min(FACULTY_SLIDER.visible, FACULTY_SLIDER.count);
+    const isSingle = FACULTY_SLIDER.count === 1;
+    const isStatic = !isSingle && FACULTY_SLIDER.count <= FACULTY_SLIDER.visible;
+    const cloneCount = isSingle ? 1 : isStatic ? 0 : Math.min(FACULTY_SLIDER.visible, FACULTY_SLIDER.count);
     const start = FACULTY_SLIDER.renderIndex;
     const centerIndex = isStatic
         ? Math.floor((cards.length - 1) / 2)
