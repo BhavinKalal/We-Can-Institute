@@ -60,4 +60,10 @@
 @media (max-width: 480px) {
   .container { padding-inline: 1rem; }
   .section   { padding-block: var(--sp-xl); }
+  .section-header__badge { margin-bottom: 0.75rem; }
+  .section-header__title { margin-bottom: 0.75rem; }
+  .section-header__subtitle {
+    font-size: 15px;
+    line-height: 1.65;
+  }
 }

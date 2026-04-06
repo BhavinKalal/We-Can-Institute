@@ -180,15 +180,22 @@
   .navbar__inner { height: 64px; gap: 0.6rem; }
   .navbar__actions { gap: 0.35rem; }
   .navbar__cta {
-    padding: 9px 14px;
-    font-size: 11px;
-    max-width: 180px;
+    padding: 8px 12px;
+    font-size: 10.5px;
+    max-width: 156px;
+    box-shadow: 0 3px 12px rgba(227,30,36,0.28);
   }
   .navbar__cta .btn__icon,
   .navbar__cta .icon-inline {
-    transform: scale(0.9);
+    transform: scale(0.82);
   }
-  .navbar__logo-wrap img { height: 34px; }
+  .navbar__logo-wrap img { height: 32px; }
+  .navbar__hamburger {
+    padding: 4px;
+  }
+  .navbar__hamburger span {
+    width: 20px;
+  }
   .navbar__mobile {
     top: 64px;
     justify-content: flex-start;
@@ -648,13 +655,13 @@
 @media (max-width: 480px) {
   .btn { padding: 13px 24px; font-size: 14px; }
   .btn--hero {
-    padding: 14px 24px;
-    font-size: 14px;
-    width: min(100%, 280px);
+    padding: 13px 22px;
+    font-size: 13px;
+    width: min(100%, 260px);
   }
   .btn__icon {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
   }
   .card__icon { width: 44px; height: 44px; font-size: 18px; }
 }
