@@ -10,6 +10,16 @@ const DEFAULT_HERO_STATS = [
     { value: 98, suffix: '%', label: 'Success Rate', sort_order: 2 },
     { value: 4.9, suffix: '★', label: 'Average Rating', sort_order: 3 },
 ];
+const FOOTER_QUICK_LINKS = [
+    { href: '#hero', label: 'Home' },
+    { href: '#why', label: 'About' },
+    { href: '#programs', label: 'Batches' },
+    { href: '#journey', label: 'Learning Journey' },
+    { href: '#faculty', label: 'Our Faculty' },
+    { href: '#gallery', label: 'Gallery' },
+    { href: '#blog', label: 'Blog' },
+    { href: '#cta', label: 'Book Free Demo' },
+];
 const BLOG_POST_MAP = new Map();
 
 function setHomepageStatus(message = '') {
@@ -185,6 +195,26 @@ function populateSettings(settings) {
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.content = settings.meta_description || '';
 
+    const footerQuickLinks = document.getElementById('footerQuickLinks');
+    if (footerQuickLinks) {
+        footerQuickLinks.innerHTML = FOOTER_QUICK_LINKS
+            .map(link => `<li><a href="${link.href}" class="footer__link">${link.label}</a></li>`)
+            .join('');
+    }
+
+    const footerTagline = document.getElementById('footerTagline') || document.querySelector('.footer__brand-tagline');
+    if (footerTagline) {
+        footerTagline.textContent = settings.tagline
+            || 'Empowering students, professionals, and children to speak English with confidence through expert-guided training.';
+    }
+
+    const footerCopy = document.querySelector('.footer__copy');
+    if (footerCopy) {
+        const year = new Date().getFullYear();
+        const siteName = settings.site_name || 'WE CAN Institute of English';
+        footerCopy.innerHTML = `&copy; ${year} ${siteName}. All rights reserved.`;
+    }
+
     const contactItems = document.querySelector('address');
     if (contactItems) {
         contactItems.innerHTML = `
@@ -326,6 +356,7 @@ function populateHero(hero) {
 
 function populateBatches(batches) {
     const batchList = document.querySelector('.programs__list');
+    const footerProgramLinks = document.getElementById('footerProgramLinks');
     if (batchList) {
         const activeBatches = batches.filter(b => b.is_active);
         if (!activeBatches.length) {
@@ -351,6 +382,15 @@ function populateBatches(batches) {
             activeBatches
                 .map(batch => `<option value="${batch.name.toLowerCase().replace(/ /g, '-')}">${batch.name}</option>`)
                 .join('');
+        }
+
+        if (footerProgramLinks) {
+            footerProgramLinks.innerHTML = activeBatches.length
+                ? activeBatches
+                    .sort((a, b) => a.sort_order - b.sort_order)
+                    .map(batch => `<li><a href="#programs" class="footer__link">${batch.name}</a></li>`)
+                    .join('')
+                : '<li><a href="#programs" class="footer__link">Programs Coming Soon</a></li>';
         }
     }
 }

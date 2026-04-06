@@ -177,10 +177,28 @@
 }
 
 @media (max-width: 480px) {
-  .navbar__cta { padding: 9px 16px; font-size: 12px; }
-  .navbar__inner { height: 64px; }
-  .navbar__logo-wrap img { height: 40px; }
-  .navbar__mobile { top: 64px; }
+  .navbar__inner { height: 64px; gap: 0.6rem; }
+  .navbar__actions { gap: 0.35rem; }
+  .navbar__cta {
+    padding: 9px 14px;
+    font-size: 11px;
+    max-width: 180px;
+  }
+  .navbar__cta .btn__icon,
+  .navbar__cta .icon-inline {
+    transform: scale(0.9);
+  }
+  .navbar__logo-wrap img { height: 34px; }
+  .navbar__mobile {
+    top: 64px;
+    justify-content: flex-start;
+    padding: 1.5rem 1rem 2rem;
+    overflow-y: auto;
+  }
+  .navbar__mobile-link {
+    font-size: 1.2rem;
+    padding: 0.8rem 1rem;
+  }
 }
 
 /* ══════════════════════════════════════════════
@@ -629,6 +647,15 @@
 
 @media (max-width: 480px) {
   .btn { padding: 13px 24px; font-size: 14px; }
+  .btn--hero {
+    padding: 14px 24px;
+    font-size: 14px;
+    width: min(100%, 280px);
+  }
+  .btn__icon {
+    width: 24px;
+    height: 24px;
+  }
   .card__icon { width: 44px; height: 44px; font-size: 18px; }
 }
 /* ============================================================
