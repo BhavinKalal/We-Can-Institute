@@ -22,12 +22,12 @@ ALLOWED_MEDIA_KINDS: dict[str, set[str]] = {
     "blog_cover": {".jpg", ".jpeg", ".png", ".webp"},
 }
 MAX_FILE_SIZE_BY_KIND: dict[str, int] = {
-    "hero_video": 50 * 1024 * 1024,
-    "gallery_video": 50 * 1024 * 1024,
-    "hero_poster": 15 * 1024 * 1024,
-    "faculty_profile": 3 * 1024 * 1024,
-    "gallery_image": 5 * 1024 * 1024,
-    "blog_cover": 5 * 1024 * 1024,
+    "hero_video": 200 * 1024 * 1024,
+    "gallery_video": 1024 * 1024 * 1024,
+    "hero_poster": 20 * 1024 * 1024,
+    "faculty_profile": 20 * 1024 * 1024,
+    "gallery_image": 20 * 1024 * 1024,
+    "blog_cover": 20 * 1024 * 1024,
 }
 HOMEPAGE_HERO_KEY = "homepage"
 HERO_KIND_TO_FIELD = {
